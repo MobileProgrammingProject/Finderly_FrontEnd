@@ -11,5 +11,8 @@ fun NavGraph(navController: NavHostController) {
         composable(route = "Login"){
             LoginScreen(navController)
         }
+        composable(route = "MyPage") {
+            MyPageScreen(navController)
+        }
     }
 }
