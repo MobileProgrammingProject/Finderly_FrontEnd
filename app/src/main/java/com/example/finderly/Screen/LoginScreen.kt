@@ -1,4 +1,4 @@
-package com.example.finderly
+package com.example.finderly.Screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.finderly.R
 
 
 @Composable
@@ -24,7 +25,7 @@ fun LoginScreen(navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Image(
-            painter = painterResource(id = R.drawable.finderly_logo),
+            painter = painterResource(id = R.drawable.finderly_green),
             contentDescription = null,
             modifier = Modifier.size(200.dp)
         )
