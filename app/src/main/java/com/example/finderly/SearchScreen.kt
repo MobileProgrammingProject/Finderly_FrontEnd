@@ -1,6 +1,7 @@
 package com.example.finderly
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -52,9 +53,9 @@ fun SearchScreen() {
                         Icon(imageVector = Icons.Filled.Add, contentDescription = "Add")
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Purple80
-                )
+//                colors = TopAppBarDefaults.topAppBarColors(
+//                    containerColor = Purple80
+//                )
             )
         },
     ) {
@@ -69,7 +70,7 @@ fun SearchScreen() {
                 value = "검색",
                 onValueChange = {},
                 modifier = Modifier
-                    .width(330.dp)
+                    .width(350.dp)
                     .height(50.dp),
                 trailingIcon = {
                     Icon(
@@ -86,8 +87,12 @@ fun SearchScreen() {
                     unfocusedBorderColor = Color.Black,
                 )
             )
-            LazyColumn(){
-                
+            Spacer(modifier = Modifier.height(20.dp))
+            val item = LostItem(1, "AirPods Pro", "에어팟 주웠는데", "자양파출소","건대입구역","분실")
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp)) {
+                items(20) {
+                    LostItemCard(item, {})
+                }
             }
         }
     }
