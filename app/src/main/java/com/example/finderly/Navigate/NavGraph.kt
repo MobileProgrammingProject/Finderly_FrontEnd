@@ -11,7 +11,7 @@ import com.example.finderly.Screen.SplashScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "Splash"){
+    NavHost(navController = navController, startDestination = "MyPage"){
         composable(route = "Splash") {
             SplashScreen(navController)
         }
