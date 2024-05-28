@@ -24,5 +24,14 @@ fun NavGraph(navController: NavHostController) {
         composable(route = "MyPage") {
             MyPageScreen(navController)
         }
+        composable(route = "Search") {
+            // 검색페이지
+        }
+        composable(route = "Location") {
+            // 지도페이지
+        }
+        composable(route = "List") {
+            // 게시판페이지
+        }
     }
 }
