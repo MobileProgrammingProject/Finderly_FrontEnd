@@ -14,4 +14,5 @@
     <color name="field_border_gray">#FFE0E0E0</color>
     <color name="field_text_gray">#FF828282</color>
     <color name="text_deepgreen">#FF5A7964</color>
+    <color name="lightgreen">#FFF2F7F4</color>
 </resources>
