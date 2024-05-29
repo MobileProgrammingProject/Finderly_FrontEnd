@@ -4,14 +4,16 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.finderly.Screen.FindMoreScreen
 import com.example.finderly.Screen.LoginScreen
 import com.example.finderly.Screen.MyPageScreen
+import com.example.finderly.Screen.PostMoreScreen
 import com.example.finderly.Screen.RegisterScreen
 import com.example.finderly.Screen.SplashScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "MyPage"){
+    NavHost(navController = navController, startDestination = "PostMore"){
         composable(route = "Splash") {
             SplashScreen(navController)
         }
@@ -23,6 +25,12 @@ fun NavGraph(navController: NavHostController) {
         }
         composable(route = "MyPage") {
             MyPageScreen(navController)
+        }
+        composable(route = "FindMore") {
+            FindMoreScreen(navController)
+        }
+        composable(route = "PostMore") {
+            PostMoreScreen(navController)
         }
         composable(route = "Search") {
             // 검색페이지
