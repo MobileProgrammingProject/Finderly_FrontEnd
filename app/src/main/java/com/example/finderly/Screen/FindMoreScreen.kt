@@ -1,10 +1,9 @@
 package com.example.finderly.Screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -48,21 +46,6 @@ fun FindMoreScreen(navController: NavHostController) {
         MyFindItem("AirPods Pro 4", "건대입구역","자양파출소"),
         MyFindItem("AirPods Pro 5", "건대입구역","자양파출소")
     )
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 25.dp)
-    ){
-        Image(
-            painter = painterResource(id = R.drawable.finderly_logo_transparent),
-            contentDescription = null,
-            modifier = Modifier
-                .size(250.dp)
-                .align(Alignment.TopEnd)
-                .padding(start = 40.dp)
-        )
-    }
 
     Column(
         modifier = Modifier
@@ -94,67 +77,48 @@ fun FindMoreScreen(navController: NavHostController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(20.dp)
+                .verticalScroll(scrollstate)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        color = colorResource(id = R.color.lightgreen),
-                        shape = RoundedCornerShape(20.dp)
-                    )
-            ){
+            MyFindItems.forEach{
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .border(
+                            width = 1.dp,
+                            color = colorResource(id = R.color.green),
+                            shape = RoundedCornerShape(12.dp)
+                        )
                         .padding(15.dp)
-                        .verticalScroll(scrollstate)
                 ) {
-                    Box(
+                    Row (
                         modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                color = colorResource(id = R.color.lightgreen),
-                                shape = RoundedCornerShape(20.dp)
-                            )
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ){
-                        Column(
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            MyFindItems.forEach{
-                                Row (
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(start = 15.dp, end = 15.dp, top = 12.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ){
-                                    Text(
-                                        text = "${it.title}",
-                                        fontSize = 13.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Image(
-                                        painter = painterResource(id = R.drawable.ic_more_green),
-                                        contentDescription = "더보기",
-                                        modifier = Modifier
-                                            .size(13.dp)
-                                            .clickable {
-                                                // 해당 게시물 상세 페이지로 이동
-                                            }
-                                    )
+                        Text(
+                            text = "${it.title}",
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_more_green),
+                            contentDescription = "더보기",
+                            modifier = Modifier
+                                .size(13.dp)
+                                .clickable {
+                                    // 해당 게시물 상세 페이지로 이동
                                 }
-
-                                Text(
-                                    text = "습득지역 : ${it.location} / 보관장소 : ${it.storagePlace}",
-                                    fontSize = 12.sp,
-                                    color = colorResource(id = R.color.field_text_gray),
-                                    modifier = Modifier.padding(start = 15.dp)
-                                )
-                            }
-                        }
+                        )
                     }
-                    Spacer(modifier = Modifier.height(35.dp))
+
+                    Text(
+                        text = "습득지역 : ${it.location} / 보관장소 : ${it.storagePlace}",
+                        fontSize = 12.sp,
+                        color = colorResource(id = R.color.field_text_gray)
+                    )
                 }
+                Spacer(modifier = Modifier.height(10.dp))
             }
+            Spacer(modifier = Modifier.height(30.dp))
         }
     }
 
