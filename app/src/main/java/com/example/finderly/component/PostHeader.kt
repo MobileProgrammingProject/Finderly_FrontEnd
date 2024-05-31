@@ -1,6 +1,7 @@
 package com.example.finderly.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,7 +34,6 @@ fun PostHeader(
     val height:Dp = 170.dp
     val titleColor:Int = title
     val subTitleColor:Int = subTitl
-    val bottom:Dp = 650.dp
 
     Column (
         modifier = Modifier
@@ -61,7 +61,7 @@ fun PostHeader(
         Text(
             text = stringResource(id = subTitle),
             fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.ExtraBold,
             color = colorResource(id = subTitleColor),
             modifier = Modifier.padding(start = padding)
         )
