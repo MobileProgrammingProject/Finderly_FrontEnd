@@ -46,19 +46,19 @@ fun Appbar(
     var myPageColor = R.color.field_text_gray
 
     when (selected){
-        R.string.search-> {
+        1-> {
             searchImage = R.drawable.ic_search_green
             searchColor = R.color.green
         }
-        R.string.location -> {
+        2 -> {
             locationImage = R.drawable.ic_location_green
             locationColor = R.color.green
         }
-        R.string.post -> {
+        3 -> {
             listImage = R.drawable.ic_list_green
             listColor = R.color.green
         }
-        R.string.myPage -> {
+        4 -> {
             myPageImage = R.drawable.ic_mypage_green
             myPageColor = R.color.green
         }
@@ -84,7 +84,7 @@ fun Appbar(
             ){
                 CreateTap(navController, "Search", searchImage, searchColor, imageSize, fontSize)
                 CreateTap(navController, "Location", locationImage, locationColor, imageSize, fontSize)
-                CreateTap(navController, "MainBoard", listImage, listColor, imageSize, fontSize)
+                CreateTap(navController, "PostBoard", listImage, listColor, imageSize, fontSize)
                 CreateTap(navController, "MyPage", myPageImage, myPageColor, imageSize, fontSize)
             }
         }

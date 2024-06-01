@@ -12,10 +12,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -23,38 +19,31 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.finderly.R
-import org.w3c.dom.Text
 
 @Composable
-fun TapMenu(){
+fun TapMenu(lostCheck: Boolean, findCheck: Boolean, onChanged: () -> Unit) {
+
     // 메뉴 탭
-    var lostCheck by rememberSaveable {
-        mutableStateOf(true)
-    }
-    var findCheck by rememberSaveable {
-        mutableStateOf(false)
-    }
-    val textSize:TextUnit = 16.sp
+    val textSize: TextUnit = 16.sp
     val underline = 3.dp
 
     Column {
-        Row (
+        Row(
             modifier = Modifier.padding(start = 50.dp)
         ) {
             Column(
                 modifier = Modifier
                     .size(90.dp, 50.dp)
-                    .clickable {
-                        lostCheck = true
-                        findCheck = false
-                    },
+                    .clickable { onChanged() },
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
                     text = "분실물",
                     fontSize = textSize,
-                    color = if (lostCheck) colorResource(id = R.color.text_deepgreen) else colorResource(id = R.color.text_gray)
+                    color = if (lostCheck) colorResource(id = R.color.text_deepgreen) else colorResource(
+                        id = R.color.text_gray
+                    )
                 )
 
                 if (lostCheck) {
@@ -72,8 +61,7 @@ fun TapMenu(){
                 modifier = Modifier
                     .size(90.dp, 50.dp)
                     .clickable {
-                        lostCheck = false
-                        findCheck = true
+                        onChanged()
                     },
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center

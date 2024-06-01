@@ -3,6 +3,7 @@ package com.example.finderly.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,7 +13,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -22,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -30,17 +35,11 @@ import androidx.compose.ui.unit.sp
 import com.example.finderly.R
 
 @Composable
-fun Search() {
-
-    var search by rememberSaveable {
-        mutableStateOf("")
-    }
+fun Search(search:MutableState<String>, searchHasFocus:MutableState<Boolean>) {
 
     val focusRequester = FocusRequester()
-    var searchHasFocus by rememberSaveable {
-        mutableStateOf(false)
-    }
 
+    val label = "Search"
 
 
     Row(
@@ -58,13 +57,27 @@ fun Search() {
             contentDescription = "search",
             modifier = Modifier.size(24.dp)
         )
+        if (!searchHasFocus.value && search.value.isEmpty()) {
+            Text(
+                text = label,
+                color = Color.Gray,
+                modifier = Modifier.clickable {
+                    focusRequester.requestFocus()
+                })
+
+        }
+
         BasicTextField(
-            value = search,
-            onValueChange = { search = it },
+            value = search.value,
+            onValueChange = { search.value = it },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(24.dp),
-            textStyle = TextStyle(fontSize = 20.sp),
+                .height(24.dp)
+                .focusRequester(focusRequester)
+                .onFocusChanged { focusState ->
+                    searchHasFocus.value = focusState.isFocused
+                },
+            textStyle = TextStyle(fontSize = 18.sp, color = Color.Black),
             singleLine = true,
         )
     }

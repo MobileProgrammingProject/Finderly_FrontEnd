@@ -17,10 +17,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -60,87 +62,133 @@ fun PostScreen(navHostController: NavHostController, postType:Int){
         val commentsScrollState = rememberScrollState()
         val topPadding = 150.dp
 
-        Column(
+        Box(
             modifier = Modifier
                 .padding(top = topPadding)
                 .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
                 .fillMaxSize()
                 .background(Color.White)
                 .padding(30.dp)
-        ) {
+        ){
 
-            // 타이틀
-            Text(
-                text = "에어팟",
-                fontSize = 25.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 10.dp)
-            )
-            
-            // 내용
-            Text(
-                text = "건대입구에서\n에어팟 잃어버렸는데..",
-                fontSize = 15.sp
-            )
-            Spacer(modifier = Modifier.padding(20.dp))
-            
-            // 사진
-            Row (
-                horizontalArrangement = Arrangement.spacedBy(20.dp),
-                modifier = Modifier.horizontalScroll(imgScrollState)
-            ) {
-                CreateImage(R.drawable.iphone1, 180.dp, 180.dp, Color.Transparent)
-                CreateImage(R.drawable.iphone1, 180.dp, 180.dp, Color.Transparent)
+            var expended by rememberSaveable {
+                mutableStateOf(false)
             }
-            
-            // 좋아요 & 댓글 아이콘
-            Row (
-                modifier = Modifier.padding(top = 20.dp, start = 10.dp)
+
+            Box (
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .align(Alignment.TopEnd)
             ) {
-                // 좋아요 아이콘
-                Row (
-                    //modifier = Modifier.align(Alignment.Bottom)
-                    verticalAlignment = Alignment.Bottom
+                Image(painter = painterResource(
+                    id = R.drawable.menu),
+                    contentDescription = "menu",
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {expended = true}
+                )
+                DropdownMenu(
+                    expanded = expended,
+                    onDismissRequest = { expended = false },
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Color.White)
                 ) {
-                    CreateIcon(Icons.Filled.FavoriteBorder){ likeCounter++ }
-                    Text(
-                        text = "$likeCounter",
-                        fontSize = 13.sp,
-                        color = Color.Red
-                    )
-                }
-                Spacer(modifier = Modifier.padding(5.dp))
-                // 댓글 아이콘
-                Row (
-                    verticalAlignment = Alignment.Bottom
-                ){
-                    Image(
-                        painter = painterResource(id = R.drawable.comments_black),
-                        contentDescription = "Comments Icon",
+                    DropdownMenuItem(
+                        onClick = { expended = false },
                         modifier = Modifier
-                            .padding(2.dp)
-                            .size(24.dp)
-                    )
-                    Text(
-                        text = "$commentsCounter",
-                        fontSize = 13.sp,
-                        color = Color.Black
-                    )
+                            .size(90.dp, 20.dp)
+                            .align(Alignment.CenterHorizontally)
+                    ) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ){
+                            androidx.compose.material3.Text(
+                                text = "신고하기",
+                                fontSize = 12.sp,
+                                color = Color.Gray,
+                            )
+                        }
+                    }
                 }
             }
-            Spacer(modifier = Modifier.padding(10.dp))
-            Divider(
-                color = Color.LightGray,
-                modifier = Modifier.padding(bottom = 10.dp)
-            )
-            Column (
-                modifier = Modifier.verticalScroll(commentsScrollState)
-            ) {
-                CreateComment()
-                CreateComment()
-                CreateComment()
-                CreateComment()
-                CreateComment()
+
+            Column {
+
+                // 타이틀
+                Text(
+                    text = "에어팟",
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 10.dp)
+                )
+
+                // 내용
+                Text(
+                    text = "건대입구에서\n에어팟 잃어버렸는데..",
+                    fontSize = 15.sp
+                )
+                Spacer(modifier = Modifier.padding(20.dp))
+
+                // 사진
+                Row (
+                    horizontalArrangement = Arrangement.spacedBy(20.dp),
+                    modifier = Modifier.horizontalScroll(imgScrollState)
+                ) {
+                    CreateImage(R.drawable.iphone1, 180.dp, 180.dp, Color.Transparent)
+                    CreateImage(R.drawable.iphone1, 180.dp, 180.dp, Color.Transparent)
+                }
+
+                // 좋아요 & 댓글 아이콘
+                Row (
+                    modifier = Modifier.padding(top = 20.dp, start = 10.dp)
+                ) {
+                    // 좋아요 아이콘
+                    Row (
+                        //modifier = Modifier.align(Alignment.Bottom)
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        CreateIcon(Icons.Filled.FavoriteBorder){ likeCounter++ }
+                        Text(
+                            text = "$likeCounter",
+                            fontSize = 13.sp,
+                            color = Color.Red
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(5.dp))
+                    // 댓글 아이콘
+                    Row (
+                        verticalAlignment = Alignment.Bottom
+                    ){
+                        Image(
+                            painter = painterResource(id = R.drawable.comments_black),
+                            contentDescription = "Comments Icon",
+                            modifier = Modifier
+                                .padding(2.dp)
+                                .size(24.dp)
+                        )
+                        Text(
+                            text = "$commentsCounter",
+                            fontSize = 13.sp,
+                            color = Color.Black
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.padding(10.dp))
+                Divider(
+                    color = Color.LightGray,
+                    modifier = Modifier.padding(bottom = 10.dp)
+                )
+                Column (
+                    modifier = Modifier.verticalScroll(commentsScrollState)
+                ) {
+                    CreateComment()
+                    CreateComment()
+                    CreateComment()
+                    CreateComment()
+                    CreateComment()
+                }
             }
         }
     }

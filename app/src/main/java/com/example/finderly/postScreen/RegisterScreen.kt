@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
@@ -82,6 +83,7 @@ fun RegisterSreen(navHostController: NavHostController){
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // 제목
                 TextField(
                     value = title,
                     label = {
@@ -107,11 +109,12 @@ fun RegisterSreen(navHostController: NavHostController){
                         .onFocusChanged { focusState ->
                             titleHasFocus = focusState.isFocused
                         },
-                    textStyle = TextStyle(fontSize = 25.sp)
+                    textStyle = TextStyle(fontSize = 25.sp),
+                    singleLine = true
                 )
 
                 // 메뉴 선택하면 어떤 게시판인지 표시
-                androidx.compose.material3.Button(
+                Button(
                     onClick = { expended = true },
                     shape = RectangleShape,
                     colors = ButtonDefaults.buttonColors(Color.Transparent),
@@ -130,10 +133,18 @@ fun RegisterSreen(navHostController: NavHostController){
                         DropdownMenuItem(
                             onClick = { expended = false },
                         ) {
-                            androidx.compose.material3.Text(text = "분실물 게시판")
+                            Text(
+                                text = "분실물 게시판",
+                                color = Color.Gray,
+                                fontSize = 14.sp
+                            )
                         }
                         DropdownMenuItem(onClick = { expended = false }) {
-                            androidx.compose.material3.Text(text = "습득물 게시판")
+                            Text(
+                                text = "습득물 게시판",
+                                color = Color.Gray,
+                                fontSize = 14.sp
+                            )
                         }
                     }
                 }
@@ -241,7 +252,7 @@ fun RegisterSreen(navHostController: NavHostController){
             Box(modifier = Modifier.fillMaxSize()){
                 androidx.compose.material3.Button(
                     onClick = {
-                        navHostController.navigate("MainBoard")
+                        navHostController.navigate("PostBoard")
                     },
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
@@ -250,10 +261,11 @@ fun RegisterSreen(navHostController: NavHostController){
                     colors = ButtonDefaults.buttonColors(colorResource(id = R.color.green)),
                     shape = RoundedCornerShape(8.dp)
                 ) {
-                    androidx.compose.material3.Text(
+                    Text(
                         text = "게시글 등록하기",
                         fontSize = 17.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.ExtraBold,
+                        color = Color.White
                     )
                 }
             }

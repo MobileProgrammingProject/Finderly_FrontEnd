@@ -12,7 +12,7 @@ import com.example.finderly.postScreen.RegisterSreen
 
 @Composable
 fun NavGraph(navController: NavHostController){
-    NavHost(navController = navController, startDestination = "MainBoard"){
+    NavHost(navController = navController, startDestination = "PostBoard"){
         
         // 메인 페이지
         composable("Search") { 
@@ -21,7 +21,7 @@ fun NavGraph(navController: NavHostController){
         composable("Location") {
             // 지도 페이지
         }
-        composable(route = "MainBoard"){
+        composable(route = "PostBoard"){
             MainBoardScreen(navHostController = navController)
         }
         composable("MyPage") {
