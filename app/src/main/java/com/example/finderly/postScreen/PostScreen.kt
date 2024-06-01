@@ -11,14 +11,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -34,10 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,17 +69,22 @@ fun PostScreen(navHostController: NavHostController, postType:Int){
                 .padding(30.dp)
         ) {
 
+            // 타이틀
             Text(
                 text = "에어팟",
                 fontSize = 25.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 10.dp)
             )
+            
+            // 내용
             Text(
                 text = "건대입구에서\n에어팟 잃어버렸는데..",
                 fontSize = 15.sp
             )
             Spacer(modifier = Modifier.padding(20.dp))
+            
+            // 사진
             Row (
                 horizontalArrangement = Arrangement.spacedBy(20.dp),
                 modifier = Modifier.horizontalScroll(imgScrollState)
@@ -92,9 +92,12 @@ fun PostScreen(navHostController: NavHostController, postType:Int){
                 CreateImage(R.drawable.iphone1, 180.dp, 180.dp, Color.Transparent)
                 CreateImage(R.drawable.iphone1, 180.dp, 180.dp, Color.Transparent)
             }
+            
+            // 좋아요 & 댓글 아이콘
             Row (
                 modifier = Modifier.padding(top = 20.dp, start = 10.dp)
             ) {
+                // 좋아요 아이콘
                 Row (
                     //modifier = Modifier.align(Alignment.Bottom)
                     verticalAlignment = Alignment.Bottom
@@ -107,11 +110,12 @@ fun PostScreen(navHostController: NavHostController, postType:Int){
                     )
                 }
                 Spacer(modifier = Modifier.padding(5.dp))
+                // 댓글 아이콘
                 Row (
                     verticalAlignment = Alignment.Bottom
                 ){
                     Image(
-                        painter = painterResource(id = R.drawable.comments2),
+                        painter = painterResource(id = R.drawable.comments_black),
                         contentDescription = "Comments Icon",
                         modifier = Modifier
                             .padding(2.dp)
@@ -156,7 +160,7 @@ fun CreateComment(content:String = "에어팟 봤는데"){
             .fillMaxWidth()
     ) {
         Image(
-            painter = painterResource(id = R.drawable.comments2_gray),
+            painter = painterResource(id = R.drawable.comments_gray),
             contentDescription = "Comment Icon",
             modifier = Modifier.size(24.dp)
         )

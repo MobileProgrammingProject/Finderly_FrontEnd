@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.accompanist.imageloading.core)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

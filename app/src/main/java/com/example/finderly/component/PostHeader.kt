@@ -2,12 +2,15 @@ package com.example.finderly.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -35,7 +38,7 @@ fun PostHeader(
     val titleColor:Int = title
     val subTitleColor:Int = subTitl
 
-    Column (
+    Box (
         modifier = Modifier
             .fillMaxWidth()
             .height(height)
@@ -49,21 +52,28 @@ fun PostHeader(
                     end = Offset(0f, with(LocalDensity.current) { height.toPx() })
                 )
             )
-            .background(color = backgroundColor)
+            .background(color = backgroundColor),
+
     ) {
-        Text(
-            text = stringResource(id = R.string.app_name),
-            fontSize = 40.sp,
-            fontWeight = FontWeight.ExtraBold,
-            color = colorResource(id = titleColor),
-            modifier = Modifier.padding(top = padding, start = padding)
-        )
-        Text(
-            text = stringResource(id = subTitle),
-            fontSize = 20.sp,
-            fontWeight = FontWeight.ExtraBold,
-            color = colorResource(id = subTitleColor),
-            modifier = Modifier.padding(start = padding)
-        )
+        Column (
+            modifier = Modifier
+                .padding(top = padding, start = padding),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = stringResource(id = R.string.app_name),
+                fontSize = 40.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = colorResource(id = titleColor),
+
+            )
+            Text(
+                text = stringResource(id = subTitle),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = colorResource(id = subTitleColor),
+                modifier = Modifier
+            )
+        }
     }
 }
