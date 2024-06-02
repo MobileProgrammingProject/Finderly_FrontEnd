@@ -35,6 +35,7 @@ import com.example.finderly.component.Appbar
 import com.example.finderly.component.FoundPostList
 import com.example.finderly.component.LostPostList
 import com.example.finderly.component.PostHeader
+import com.example.finderly.component.RegisterButton
 import com.example.finderly.component.Search
 import com.example.finderly.component.TapMenu
 
@@ -66,24 +67,9 @@ fun MainBoardScreen(
                 fontSize = 15.sp,
                 modifier = Modifier.padding(top = 50.dp, start = 250.dp)
             )
-            Button(
-                onClick = {navHostController.navigate("RegisterPost")},
-                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.lightgreen)),
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.padding(top = 130.dp, start = 30.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.plus_deepgreen),
-                    contentDescription = "plus post",
-                    modifier = Modifier
-                        .size(20.dp)
-                        .padding(end = 10.dp)
-                )
-                Text(
-                    text = "게시글 등록하기",
-                    color = colorResource(id = R.color.text_deepgreen),
-                    fontWeight = FontWeight.ExtraBold
-                )
+            // 게시글 등록 버튼
+            Box(modifier = Modifier.padding(top = 130.dp, start = 30.dp)) {
+                RegisterButton("게시글 등록하기", navHostController, "RegisterPost")
             }
         }
 

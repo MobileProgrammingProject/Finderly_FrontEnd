@@ -1,4 +1,4 @@
-package com.example.finderly.Screen
+package com.example.finderly.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -42,7 +43,7 @@ fun MyPageList(
         modifier = Modifier
             .fillMaxWidth()
             .height(210.dp)
-            .padding(15.dp)
+            .padding(10.dp)
     ) {
         Text(
             text = TopTitle,
@@ -149,13 +150,14 @@ fun MyPageScreen(navController: NavHostController) {
 
     Column (
         modifier = Modifier
+            .background(Color.White)
             .fillMaxSize()
             .verticalScroll(scrollstate)
-            .padding(25.dp)
+            .padding(30.dp)
     ) {
         Text(
             text = "Finderly",
-            fontSize = 35.sp,
+            fontSize = 40.sp,
             fontWeight = FontWeight.ExtraBold,
             color = colorResource(id = R.color.green)
         )
@@ -165,7 +167,7 @@ fun MyPageScreen(navController: NavHostController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(130.dp)
-                .padding(15.dp),
+                .padding(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
@@ -224,7 +226,7 @@ fun MyPageScreen(navController: NavHostController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(210.dp)
-                .padding(15.dp)
+                .padding(10.dp)
         ) {
             Text(
                 text = "내 습득물",

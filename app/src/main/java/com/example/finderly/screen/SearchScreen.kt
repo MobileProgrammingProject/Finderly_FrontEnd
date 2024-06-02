@@ -1,4 +1,4 @@
-package com.example.finderly.Screen
+package com.example.finderly.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -19,12 +20,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -32,13 +30,12 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,49 +50,69 @@ import androidx.navigation.NavHostController
 import com.example.finderly.Data.LostItem
 import com.example.finderly.R
 import com.example.finderly.component.Appbar
+import com.example.finderly.component.RegisterButton
+import com.example.finderly.component.Search
 
 @Composable
 fun LostItemCard(item: LostItem, onClick: () -> Unit) {
-    Card(modifier = Modifier
-        .border(
-            width = 1.dp,
-            color = colorResource(id = R.color.green),
-            shape = RoundedCornerShape(20.dp)
-        )
-        .size(width = 350.dp, height = 100.dp)
-        .clickable(onClick = onClick),
+    Card(
+        modifier = Modifier
+            .border(
+                width = 1.dp,
+                color = colorResource(id = R.color.green),
+                shape = RoundedCornerShape(12.dp)
+            )
+            .fillMaxWidth()
+            .height(70.dp)
+            .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(modifier = Modifier.padding(top = 20.dp, start = 15.dp, bottom = 20.dp, end = 15.dp),
+        Column(
+            modifier = Modifier.padding(top = 10.dp, start = 15.dp, bottom = 10.dp, end = 15.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center) {
-            Text(text = item.name, fontSize = 20.sp, modifier = Modifier.align(Alignment.Start))
-            Text(text = "습득지역 : ${item.locationFound} / 보관장소 : ${item.locationStored}")
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = item.name,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.Start)
+            )
+            Text(
+                text = "습득지역 : ${item.locationFound} / 보관장소 : ${item.locationStored}",
+                fontSize = 14.sp
+            )
         }
     }
 }
 
 @Composable
-fun FilterMenu(modifier:Modifier){
+fun FilterMenu(modifier: Modifier) {
     var expanded by remember { mutableStateOf(false) }
     Box(
         modifier = modifier
             .border(
                 width = 1.dp,
-                color = colorResource(id = R.color.black),
+                color = colorResource(id = R.color.field_border_gray),
                 shape = RoundedCornerShape(10.dp)
             )
             .background(color = Color.White, shape = RoundedCornerShape(10.dp))
     ) {
         IconButton(onClick = { expanded = true }, modifier = Modifier.width(80.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = " 필터",
-                    fontSize = 18.sp,
-                    color = colorResource(id = R.color.text_gray))
-                Icon(Icons.Default.KeyboardArrowDown, contentDescription = "ArrowDown",
-                    modifier = Modifier.size(40.dp))
+                Text(
+                    text = " 필터",
+                    fontSize = 15.sp,
+                    color = colorResource(id = R.color.text_gray)
+                )
+                Icon(
+                    Icons.Default.KeyboardArrowDown,
+                    contentDescription = "ArrowDown",
+                    tint = Color.Gray,
+                    modifier = Modifier.size(30.dp)
+                )
             }
         }
         DropdownMenu(
@@ -137,6 +154,7 @@ fun FilterMenu(modifier:Modifier){
 @Composable
 fun SearchScreen(navController: NavHostController) {
     Box(
+        modifier = Modifier.background(Color.White)
     ) {
         Image(
             painter = painterResource(id = R.drawable.finderly_logo_transparent),
@@ -147,92 +165,75 @@ fun SearchScreen(navController: NavHostController) {
             contentScale = ContentScale.Crop
         )
     }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(30.dp)
+    ) {
+        //content
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .padding(bottom = 15.dp)
         ) {
-            Column (
-                modifier = Modifier
-                    .padding(start = 25.dp, top = 25.dp, bottom = 15.dp)
-            ){
-                Text(
-                    text = "Finderly",
-                    fontSize = 50.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = colorResource(id = R.color.green)
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = "무엇을 찾고 계신가요?",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = colorResource(id = R.color.text_deepgreen)
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "찾고 싶은 물건을\n검색해보세요",
-                    fontSize = 15.sp,
-                    color = colorResource(id = R.color.text_gray)
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-                Button(modifier = Modifier
-                    .width(180.dp)
-                    .height(45.dp),
-                    onClick = {
-                              navController.navigate("RegisterLost")
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(id = R.color.lightgreen),
-                        contentColor = colorResource(id = R.color.text_deepgreen)
-                    )
-                ){
-                    Image(
-                        painter = painterResource(id = R.drawable.plus1),
-                        modifier = Modifier.size(15.dp),
-                        contentDescription = "image description"
-                    )
-                    Text(text = "  분실물 등록하기", fontSize = 15.sp)
-                }
-            }
-            Spacer(modifier = Modifier.height(5.dp))
-            Column(modifier = Modifier
-                .padding(start = 15.dp, end = 15.dp)
-                .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally){
-                Row(modifier = Modifier
-                    .align(Alignment.Start)
-                    .offset(15.dp)) {
-                    OutlinedTextField(
-                        value = "Search",
-                        onValueChange = {},
-                        modifier = Modifier
-                            .width(250.dp)
-                            .height(50.dp),
-                        trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Filled.Search,
-                                contentDescription = "Search"
-                            )
-                        },
-                        shape = RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = Color.Black, //Set the text color Here
-                            unfocusedTextColor = Color.Black,
-                            cursorColor = Color.Black,
-                            focusedBorderColor = Color.Black,
-                            unfocusedBorderColor = Color.Black,
-                        )
-                    )
-                    FilterMenu(
-                        Modifier
-                            .offset(20.dp)
-                            .width(80.dp))
-                }
+            Text(
+                text = "Finderly",
+                fontSize = 50.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = colorResource(id = R.color.green)
+            )
             Spacer(modifier = Modifier.height(20.dp))
-            val item = LostItem(1, "AirPods Pro", "에어팟 주웠는데", "자양파출소","건대입구역","분실")
+            Text(
+                text = "무엇을 찾고 계신가요?",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = colorResource(id = R.color.text_deepgreen)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "찾고 싶은 물건을\n검색해보세요",
+                fontSize = 15.sp,
+                color = colorResource(id = R.color.text_gray)
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            RegisterButton("분실물 등록하기", navController, "RegisterLost")
+        }
+
+        //body
+        Spacer(modifier = Modifier.height(5.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier
+                    .align(Alignment.Start)
+            ) {
+
+                // 검색 창
+                var search by rememberSaveable {
+                    mutableStateOf("")
+                }
+                var searchHasFocus by rememberSaveable {
+                    mutableStateOf(false)
+                }
+                Search(search = remember { mutableStateOf(search) }, searchHasFocus = remember {
+                    mutableStateOf(searchHasFocus)
+                })
+
+                // 필터 메뉴
+                FilterMenu(
+                    Modifier
+                        .offset(20.dp)
+                        .width(80.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+            val item = LostItem(1, "AirPods Pro", "에어팟 주웠는데", "자양파출소", "건대입구역", "분실")
             LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp)) {
                 items(20) {
-                    LostItemCard(item, {navController.navigate("LostItemInfo")})
+                    LostItemCard(item, { navController.navigate("LostItemInfo") })
                 }
             }
         }

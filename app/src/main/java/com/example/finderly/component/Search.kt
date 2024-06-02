@@ -51,7 +51,7 @@ fun Search(search:MutableState<String>, searchHasFocus:MutableState<Boolean>) {
         Image(
             painter = painterResource(id = R.drawable.ic_search_gray),
             contentDescription = "search",
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(20.dp)
         )
         if (!searchHasFocus.value && search.value.isEmpty()) {
             Text(

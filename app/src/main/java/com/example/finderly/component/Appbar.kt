@@ -75,31 +75,34 @@ fun Appbar(
 
             Row(
                 modifier = Modifier
+                    .clickable{}
                     .background(Color.White)
                     .fillMaxWidth()
-                    .height(80.dp),
+                    .height(80.dp)
+                    //.padding(start = 10.dp, end = 10.dp)
+                        ,
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ){
-                CreateTap(navController, "Search", searchImage, searchColor, imageSize, fontSize)
-                CreateTap(navController, "Location", locationImage, locationColor, imageSize, fontSize)
-                CreateTap(navController, "PostBoard", listImage, listColor, imageSize, fontSize)
-                CreateTap(navController, "MyPage", myPageImage, myPageColor, imageSize, fontSize)
+                CreateTap(navController, "Search", searchImage, searchColor, imageSize, fontSize, "검색")
+                CreateTap(navController, "Location", locationImage, locationColor, imageSize, fontSize, "지도")
+                CreateTap(navController, "PostBoard", listImage, listColor, imageSize, fontSize, "게시판")
+                CreateTap(navController, "MyPage", myPageImage, myPageColor, imageSize, fontSize, "MY")
             }
         }
     }
 }
 
 @Composable
-fun CreateTap(navController: NavHostController, route:String, image:Int, text:Int,imageSize:Dp, fontSize:TextUnit){
+fun CreateTap(navController: NavHostController, route:String, image:Int, textColor:Int,imageSize:Dp, fontSize:TextUnit, text:String){
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding(end = 10.dp)
             .clickable {
                 navController.navigate(route)
             }
+            .size(80.dp)
     ) {
         Image(
             painter = painterResource(id = image),
@@ -107,9 +110,9 @@ fun CreateTap(navController: NavHostController, route:String, image:Int, text:In
             modifier = Modifier.size(imageSize)
         )
         Text(
-            text = "MY",
+            text = text,
             fontSize = fontSize,
-            color = colorResource(id = text)
+            color = colorResource(id = textColor)
         )
     }
 }
