@@ -22,7 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,120 +31,7 @@ import androidx.navigation.NavHostController
 import com.example.finderly.Data.MyFindItem
 import com.example.finderly.Data.MyPost
 import com.example.finderly.R
-
-@Composable
-fun Appbar(
-    searchImage : Int,
-    searchColor: Int,
-    locationImage : Int,
-    locationColor: Int,
-    listImage : Int,
-    listColor : Int,
-    myPageImage : Int,
-    myPageColor : Int,
-    navController: NavHostController
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth(),
-        contentAlignment = Alignment.BottomCenter
-    ){
-        Column {
-            Divider(
-                color = colorResource(id = R.color.field_border_gray)
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .background(color = Color.White),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(start = 50.dp)
-                        .clickable {
-                            navController.navigate("Search")
-                        }
-                ) {
-                    Image(
-                        painter = painterResource(id = searchImage),
-                        contentDescription = null,
-                        modifier = Modifier.size(30.dp)
-                    )
-                    Text(
-                        text = "검색",
-                        fontSize = 15.sp,
-                        color = colorResource(id = searchColor)
-                    )
-                }
-
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.clickable {
-                        navController.navigate("Location")
-                    }
-                ) {
-                    Image(
-                        painter = painterResource(id = locationImage),
-                        contentDescription = null,
-                        modifier = Modifier.size(30.dp)
-                    )
-                    Text(
-                        text = "위치",
-                        fontSize = 15.sp,
-                        color = colorResource(id = locationColor)
-                    )
-                }
-
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.clickable {
-                        navController.navigate("List")
-                    }
-                ) {
-                    Image(
-                        painter = painterResource(id = listImage),
-                        contentDescription = null,
-                        modifier = Modifier.size(30.dp)
-                    )
-                    Text(
-                        text = "게시판",
-                        fontSize = 15.sp,
-                        color = colorResource(id = listColor)
-                    )
-                }
-
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(end = 50.dp)
-                        .clickable {
-                            navController.navigate("MyPage")
-                        }
-                ) {
-                    Image(
-                        painter = painterResource(id = myPageImage),
-                        contentDescription = null,
-                        modifier = Modifier.size(30.dp)
-                    )
-                    Text(
-                        text = "MY",
-                        fontSize = 15.sp,
-                        color = colorResource(id = myPageColor)
-                    )
-                }
-            }
-        }
-    }
-}
+import com.example.finderly.component.Appbar
 
 @Composable
 fun MyPageList(
@@ -377,6 +263,7 @@ fun MyPageScreen(navController: NavHostController) {
                                     .size(13.dp)
                                     .clickable {
                                         // 해당 게시물 상세 페이지로 이동
+                                        navController.navigate("FindMore")
                                     }
                             )
                         }
@@ -397,7 +284,7 @@ fun MyPageScreen(navController: NavHostController) {
                         modifier = Modifier
                             .fillMaxSize()
                             .clickable {
-                                       //습득물 페이지로 이동
+                                //습득물 페이지로 이동
                             },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
@@ -424,15 +311,5 @@ fun MyPageScreen(navController: NavHostController) {
         Spacer(modifier = Modifier.height(80.dp))
     }
 
-    Appbar(
-        searchImage = R.drawable.ic_search_gray,
-        searchColor = R.color.field_text_gray,
-        locationImage = R.drawable.ic_location_gray,
-        locationColor = R.color.field_text_gray,
-        listImage = R.drawable.ic_list_gray,
-        listColor = R.color.field_text_gray,
-        myPageImage = R.drawable.ic_mypage_green,
-        myPageColor = R.color.green,
-        navController = navController
-    )
+    Appbar(selected = 4, navController = navController)
 }

@@ -15,4 +15,7 @@
     <color name="field_text_gray">#FF828282</color>
     <color name="text_deepgreen">#FF5A7964</color>
     <color name="lightgreen">#FFF2F7F4</color>
+    <color name="header1">#FFA9DAB8</color>
+    <color name="header2">#FF95C4A5</color>
+    <color name="gray_background">#FFF5F5F5</color>
 </resources>

@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.finderly.Data.MyPost
 import com.example.finderly.R
+import com.example.finderly.component.Appbar
 
 @Composable
 fun PostList(
@@ -221,15 +222,5 @@ fun PostMoreScreen(navController: NavHostController) {
         }
 
     }
-    Appbar(
-        searchImage = R.drawable.ic_search_gray,
-        searchColor = R.color.field_text_gray,
-        locationImage = R.drawable.ic_location_gray,
-        locationColor = R.color.field_text_gray,
-        listImage = R.drawable.ic_list_gray,
-        listColor = R.color.field_text_gray,
-        myPageImage = R.drawable.ic_mypage_green,
-        myPageColor = R.color.green,
-        navController = navController
-    )
+    Appbar(selected = 4, navController = navController)
 }
