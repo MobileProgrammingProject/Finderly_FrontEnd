@@ -34,14 +34,41 @@ fun NavGraph(navController: NavHostController){
 
         // 메인 페이지
         composable("Search") {
+            // 분실물 검색
             SearchScreen(navController)
         }
+        composable("RegisterLost") {
+            // 분실물 등록
+            RegisterLostItemScreen(navController)
+        }
+        composable("LostItemInfo") {
+            // 분실물 상세 정보
+            LostItemInfoScreen(navController)
+        }
+
+        // 지도 페이지
         composable("Location") {
             // 지도 페이지
         }
+        
+        // 게시판 페이지
         composable(route = "PostBoard"){
             MainBoardScreen(navHostController = navController)
         }
+        composable(route = "LostPost") {
+            // 분실물 게시글 상세 페이지
+            PostScreen(navHostController = navController, R.string.lost_category )
+        }
+        composable(route = "FoundPost") {
+            // 습득물 게시글 상세 페이지
+            PostScreen(navHostController = navController, R.string.found_category )
+        }
+        composable("RegisterPost") {
+            // 게시글 등록
+            RegisterSreen(navHostController = navController)
+        }
+        
+        // 마이 페이지
         composable(route = "MyPage") {
             MyPageScreen(navController)
         }
@@ -52,21 +79,5 @@ fun NavGraph(navController: NavHostController){
             PostMoreScreen(navController)
         }
         
-        // 서브 페이지
-        composable(route = "LostPost") {
-            PostScreen(navHostController = navController, R.string.lost_category )
-        }
-        composable(route = "FoundPost") {
-            PostScreen(navHostController = navController, R.string.found_category )
-        }
-        composable("RegisterPost") { 
-            RegisterSreen(navHostController = navController)
-        }
-        composable("RegisterLost") {
-            RegisterLostItemScreen(navController)
-        }
-        composable("LostItemInfo") {
-            LostItemInfoScreen(navController)
-        }
     }
 }

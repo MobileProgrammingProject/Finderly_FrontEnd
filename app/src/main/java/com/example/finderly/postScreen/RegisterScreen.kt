@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
@@ -53,14 +54,16 @@ import com.example.finderly.component.PostHeader
 
 
 @Composable
-fun RegisterSreen(navHostController: NavHostController){
-    Box{
+fun RegisterSreen(navHostController: NavHostController) {
+    Box {
         PostHeader(R.string.register_post)    // 헤더 컴포넌트
 
         val topPadding = 150.dp
+        val verticalScrollState = rememberScrollState()
 
         Column(
             modifier = Modifier
+                .verticalScroll(verticalScrollState)
                 .padding(top = topPadding)
                 .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
                 .fillMaxSize()
@@ -79,7 +82,7 @@ fun RegisterSreen(navHostController: NavHostController){
                 mutableStateOf(false)
             }
             val focusRequester = FocusRequester()
-            Row (
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -87,7 +90,7 @@ fun RegisterSreen(navHostController: NavHostController){
                 TextField(
                     value = title,
                     label = {
-                        if(!titleHasFocus)
+                        if (!titleHasFocus)
                             androidx.compose.material3.Text(
                                 text = "제목",
                                 fontSize = 25.sp,
@@ -95,7 +98,7 @@ fun RegisterSreen(navHostController: NavHostController){
                                 color = colorResource(id = R.color.field_text_gray)
                             )
                     },
-                    onValueChange = {title = it},
+                    onValueChange = { title = it },
 //                modifier = Modifier
 //                    .background(color = Color.White)
                     colors = TextFieldDefaults.colors(
@@ -161,16 +164,19 @@ fun RegisterSreen(navHostController: NavHostController){
 
             OutlinedTextField(
                 value = content,
-                label = { if(!contentHasFocus)
-                    androidx.compose.material3.Text(
-                        text = "내용을 입력하세요.",
-                        color = colorResource(id = R.color.field_text_gray),
-                        fontSize = 15.sp)
+                label = {
+                    if (!contentHasFocus)
+                        androidx.compose.material3.Text(
+                            text = "내용을 입력하세요.",
+                            color = colorResource(id = R.color.field_text_gray),
+                            fontSize = 15.sp
+                        )
                 },
-                onValueChange = {content = it},
+                onValueChange = { content = it },
                 modifier = Modifier
+                    //.weight(1f)
                     .fillMaxWidth()
-                    .heightIn(min = 250.dp, max = 250.dp)
+                    .heightIn(min = 100.dp)
                     .focusRequester(focusRequester)
                     .onFocusChanged { focusState ->
                         contentHasFocus = focusState.isFocused
@@ -188,19 +194,18 @@ fun RegisterSreen(navHostController: NavHostController){
                 shape = RoundedCornerShape(8.dp)
             )
 
-
             // 익명 체크
             var checked by rememberSaveable {
                 mutableStateOf(false)
             }
 
-            Row (
+            Row(
                 modifier = Modifier.padding(0.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Checkbox(
                     checked = checked,
-                    onCheckedChange = {checked=it},
+                    onCheckedChange = { checked = it },
                     colors = CheckboxDefaults.colors(
                         checkedColor = colorResource(id = R.color.white),
                         //checkedColor = Color.Gray,
@@ -230,7 +235,7 @@ fun RegisterSreen(navHostController: NavHostController){
                 mutableStateOf(false)
             }
             val imgScrollState = rememberScrollState()
-            Row (
+            Row(
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .horizontalScroll(imgScrollState),
@@ -240,8 +245,8 @@ fun RegisterSreen(navHostController: NavHostController){
                 Box(
                     // Dialog 추가
                     modifier = Modifier
-                        .clickable {  }
-                ){
+                        .clickable { }
+                ) {
                     CreateImage(image = R.drawable.plus_gray, 150.dp, 80.dp, color = Color.Gray)
                 }
                 CreateImage(image = R.drawable.iphone1, containerSize = 150.dp)
@@ -249,7 +254,7 @@ fun RegisterSreen(navHostController: NavHostController){
 
 
             // 등록 버튼
-            Box(modifier = Modifier.fillMaxSize()){
+            Box(modifier = Modifier.fillMaxSize()) {
                 androidx.compose.material3.Button(
                     onClick = {
                         navHostController.navigate("PostBoard")

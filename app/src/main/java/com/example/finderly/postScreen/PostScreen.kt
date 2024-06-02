@@ -59,11 +59,13 @@ fun PostScreen(navHostController: NavHostController, postType:Int){
         }
 
         val imgScrollState = rememberScrollState()
-        val commentsScrollState = rememberScrollState()
+        //val commentsScrollState = rememberScrollState()
         val topPadding = 150.dp
+        val contentScrollState = rememberScrollState()
 
         Box(
             modifier = Modifier
+                .verticalScroll(contentScrollState)
                 .padding(top = topPadding)
                 .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
                 .fillMaxSize()
@@ -181,7 +183,7 @@ fun PostScreen(navHostController: NavHostController, postType:Int){
                     modifier = Modifier.padding(bottom = 10.dp)
                 )
                 Column (
-                    modifier = Modifier.verticalScroll(commentsScrollState)
+                    //modifier = Modifier.verticalScroll(commentsScrollState)
                 ) {
                     CreateComment()
                     CreateComment()
