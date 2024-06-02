@@ -136,7 +136,7 @@ fun RegisterScreen(navController: NavHostController) {
         Spacer(modifier = Modifier.height(150.dp))
 
         Button(
-            onClick = {  },
+            onClick = { navController.navigate("Search") },
             colors = ButtonDefaults.buttonColors(colorResource(id = R.color.green)),
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier

@@ -7,9 +7,12 @@ import androidx.navigation.compose.composable
 import com.example.finderly.R
 import com.example.finderly.Screen.FindMoreScreen
 import com.example.finderly.Screen.LoginScreen
+import com.example.finderly.Screen.LostItemInfoScreen
 import com.example.finderly.Screen.MyPageScreen
 import com.example.finderly.Screen.PostMoreScreen
+import com.example.finderly.Screen.RegisterLostItemScreen
 import com.example.finderly.Screen.RegisterScreen
+import com.example.finderly.Screen.SearchScreen
 import com.example.finderly.Screen.SplashScreen
 import com.example.finderly.postScreen.MainBoardScreen
 import com.example.finderly.postScreen.PostScreen
@@ -30,8 +33,8 @@ fun NavGraph(navController: NavHostController){
         }
 
         // 메인 페이지
-        composable("Search") { 
-            // 검색 페이지
+        composable("Search") {
+            SearchScreen(navController)
         }
         composable("Location") {
             // 지도 페이지
@@ -58,6 +61,12 @@ fun NavGraph(navController: NavHostController){
         }
         composable("RegisterPost") { 
             RegisterSreen(navHostController = navController)
+        }
+        composable("RegisterLost") {
+            RegisterLostItemScreen(navController)
+        }
+        composable("LostItemInfo") {
+            LostItemInfoScreen(navController)
         }
     }
 }
