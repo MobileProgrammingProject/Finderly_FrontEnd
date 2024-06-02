@@ -1,7 +1,6 @@
 package com.example.finderly.navigate
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,7 +12,10 @@ import com.example.finderly.postScreen.RegisterSreen
 @Composable
 fun NavGraph(navController: NavHostController){
     NavHost(navController = navController, startDestination = "PostBoard"){
-        
+
+        composable("Login") {
+            // 로그인 페이지
+        }
         // 메인 페이지
         composable("Search") { 
             // 검색 페이지
