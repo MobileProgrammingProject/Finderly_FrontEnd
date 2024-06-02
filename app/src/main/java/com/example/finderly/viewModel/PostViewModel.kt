@@ -12,7 +12,7 @@ class LostPostViewModel(private val application:Application):AndroidViewModel(ap
         private set
 
     init{
-        lostPostList.add(Post("에어팟", "에어팟 잃어버렸는데ㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱ", "1234"))
+        lostPostList.add(Post("에어팟", "에어팟 잃어버렸는데ㄱㄱㄱㄱ", "1234"))
         lostPostList.add(Post("에어팟", "에어팟 잃어버렸는데", "1234"))
         lostPostList.add(Post("에어팟", "에어팟 잃어버렸는데", "1234"))
         lostPostList.add(Post("에어팟", "에어팟 잃어버렸는데", "1234"))
