@@ -18,7 +18,7 @@ import com.example.finderly.postScreen.RegisterSreen
 @Composable
 fun NavGraph(navController: NavHostController){
     NavHost(navController = navController, startDestination = "Splash"){
-
+        // 로그인, 회원가입 페이지
         composable(route = "Splash") {
             SplashScreen(navController)
         }
@@ -28,6 +28,7 @@ fun NavGraph(navController: NavHostController){
         composable(route = "Register") {
             RegisterScreen(navController)
         }
+
         // 메인 페이지
         composable("Search") { 
             // 검색 페이지
