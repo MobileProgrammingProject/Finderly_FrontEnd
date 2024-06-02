@@ -1,4 +1,4 @@
-package com.example.finderly
+package com.example.finderly.Data
 
 data class LostItem(val id: Int,
                     val name: String,
