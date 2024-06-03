@@ -39,7 +39,8 @@ import com.example.finderly.component.Appbar
 fun MyPageList(
     items: List<MyPost>,
     TopTitle: Int,
-    navController: NavHostController
+    navController: NavHostController,
+    postType : Int
 ) {
     Column(
         modifier = Modifier
@@ -105,7 +106,12 @@ fun MyPageList(
                         .fillMaxSize()
                         .clickable {
                             // 분실물, 습득물 게시글 페이지로 이동
-                                   navController.navigate("PostMore")
+                            if(postType ==0){
+                                navController.navigate("LostPostMore")
+                            }
+                            else{
+                                navController.navigate("FindPostMore")
+                            }
                         },
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
@@ -311,8 +317,8 @@ fun MyPageScreen(navController: NavHostController) {
             }
         }
 
-        MyPageList(items = MyLostPost, R.string.my_lost_post, navController)
-        MyPageList(items = MyFindPost, R.string.my_found_post, navController)
+        MyPageList(items = MyLostPost, R.string.my_lost_post, navController,0)
+        MyPageList(items = MyFindPost, R.string.my_found_post, navController,1)
         Spacer(modifier = Modifier.height(80.dp))
     }
 

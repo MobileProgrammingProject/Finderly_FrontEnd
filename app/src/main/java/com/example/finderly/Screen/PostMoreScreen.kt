@@ -94,13 +94,13 @@ fun PostList(
 }
 
 @Composable
-fun PostMoreScreen(navController: NavHostController) {
+fun PostMoreScreen(navController: NavHostController, postType: Int) { // 0이면 분실물, 1이면 습득물
     val scrollstate = rememberScrollState()
     var LostCheck by remember {
-        mutableStateOf(true)
+        mutableStateOf(postType == 0)
     }
     var FindCheck by remember {
-        mutableStateOf(false)
+        mutableStateOf(postType == 1)
     }
 
     // 분실물 게시글 예시 데이터 리스트

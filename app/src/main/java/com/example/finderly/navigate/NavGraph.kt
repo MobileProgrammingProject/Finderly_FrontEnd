@@ -75,8 +75,11 @@ fun NavGraph(navController: NavHostController){
         composable(route = "FindMore") {
             FindMoreScreen(navController)
         }
-        composable(route = "PostMore") {
-            PostMoreScreen(navController)
+        composable(route = "LostPostMore") {
+            PostMoreScreen(navController,0)
+        }
+        composable(route = "FindPostMore") {
+            PostMoreScreen(navController,1)
         }
         
     }
