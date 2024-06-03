@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Divider
@@ -35,6 +37,7 @@ import com.example.finderly.R
 @Composable
 @Preview
 fun LostItemInfoScreen(){
+    val scrollstate = rememberScrollState()
     Column(modifier = Modifier
         .fillMaxSize()
         .background(color = colorResource(id = R.color.lightgreen))) {
@@ -53,14 +56,16 @@ fun LostItemInfoScreen(){
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
-        Column(modifier = Modifier.fillMaxSize()
+        Column(modifier = Modifier
+            .fillMaxSize()
             .padding(start = 25.dp, top = 40.dp, end = 25.dp, bottom = 30.dp)
             .background(
                 color = colorResource(
                     id = R.color.white
                 ),
                 shape = RoundedCornerShape(30.dp)
-            ).padding(horizontal = 25.dp, vertical = 30.dp)
+            )
+            .padding(horizontal = 25.dp, vertical = 30.dp)
         ){
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -86,99 +91,104 @@ fun LostItemInfoScreen(){
                     .align(Alignment.CenterHorizontally)
                     .height(2.dp)
             )
-            Spacer(modifier = Modifier.height(15.dp))
-            Row {
-                Text(
-                    text = "습득 위치",
-                    fontSize = 16.sp,
-                    color = colorResource(id = R.color.text_gray),
-                    fontWeight = FontWeight.SemiBold
-                )
-                Spacer(modifier = Modifier.width(40.dp))
-                Text(
-                    text = "건대입구",
-                    fontSize = 15.sp,
-                    color = colorResource(id = R.color.text_gray),
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-            Spacer(modifier = Modifier.height(15.dp))
-            Divider(
-                color = colorResource(id = R.color.gray),
+            Column (
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .height(2.dp)
-            )
-            Spacer(modifier = Modifier.height(15.dp))
-            Row {
-                Text(
-                    text = "습득물",
-                    fontSize = 16.sp,
-                    color = colorResource(id = R.color.text_gray),
-                    fontWeight = FontWeight.SemiBold
+                    .fillMaxSize()
+                    .verticalScroll(scrollstate)
+            ){
+                Spacer(modifier = Modifier.height(15.dp))
+                Row {
+                    Text(
+                        text = "습득 위치",
+                        fontSize = 16.sp,
+                        color = colorResource(id = R.color.text_gray),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(modifier = Modifier.width(40.dp))
+                    Text(
+                        text = "건대입구",
+                        fontSize = 15.sp,
+                        color = colorResource(id = R.color.text_gray),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                Spacer(modifier = Modifier.height(15.dp))
+                Divider(
+                    color = colorResource(id = R.color.gray),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .height(2.dp)
                 )
-                Spacer(modifier = Modifier.width(65.dp))
-                Text(
-                    text = "AirPods Pro 2",
-                    fontSize = 15.sp,
-                    color = colorResource(id = R.color.text_gray),
-                    fontWeight = FontWeight.SemiBold
+                Spacer(modifier = Modifier.height(15.dp))
+                Row {
+                    Text(
+                        text = "습득물",
+                        fontSize = 16.sp,
+                        color = colorResource(id = R.color.text_gray),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(modifier = Modifier.width(65.dp))
+                    Text(
+                        text = "AirPods Pro 2",
+                        fontSize = 15.sp,
+                        color = colorResource(id = R.color.text_gray),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                Spacer(modifier = Modifier.height(15.dp))
+                Divider(
+                    color = colorResource(id = R.color.gray),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .height(2.dp)
                 )
-            }
-            Spacer(modifier = Modifier.height(15.dp))
-            Divider(
-                color = colorResource(id = R.color.gray),
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .height(2.dp)
-            )
-            Spacer(modifier = Modifier.height(15.dp))
-            Row {
-                Text(
-                    text = "습득 날짜",
-                    fontSize = 16.sp,
-                    color = colorResource(id = R.color.text_gray),
-                    fontWeight = FontWeight.SemiBold
+                Spacer(modifier = Modifier.height(15.dp))
+                Row {
+                    Text(
+                        text = "습득 날짜",
+                        fontSize = 16.sp,
+                        color = colorResource(id = R.color.text_gray),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(modifier = Modifier.width(40.dp))
+                    Text(
+                        text = "2024년 5월 25일",
+                        fontSize = 15.sp,
+                        color = colorResource(id = R.color.text_gray),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                Spacer(modifier = Modifier.height(15.dp))
+                Divider(
+                    color = colorResource(id = R.color.gray),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .height(2.dp)
                 )
-                Spacer(modifier = Modifier.width(40.dp))
-                Text(
-                    text = "2024년 5월 25일",
-                    fontSize = 15.sp,
-                    color = colorResource(id = R.color.text_gray),
-                    fontWeight = FontWeight.SemiBold
+                Spacer(modifier = Modifier.height(15.dp))
+                Row {
+                    Text(
+                        text = "보관 장소",
+                        fontSize = 16.sp,
+                        color = colorResource(id = R.color.text_gray),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(modifier = Modifier.width(40.dp))
+                    Text(
+                        text = "자양파출소",
+                        fontSize = 15.sp,
+                        color = colorResource(id = R.color.text_gray),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                Spacer(modifier = Modifier.height(15.dp))
+                Divider(
+                    color = colorResource(id = R.color.gray),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .height(2.dp)
                 )
-            }
-            Spacer(modifier = Modifier.height(15.dp))
-            Divider(
-                color = colorResource(id = R.color.gray),
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .height(2.dp)
-            )
-            Spacer(modifier = Modifier.height(15.dp))
-            Row {
-                Text(
-                    text = "보관 장소",
-                    fontSize = 16.sp,
-                    color = colorResource(id = R.color.text_gray),
-                    fontWeight = FontWeight.SemiBold
-                )
-                Spacer(modifier = Modifier.width(40.dp))
-                Text(
-                    text = "자양파출소",
-                    fontSize = 15.sp,
-                    color = colorResource(id = R.color.text_gray),
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-            Spacer(modifier = Modifier.height(15.dp))
-            Divider(
-                color = colorResource(id = R.color.gray),
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .height(2.dp)
-            )
-            Spacer(modifier = Modifier.height(15.dp))
+                Spacer(modifier = Modifier.height(15.dp))
                 Text(
                     text = "상세 정보",
                     fontSize = 16.sp,
@@ -192,31 +202,34 @@ fun LostItemInfoScreen(){
                     color = colorResource(id = R.color.text_gray),
                     fontWeight = FontWeight.Thin
                 )
-            Spacer(modifier = Modifier.height(5.dp))
+                Spacer(modifier = Modifier.height(5.dp))
 
-            Divider(
-                color = colorResource(id = R.color.gray),
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .height(2.dp)
-            )
-            Spacer(modifier = Modifier.height(15.dp))
+                Divider(
+                    color = colorResource(id = R.color.gray),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .height(2.dp)
+                )
+                Spacer(modifier = Modifier.height(15.dp))
                 Text(
                     text = "사진",
                     fontSize = 16.sp,
                     color = colorResource(id = R.color.text_gray),
                     fontWeight = FontWeight.SemiBold
                 )
-            Spacer(modifier = Modifier.height(10.dp))
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(15.dp)){
-                items(10){
-                    Image(
-                        painter = painterResource(id = R.drawable.lostitemexampleimage),
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(20.dp)),
-                        contentScale = ContentScale.Crop,
+                Spacer(modifier = Modifier.height(10.dp))
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(15.dp)) {
+                    items(10) {
+                        Image(
+                            painter = painterResource(id = R.drawable.lostitemexampleimage),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(20.dp)),
+                            contentScale = ContentScale.Crop,
 
-                    )
+                            )
+                    }
                 }
             }
         }
