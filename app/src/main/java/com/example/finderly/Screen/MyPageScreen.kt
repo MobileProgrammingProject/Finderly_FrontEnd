@@ -1,4 +1,4 @@
-package com.example.finderly.screen
+package com.example.finderly.Screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,7 +38,8 @@ import com.example.finderly.component.Appbar
 @Composable
 fun MyPageList(
     items: List<MyPost>,
-    TopTitle: String
+    TopTitle: Int,
+    navController: NavHostController
 ) {
     Column(
         modifier = Modifier
@@ -46,7 +48,7 @@ fun MyPageList(
             .padding(10.dp)
     ) {
         Text(
-            text = TopTitle,
+            text = stringResource(id = TopTitle),
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
         )
@@ -103,6 +105,7 @@ fun MyPageList(
                         .fillMaxSize()
                         .clickable {
                             // 분실물, 습득물 게시글 페이지로 이동
+                                   navController.navigate("PostMore")
                         },
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
@@ -110,7 +113,7 @@ fun MyPageList(
                     Text(
                         text = "더보기",
                         fontSize = 11.sp,
-                        color = colorResource(id = R.color.field_text_gray)
+                        color = colorResource(id = R.color.field_text_gray),
                     )
                     Spacer(modifier = Modifier.width(5.dp))
                     Image(
@@ -157,7 +160,7 @@ fun MyPageScreen(navController: NavHostController) {
     ) {
         Text(
             text = "Finderly",
-            fontSize = 40.sp,
+            fontSize = 35.sp,
             fontWeight = FontWeight.ExtraBold,
             color = colorResource(id = R.color.green)
         )
@@ -265,7 +268,6 @@ fun MyPageScreen(navController: NavHostController) {
                                     .size(13.dp)
                                     .clickable {
                                         // 해당 게시물 상세 페이지로 이동
-                                        navController.navigate("FindMore")
                                     }
                             )
                         }
@@ -287,6 +289,7 @@ fun MyPageScreen(navController: NavHostController) {
                             .fillMaxSize()
                             .clickable {
                                 //습득물 페이지로 이동
+                                       navController.navigate("FindMore")
                             },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
@@ -308,8 +311,8 @@ fun MyPageScreen(navController: NavHostController) {
             }
         }
 
-        MyPageList(items = MyLostPost, TopTitle = "내 분실물 게시글")
-        MyPageList(items = MyFindPost, TopTitle = "내 습득물 게시글")
+        MyPageList(items = MyLostPost, R.string.my_lost_post, navController)
+        MyPageList(items = MyFindPost, R.string.my_found_post, navController)
         Spacer(modifier = Modifier.height(80.dp))
     }
 

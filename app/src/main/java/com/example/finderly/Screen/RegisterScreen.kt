@@ -1,6 +1,7 @@
-package com.example.finderly.screen
+package com.example.finderly.Screen
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.finderly.R
+import com.example.finderly.component.BigRegisterButton
 
 @Composable
 fun RegisterScreen(navController: NavHostController) {
@@ -135,21 +137,8 @@ fun RegisterScreen(navController: NavHostController) {
         }
         Spacer(modifier = Modifier.height(150.dp))
 
-        Button(
-            onClick = { navController.navigate("Search") },
-            colors = ButtonDefaults.buttonColors(colorResource(id = R.color.green)),
-            shape = RoundedCornerShape(8.dp),
-            modifier = Modifier
-                .height(45.dp)
-                .fillMaxWidth()
-                .padding(start = 35.dp, end = 35.dp)
-        ) {
-            Text(
-                text = "가입하기",
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
+        Box(modifier = Modifier.padding(start = 35.dp, end=35.dp)){
+            BigRegisterButton(text = "가입하기", navHostController = navController, screen = "Search")
         }
     }
 }

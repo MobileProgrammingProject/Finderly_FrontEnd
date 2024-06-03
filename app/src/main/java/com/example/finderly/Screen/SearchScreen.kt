@@ -1,4 +1,4 @@
-package com.example.finderly.screen
+package com.example.finderly.Screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -70,7 +70,8 @@ fun LostItemCard(item: LostItem, onClick: () -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Column(
-            modifier = Modifier.padding(top = 10.dp, start = 15.dp, bottom = 10.dp, end = 15.dp),
+            modifier = Modifier
+                .padding(top = 12.dp, start = 15.dp, bottom = 10.dp, end = 15.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {

@@ -26,12 +26,13 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.finderly.R
 
 @Composable
-fun Search(search:MutableState<String>, searchHasFocus:MutableState<Boolean>) {
+fun Search(search:MutableState<String>, searchHasFocus:MutableState<Boolean>, width: Dp = 250.dp) {
 
     val focusRequester = FocusRequester()
 
@@ -43,7 +44,7 @@ fun Search(search:MutableState<String>, searchHasFocus:MutableState<Boolean>) {
             .shadow(2.dp, RoundedCornerShape(8.dp))
             .clip(RoundedCornerShape(8.dp))
             .background(Color.White)
-            .width(250.dp)
+            .width(width)
             .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)

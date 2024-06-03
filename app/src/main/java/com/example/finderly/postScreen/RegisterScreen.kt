@@ -49,13 +49,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.finderly.R
+import com.example.finderly.component.BigRegisterButton
 import com.example.finderly.component.CreateImage
 import com.example.finderly.component.PostHeader
+import com.example.finderly.component.RegisterImage
 
 
 @Composable
 fun RegisterSreen(navHostController: NavHostController) {
-    Box {
+    Box (
+        modifier = Modifier
+            .background(Color.White)
+            .fillMaxSize()
+    ) {
         PostHeader(R.string.register_post)    // 헤더 컴포넌트
 
         val topPadding = 150.dp
@@ -63,10 +69,10 @@ fun RegisterSreen(navHostController: NavHostController) {
 
         Column(
             modifier = Modifier
+                .fillMaxSize()
                 .verticalScroll(verticalScrollState)
                 .padding(top = topPadding)
                 .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
-                .fillMaxSize()
                 .background(Color.White)
                 .padding(30.dp)
         ) {
@@ -93,7 +99,7 @@ fun RegisterSreen(navHostController: NavHostController) {
                         if (!titleHasFocus)
                             androidx.compose.material3.Text(
                                 text = "제목",
-                                fontSize = 25.sp,
+                                fontSize = 23.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = colorResource(id = R.color.field_text_gray)
                             )
@@ -174,7 +180,7 @@ fun RegisterSreen(navHostController: NavHostController) {
                 },
                 onValueChange = { content = it },
                 modifier = Modifier
-                    //.weight(1f)
+                    .weight(1f)
                     .fillMaxWidth()
                     .heightIn(min = 100.dp)
                     .focusRequester(focusRequester)
@@ -198,7 +204,6 @@ fun RegisterSreen(navHostController: NavHostController) {
             var checked by rememberSaveable {
                 mutableStateOf(false)
             }
-
             Row(
                 modifier = Modifier.padding(0.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -230,51 +235,17 @@ fun RegisterSreen(navHostController: NavHostController) {
                 modifier = Modifier.padding(start = 5.dp)
             )
 
-            // 사진
-            var showDialog by rememberSaveable {
-                mutableStateOf(false)
-            }
-            val imgScrollState = rememberScrollState()
-            Row(
+            // 사진 등록
+            RegisterImage()
+
+            Column (
                 modifier = Modifier
-                    .padding(top = 10.dp)
-                    .horizontalScroll(imgScrollState),
-                horizontalArrangement = Arrangement.spacedBy(20.dp)
+                    .fillMaxSize()
+                    .padding(top = 40.dp),
+                verticalArrangement = Arrangement.Bottom
             ) {
-                // Lazy 컬럼으로 바꾸기
-                Box(
-                    // Dialog 추가
-                    modifier = Modifier
-                        .clickable { }
-                ) {
-                    CreateImage(image = R.drawable.plus_gray, 150.dp, 80.dp, color = Color.Gray)
-                }
-                CreateImage(image = R.drawable.iphone1, containerSize = 150.dp)
+                BigRegisterButton("게시글 등록하기", navHostController, "PostBoard")
             }
-
-
-            // 등록 버튼
-            Box(modifier = Modifier.fillMaxSize()) {
-                androidx.compose.material3.Button(
-                    onClick = {
-                        navHostController.navigate("PostBoard")
-                    },
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(30.dp)
-                        .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(colorResource(id = R.color.green)),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                        text = "게시글 등록하기",
-                        fontSize = 17.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Color.White
-                    )
-                }
-            }
-
 
         }
     }

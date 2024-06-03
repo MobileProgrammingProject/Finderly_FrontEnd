@@ -36,12 +36,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.finderly.R
 import com.example.finderly.component.CreateImage
 import com.example.finderly.component.PostHeader
+import com.example.finderly.component.ShowImage
 
 
 @Composable
@@ -87,7 +89,7 @@ fun PostScreen(navHostController: NavHostController, postType:Int){
                     contentDescription = "menu",
                     modifier = Modifier
                         .size(24.dp)
-                        .clickable {expended = true}
+                        .clickable { expended = true }
                 )
                 DropdownMenu(
                     expanded = expended,
@@ -121,7 +123,7 @@ fun PostScreen(navHostController: NavHostController, postType:Int){
                 // 타이틀
                 Text(
                     text = "에어팟",
-                    fontSize = 25.sp,
+                    fontSize = 23.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 10.dp)
                 )
@@ -134,13 +136,7 @@ fun PostScreen(navHostController: NavHostController, postType:Int){
                 Spacer(modifier = Modifier.padding(20.dp))
 
                 // 사진
-                Row (
-                    horizontalArrangement = Arrangement.spacedBy(20.dp),
-                    modifier = Modifier.horizontalScroll(imgScrollState)
-                ) {
-                    CreateImage(R.drawable.iphone1, 180.dp, 180.dp, Color.Transparent)
-                    CreateImage(R.drawable.iphone1, 180.dp, 180.dp, Color.Transparent)
-                }
+                ShowImage(containerSize = 180.dp, imageSize = 180.dp, color = Color.Transparent)
 
                 // 좋아요 & 댓글 아이콘
                 Row (

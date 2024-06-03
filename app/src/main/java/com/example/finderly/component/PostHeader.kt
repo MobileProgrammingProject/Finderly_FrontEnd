@@ -58,7 +58,7 @@ fun PostHeader(
         ) {
             Text(
                 text = stringResource(id = R.string.app_name),
-                fontSize = 40.sp,
+                fontSize = 35.sp,
                 fontWeight = FontWeight.ExtraBold,
                 color = colorResource(id = titleColor),
 

@@ -1,4 +1,4 @@
-package com.example.finderly.screen
+package com.example.finderly.Screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -51,7 +51,7 @@ fun FindMoreScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(25.dp)
+            .padding(30.dp)
     ) {
         Text(
             text = "Finderly",
@@ -77,7 +77,7 @@ fun FindMoreScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(20.dp)
+                .padding(15.dp)
                 .verticalScroll(scrollstate)
         ) {
             MyFindItems.forEach{

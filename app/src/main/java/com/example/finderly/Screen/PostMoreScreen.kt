@@ -1,4 +1,4 @@
-package com.example.finderly.screen
+package com.example.finderly.Screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
@@ -47,7 +47,7 @@ fun PostList(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp)
+            .padding(30.dp)
             .verticalScroll(Scrollstate)
     ) {
         items.forEach{
@@ -121,7 +121,7 @@ fun PostMoreScreen(navController: NavHostController) {
     ) {
         Column (
             modifier = Modifier
-                .padding(start = 25.dp, top = 25.dp, bottom = 15.dp)
+                .padding(start = 30.dp, top = 30.dp, bottom = 15.dp)
         ){
             Text(
                 text = "Finderly",

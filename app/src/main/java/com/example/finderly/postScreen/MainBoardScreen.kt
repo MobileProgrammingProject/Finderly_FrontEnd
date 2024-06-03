@@ -88,7 +88,7 @@ fun MainBoardScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = colorResource(id = R.color.lightgreen))
-                .padding(start = 50.dp, end = 50.dp),
+                .padding(start = 30.dp, end = 30.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -105,7 +105,7 @@ fun MainBoardScreen(
                 mutableStateOf(search)
             }, searchHasFocus = remember {
                 mutableStateOf(searchHasFocus)
-            } )
+            }, width = 280.dp )
             Spacer(modifier = Modifier.padding(13.dp))
             
             // 리스트

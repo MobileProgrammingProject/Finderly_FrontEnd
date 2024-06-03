@@ -4,4 +4,6 @@
     <string name="found_category">습득물 게시판</string>
     <string name="register_post">게시글 등록</string>
     <string name="main_post">게시판</string>
+    <string name="my_lost_post">내 분실물 게시글</string>
+    <string name="my_found_post">내 습득물 게시글</string>
 </resources>
