@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.example.finderly.mapscreen
+package com.example.finderly.mapScreen
 
 import android.content.Context
 import android.location.Geocoder

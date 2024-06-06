@@ -33,7 +33,7 @@ import com.example.finderly.R
 import com.example.finderly.component.BigRegisterButton
 
 @Composable
-fun RegisterScreen(navController: NavHostController) {
+fun SignUpScreen(navController: NavHostController) {
     var userID by remember {
         mutableStateOf("")
     }

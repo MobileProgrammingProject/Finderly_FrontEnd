@@ -36,9 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.finderly.component.Appbar
-import com.example.finderly.mapscreen.Mark
-import com.example.finderly.mapscreen.MarkerData
-import com.example.finderly.mapscreen.loadMarkers
+import com.example.finderly.mapScreen.Mark
+import com.example.finderly.mapScreen.MarkerData
+import com.example.finderly.mapScreen.loadMarkers
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
