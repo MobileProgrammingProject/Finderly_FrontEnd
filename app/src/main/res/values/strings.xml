@@ -6,4 +6,5 @@
     <string name="main_post">게시판</string>
     <string name="my_lost_post">내 분실물 게시글</string>
     <string name="my_found_post">내 습득물 게시글</string>
+    <string name="my_map_api_key">AIzaSyDbGx002QRknaGSI5VlkqT5Ut4hIeYJg5Q</string>
 </resources>

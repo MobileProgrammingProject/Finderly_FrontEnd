@@ -56,12 +56,12 @@ fun LoginTextField(
         onValueChange = onValueChange,
         label = { Text(text = label)},
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
+        /*colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = colorResource(id = R.color.field_border_gray),
             unfocusedBorderColor = colorResource(id = R.color.field_border_gray),
             focusedLabelColor = colorResource(id = R.color.field_text_gray),
             unfocusedLabelColor = colorResource(id = R.color.field_text_gray)
-        ),
+        ),*/
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 35.dp, end = 35.dp),

@@ -14,6 +14,7 @@ import com.example.finderly.Screen.RegisterLostItemScreen
 import com.example.finderly.Screen.RegisterScreen
 import com.example.finderly.Screen.SearchScreen
 import com.example.finderly.Screen.SplashScreen
+import com.example.finderly.mapscreen.MapScreenPage
 import com.example.finderly.postScreen.MainBoardScreen
 import com.example.finderly.postScreen.PostScreen
 import com.example.finderly.postScreen.RegisterSreen
@@ -49,6 +50,7 @@ fun NavGraph(navController: NavHostController){
         // 지도 페이지
         composable("Location") {
             // 지도 페이지
+            MapScreenPage(navHostController = navController)
         }
         
         // 게시판 페이지
