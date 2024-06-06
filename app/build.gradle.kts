@@ -66,7 +66,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.accompanist.imageloading.core)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.retrofit)
+    implementation(libs.retrofit) // 오류날 때는 'com.squareup.retrofit:retrofit' import
     implementation(libs.converter.gson)
     implementation(libs.accompanist.permissions)
     implementation(libs.androidx.media3.common)
