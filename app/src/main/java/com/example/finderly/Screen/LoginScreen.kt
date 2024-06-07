@@ -1,5 +1,7 @@
 package com.example.finderly.Screen
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,8 +25,8 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -39,8 +42,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.finderly.R
+import com.example.finderly.viewModel.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,6 +82,9 @@ fun LoginScreen(navController: NavHostController) {
     var userPassWord by remember {
         mutableStateOf("")
     }
+    val userViewModel : UserViewModel = viewModel()
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -109,7 +117,9 @@ fun LoginScreen(navController: NavHostController) {
         Spacer(modifier = Modifier.height(25.dp))
 
         Button(
-            onClick = { navController.navigate("Login") },
+            onClick = {
+                      userViewModel.login(userID,userPassWord)
+            },
             colors = ButtonDefaults.buttonColors(colorResource(id = R.color.gray)),
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
@@ -122,6 +132,16 @@ fun LoginScreen(navController: NavHostController) {
                 color = Color.Black,
                 fontSize = 16.sp
             )
+        }
+        LaunchedEffect(userViewModel.success) {
+            if(userViewModel.success == true){
+                Toast.makeText(context, userViewModel.message,Toast.LENGTH_SHORT).show()
+                navController.navigate("Search")
+            }
+            else if(userViewModel.success == false){
+                Toast.makeText(context, userViewModel.message,Toast.LENGTH_SHORT).show()
+                Log.d("Login", "Login Failed")
+            }
         }
         Spacer(modifier = Modifier.height(25.dp))
 
