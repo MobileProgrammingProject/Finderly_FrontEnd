@@ -84,7 +84,9 @@ fun RegisterLostItemScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(20.dp))
 
             // 등록 버튼
-            BigRegisterButton("분실물 등록하기", navController, "Search")
+            BigRegisterButton("분실물 등록하기", navController){
+                // "Search"
+            }
             Spacer(modifier = Modifier.height(30.dp))
         }
 

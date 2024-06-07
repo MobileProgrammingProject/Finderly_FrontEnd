@@ -44,11 +44,11 @@ fun RegisterButton(text: String, navHostController: NavHostController, screen: S
 }
 
 @Composable
-fun BigRegisterButton(text: String, navHostController: NavHostController, screen: String) {
+fun BigRegisterButton(text: String, navHostController: NavHostController, onClick: ()->Unit) {
     // 등록 버튼
     Button(
         onClick = {
-            navHostController.navigate(screen)
+            onClick()
         },
         modifier = Modifier
             .height(45.dp)

@@ -1,8 +1,10 @@
 package com.example.finderly.api
 
 import com.example.finderly.Data.LoginRequest
-import com.example.finderly.Data.LoginResponse
+import com.example.finderly.Data.SignUpRequest
+import com.example.finderly.Data.UserResponse
 import retrofit2.http.Body
+import retrofit2.http.POST
 import retrofit2.http.PUT
 
 interface APIService {
@@ -18,5 +20,10 @@ interface APIService {
     @PUT("/user/login") // 로그인
     suspend fun getLogin(
         @Body LoginRequest: LoginRequest
-    ): LoginResponse
+    ): UserResponse
+
+    @POST("/user/signup") // 회원가입
+    suspend fun postSignUp(
+        @Body SignUpRequest: SignUpRequest
+    ) : UserResponse
 }

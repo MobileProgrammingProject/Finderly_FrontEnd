@@ -139,7 +139,7 @@ fun LoginScreen(navController: NavHostController) {
                 navController.navigate("Search")
             }
             else if(userViewModel.success == false){
-                Toast.makeText(context, userViewModel.message,Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "로그인 실패",Toast.LENGTH_SHORT).show()
                 Log.d("Login", "Login Failed")
             }
         }
