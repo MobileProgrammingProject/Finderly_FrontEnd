@@ -27,4 +27,9 @@ interface APIService {
     suspend fun postSignUp(
         @Body SignUpRequest: SignUpRequest
     ) : UserResponse
+
+    @GET("/user/logout") // 로그아웃
+    suspend fun getLogout(
+        @Query("userId") userId: String
+    ): UserResponse
 }

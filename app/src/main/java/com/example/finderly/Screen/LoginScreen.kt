@@ -1,5 +1,6 @@
 package com.example.finderly.Screen
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -85,6 +86,9 @@ fun LoginScreen(navController: NavHostController) {
     val userViewModel : UserViewModel = viewModel()
     val context = LocalContext.current
 
+    val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -136,6 +140,8 @@ fun LoginScreen(navController: NavHostController) {
         }
         LaunchedEffect(userViewModel.success) {
             if(userViewModel.success == true){
+                editor.putString("userId", userID)
+                editor.apply()
                 Toast.makeText(context, userViewModel.message,Toast.LENGTH_SHORT).show()
                 navController.navigate("Search")
             }

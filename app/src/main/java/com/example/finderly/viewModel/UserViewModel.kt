@@ -79,5 +79,37 @@ class UserViewModel : ViewModel() {
             }
         }
     }
+
+    fun logout(userId: String){
+        viewModelScope.launch {
+            try {
+                val response = RetrofitInstance.api.getLogout(userId)
+                if (response.message == "로그아웃 성공") {
+                    message = response.message
+                    success = true
+                } else {
+                    message = response.message
+                    success = false
+                }
+            }catch (e: HttpException) { // HttpException 처리 추가
+                val errorBody = e.response()?.errorBody()?.string()
+                try {
+                    val jsonObject = JSONObject(errorBody)
+                    val errorMessage = jsonObject.optString("message", "알 수 없는 오류가 발생했습니다.")
+                    message = errorMessage
+                } catch (jsonException: JSONException) {
+                    // 오류 메시지가 JSON 형태가 아닌 경우 처리
+                    message = "알 수 없는 오류가 발생했습니다."
+                }
+                success = false
+            }
+            catch (e: Exception) {
+                Log.d("Login", e.toString())
+                e.printStackTrace()
+                message = "서버 연결 실패"
+                success = false
+            }
+        }
+    }
 }
 

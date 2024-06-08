@@ -1,5 +1,7 @@
 package com.example.finderly.Screen
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,20 +22,25 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.finderly.Data.MyFindItem
 import com.example.finderly.Data.MyPost
 import com.example.finderly.R
 import com.example.finderly.component.Appbar
+import com.example.finderly.component.getUserId
+import com.example.finderly.viewModel.UserViewModel
 
 @Composable
 fun MyPageList(
@@ -136,6 +143,9 @@ fun MyPageList(
 @Composable
 fun MyPageScreen(navController: NavHostController) {
     val scrollstate = rememberScrollState()
+    val userViewModel : UserViewModel = viewModel()
+    var userId = ""
+    val context = LocalContext.current
 
     // 습득물 예시 데이터 리스트
     val MyFindItems = listOf(
@@ -227,8 +237,24 @@ fun MyPageScreen(navController: NavHostController) {
                     text = "로그아웃",
                     fontSize = 13.sp,
                     color = colorResource(id = R.color.field_text_gray),
-                    modifier = Modifier.clickable { navController.navigate("Splash") }
+                    modifier = Modifier.clickable {
+                        userViewModel.initializeState()
+                        userId = getUserId(context).toString()
+                        Log.d("MyPage","$userId")
+                        userViewModel.logout(userId)
+                    }
                 )
+
+                LaunchedEffect(userViewModel.success) {
+                    if(userViewModel.success == true){
+                        Toast.makeText(context, userViewModel.message, Toast.LENGTH_SHORT).show()
+                        navController.navigate("Splash")
+                    }
+                    else if(userViewModel.success == false){
+                        Toast.makeText(context, userViewModel.message, Toast.LENGTH_SHORT).show()
+                        Log.d("Logout", "Logout Failed")
+                    }
+                }
             }
         }
         Column(

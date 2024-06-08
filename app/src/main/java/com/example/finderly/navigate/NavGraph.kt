@@ -1,5 +1,7 @@
 package com.example.finderly.Navigate
 
+import android.os.Build
+import androidx.annotation.RequiresExtension
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -7,18 +9,19 @@ import androidx.navigation.compose.composable
 import com.example.finderly.R
 import com.example.finderly.Screen.FindMoreScreen
 import com.example.finderly.Screen.LoginScreen
-import com.example.finderly.searchScreen.LostItemInfoScreen
 import com.example.finderly.Screen.MyPageScreen
 import com.example.finderly.Screen.PostMoreScreen
-import com.example.finderly.searchScreen.RegisterLostItemScreen
-import com.example.finderly.searchScreen.SearchScreen
 import com.example.finderly.Screen.SignUpScreen
 import com.example.finderly.Screen.SplashScreen
 import com.example.finderly.mapScreen.MapScreenPage
 import com.example.finderly.postScreen.MainBoardScreen
 import com.example.finderly.postScreen.PostScreen
 import com.example.finderly.postScreen.RegisterSreen
+import com.example.finderly.searchScreen.LostItemInfoScreen
+import com.example.finderly.searchScreen.RegisterLostItemScreen
+import com.example.finderly.searchScreen.SearchScreen
 
+@RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @Composable
 fun NavGraph(navController: NavHostController){
     NavHost(navController = navController, startDestination = "Splash"){
@@ -52,7 +55,7 @@ fun NavGraph(navController: NavHostController){
             // 지도 페이지
             MapScreenPage(navHostController = navController)
         }
-        
+
         // 게시판 페이지
         composable(route = "PostBoard"){
             MainBoardScreen(navHostController = navController)
@@ -69,7 +72,7 @@ fun NavGraph(navController: NavHostController){
             // 게시글 등록
             RegisterSreen(navHostController = navController)
         }
-        
+
         // 마이 페이지
         composable(route = "MyPage") {
             MyPageScreen(navController)
@@ -83,6 +86,6 @@ fun NavGraph(navController: NavHostController){
         composable(route = "FindPostMore") {
             PostMoreScreen(navController,1)
         }
-        
+
     }
 }
