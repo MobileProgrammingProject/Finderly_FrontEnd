@@ -118,7 +118,8 @@ fun LoginScreen(navController: NavHostController) {
 
         Button(
             onClick = {
-                      userViewModel.login(userID,userPassWord)
+                userViewModel.initializeState()
+                userViewModel.login(userID,userPassWord)
             },
             colors = ButtonDefaults.buttonColors(colorResource(id = R.color.gray)),
             shape = RoundedCornerShape(8.dp),
@@ -139,7 +140,7 @@ fun LoginScreen(navController: NavHostController) {
                 navController.navigate("Search")
             }
             else if(userViewModel.success == false){
-                Toast.makeText(context, "로그인 실패",Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, userViewModel.message, Toast.LENGTH_SHORT).show()
                 Log.d("Login", "Login Failed")
             }
         }
