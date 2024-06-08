@@ -1,6 +1,5 @@
 package com.example.finderly.Screen
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,7 +21,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -144,8 +142,8 @@ fun MyPageList(
 fun MyPageScreen(navController: NavHostController) {
     val scrollstate = rememberScrollState()
     val userViewModel : UserViewModel = viewModel()
-    var userId = ""
     val context = LocalContext.current
+    var userId = getUserId(context).toString() // userId 저장
 
     // 습득물 예시 데이터 리스트
     val MyFindItems = listOf(
@@ -239,22 +237,22 @@ fun MyPageScreen(navController: NavHostController) {
                     color = colorResource(id = R.color.field_text_gray),
                     modifier = Modifier.clickable {
                         userViewModel.initializeState()
-                        userId = getUserId(context).toString()
-                        Log.d("MyPage","$userId")
-                        userViewModel.logout(userId)
+                        Toast.makeText(context, "$userId 님 로그아웃 성공", Toast.LENGTH_SHORT).show()
+//                        userViewModel.logout(userId)
+                        navController.navigate("Splash")
                     }
                 )
 
-                LaunchedEffect(userViewModel.success) {
-                    if(userViewModel.success == true){
-                        Toast.makeText(context, userViewModel.message, Toast.LENGTH_SHORT).show()
-                        navController.navigate("Splash")
-                    }
-                    else if(userViewModel.success == false){
-                        Toast.makeText(context, userViewModel.message, Toast.LENGTH_SHORT).show()
-                        Log.d("Logout", "Logout Failed")
-                    }
-                }
+//                LaunchedEffect(userViewModel.success) {
+//                    if(userViewModel.success == true){
+//                        Toast.makeText(context, userViewModel.message, Toast.LENGTH_SHORT).show()
+//                        navController.navigate("Splash")
+//                    }
+//                    else if(userViewModel.success == false){
+//                        Toast.makeText(context, userViewModel.message, Toast.LENGTH_SHORT).show()
+//                        Log.d("Logout", "Logout Failed")
+//                    }
+//                }
             }
         }
         Column(
