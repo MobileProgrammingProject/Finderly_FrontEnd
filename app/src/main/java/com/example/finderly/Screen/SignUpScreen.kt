@@ -1,5 +1,9 @@
 package com.example.finderly.Screen
 
+import android.os.Build
+import android.util.Log
+import android.widget.Toast
+import androidx.annotation.RequiresExtension
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,37 +13,48 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.finderly.R
 import com.example.finderly.component.BigRegisterButton
+import com.example.finderly.viewModel.UserViewModel
 
+@RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @Composable
-fun RegisterScreen(navController: NavHostController) {
+fun SignUpScreen(navController: NavHostController) {
     var userID by remember {
         mutableStateOf("")
     }
     var userPassWord by remember {
         mutableStateOf("")
     }
+    var nickname by remember {
+        mutableStateOf("")
+    }
+    var idText by remember {
+        mutableStateOf("사용 가능한 아이디입니다.")
+    }
+    var nicknameText by remember {
+        mutableStateOf("사용 가능한 닉네임입니다.")
+    }
+    val userViewModel : UserViewModel = viewModel()
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -66,28 +81,14 @@ fun RegisterScreen(navController: NavHostController) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 45.dp, end = 35.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(start = 45.dp)
         ){
             Text(
-                text = "사용 가능한 아이디입니다.",
+                text = idText,
                 fontSize = 13.sp,
                 color = colorResource(id = R.color.field_text_gray),
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
-            Button(
-                onClick = {  },
-                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.green)),
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier
-                    .size(100.dp, 35.dp)
-            ) {
-                Text(
-                    text = "중복 확인",
-                    color = Color.White,
-                    fontSize = 13.sp
-                )
-            }
         }
         Spacer(modifier = Modifier.height(5.dp))
 
@@ -101,8 +102,8 @@ fun RegisterScreen(navController: NavHostController) {
         Spacer(modifier = Modifier.height(10.dp))
 
         LoginTextField(
-            value = userID,
-            onValueChange = {userID = it},
+            value = nickname,
+            onValueChange = {nickname = it},
             label = "닉네임",
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Next
@@ -112,33 +113,38 @@ fun RegisterScreen(navController: NavHostController) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 45.dp, end = 35.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(start = 45.dp)
         ){
             Text(
-                text = "사용 가능한 닉네임입니다.",
+                text = nicknameText,
                 fontSize = 13.sp,
                 color = colorResource(id = R.color.field_text_gray),
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
-            Button(
-                onClick = {  },
-                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.green)),
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier
-                    .size(100.dp, 35.dp)
-            ) {
-                Text(
-                    text = "중복 확인",
-                    color = Color.White,
-                    fontSize = 13.sp
-                )
-            }
         }
         Spacer(modifier = Modifier.height(150.dp))
 
         Box(modifier = Modifier.padding(start = 35.dp, end=35.dp)){
-            BigRegisterButton(text = "가입하기", navHostController = navController, screen = "Search")
+            BigRegisterButton(text = "가입하기", navHostController = navController){
+                userViewModel.initializeState()
+                userViewModel.signup(userID,userPassWord,nickname)
+            }
+        }
+
+        LaunchedEffect(userViewModel.success) {
+            if(userViewModel.success == true){
+                Toast.makeText(context, userViewModel.message, Toast.LENGTH_SHORT).show()
+                navController.navigate("Login")
+            }
+            else if(userViewModel.success == false){
+                Toast.makeText(context, userViewModel.message, Toast.LENGTH_SHORT).show()
+                if(userViewModel.message == "이미 존재하는 닉네임입니다.")
+                    nicknameText = "이미 존재하는 닉네임입니다."
+                else if(userViewModel.message == "이미 존재하는 아이디입니다.")
+                    idText = "이미 존재하는 아이디입니다."
+                else
+                    Log.d("SignUp", "SignUp Failed")
+            }
         }
     }
 }

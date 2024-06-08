@@ -2,8 +2,6 @@ package com.example.finderly.postScreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,7 +48,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.finderly.R
 import com.example.finderly.component.BigRegisterButton
-import com.example.finderly.component.CreateImage
 import com.example.finderly.component.PostHeader
 import com.example.finderly.component.RegisterImage
 
@@ -244,7 +241,9 @@ fun RegisterSreen(navHostController: NavHostController) {
                     .padding(top = 40.dp),
                 verticalArrangement = Arrangement.Bottom
             ) {
-                BigRegisterButton("게시글 등록하기", navHostController, "PostBoard")
+                BigRegisterButton("게시글 등록하기", navHostController){
+                    //"PostBoard"
+                }
             }
 
         }

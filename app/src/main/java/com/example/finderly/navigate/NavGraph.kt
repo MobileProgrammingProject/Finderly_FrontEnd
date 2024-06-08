@@ -7,13 +7,14 @@ import androidx.navigation.compose.composable
 import com.example.finderly.R
 import com.example.finderly.Screen.FindMoreScreen
 import com.example.finderly.Screen.LoginScreen
-import com.example.finderly.Screen.LostItemInfoScreen
+import com.example.finderly.searchScreen.LostItemInfoScreen
 import com.example.finderly.Screen.MyPageScreen
 import com.example.finderly.Screen.PostMoreScreen
-import com.example.finderly.Screen.RegisterLostItemScreen
-import com.example.finderly.Screen.RegisterScreen
-import com.example.finderly.Screen.SearchScreen
+import com.example.finderly.searchScreen.RegisterLostItemScreen
+import com.example.finderly.searchScreen.SearchScreen
+import com.example.finderly.Screen.SignUpScreen
 import com.example.finderly.Screen.SplashScreen
+import com.example.finderly.mapScreen.MapScreenPage
 import com.example.finderly.postScreen.MainBoardScreen
 import com.example.finderly.postScreen.PostScreen
 import com.example.finderly.postScreen.RegisterSreen
@@ -29,7 +30,7 @@ fun NavGraph(navController: NavHostController){
             LoginScreen(navController)
         }
         composable(route = "Register") {
-            RegisterScreen(navController)
+            SignUpScreen(navController)
         }
 
         // 메인 페이지
@@ -49,6 +50,7 @@ fun NavGraph(navController: NavHostController){
         // 지도 페이지
         composable("Location") {
             // 지도 페이지
+            MapScreenPage(navHostController = navController)
         }
         
         // 게시판 페이지
