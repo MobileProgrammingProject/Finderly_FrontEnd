@@ -8,7 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finderly.Data.LoginRequest
 import com.example.finderly.Data.SignUpRequest
 import com.example.finderly.api.RetrofitInstance
 import kotlinx.coroutines.launch
@@ -27,7 +26,7 @@ class UserViewModel : ViewModel() {
     fun login(userId: String, userPassword: String) {
         viewModelScope.launch {
             try {
-                val response = RetrofitInstance.api.getLogin(LoginRequest(userId, userPassword))
+                val response = RetrofitInstance.api.getLogin(userId, userPassword)
                 if (response.message == "로그인 성공") {
                     message = response.message
                     success = true
