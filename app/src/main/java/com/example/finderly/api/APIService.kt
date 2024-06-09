@@ -1,6 +1,7 @@
 package com.example.finderly.api
 
 import com.example.finderly.Data.LostItemInfoResponse
+import com.example.finderly.Data.LostItemListElement
 import com.example.finderly.Data.LostItemRequest
 import com.example.finderly.Data.LostItemResponse
 import com.example.finderly.Data.MyResponse
@@ -16,10 +17,14 @@ interface APIService {
     // comment 댓글
 
     // lost 분실물
-    @POST("/lost/register")
+    @POST("/lost/register") // 분실물 등록
     suspend fun postLostItem(
         @Body LostItemRequest: LostItemRequest
     ): LostItemResponse
+    @GET("/lost")
+    suspend fun getLostItemList(
+        // no request parameter
+    ): List<LostItemListElement>
 
     @GET("/lost/detail") // 분실물 상세 조회
     suspend fun getLostItemInfo(

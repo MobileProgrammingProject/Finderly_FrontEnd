@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -32,6 +33,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,15 +48,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.finderly.Data.LostItem
+import com.example.finderly.Data.LostItemListElement
 import com.example.finderly.R
 import com.example.finderly.component.Appbar
 import com.example.finderly.component.RegisterButton
 import com.example.finderly.component.Search
+import com.example.finderly.viewModel.ItemViewModel
 
 @Composable
-fun LostItemCard(item: LostItem, onClick: () -> Unit) {
+fun LostItemCard(item: LostItemListElement, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .border(
@@ -76,13 +81,13 @@ fun LostItemCard(item: LostItem, onClick: () -> Unit) {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = item.name,
+                text = item.lostName,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(Alignment.Start)
             )
             Text(
-                text = "습득지역 : ${item.locationFound} / 보관장소 : ${item.locationStored}",
+                text = "습득지역 : ${item.lostLocation} / 보관장소 : ${item.storage}",
                 fontSize = 14.sp
             )
         }
@@ -154,6 +159,11 @@ fun FilterMenu(modifier: Modifier) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(navController: NavHostController) {
+
+    val itemViewModel : ItemViewModel = viewModel()
+    LaunchedEffect(Unit) {
+        itemViewModel.lostList()
+    }
     Box(
         modifier = Modifier.background(Color.White)
     ) {
@@ -233,8 +243,8 @@ fun SearchScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(20.dp))
             val item = LostItem(1, "AirPods Pro", "에어팟 주웠는데", "자양파출소", "건대입구역", "분실")
             LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-                items(20) {
-                    LostItemCard(item, { navController.navigate("LostItemInfo") })
+                itemsIndexed(itemViewModel.lostItemList){_, item ->
+                    LostItemCard(item, {})
                 }
             }
         }

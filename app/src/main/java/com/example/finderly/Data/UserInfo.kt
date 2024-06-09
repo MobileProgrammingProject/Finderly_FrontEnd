@@ -78,3 +78,10 @@ data class LostItemResponse(
     val message: String,
     val lostId: String
 )
+
+data class LostItemListElement(
+    val lostId: String,
+    val lostName: String,
+    val lostLocation: String,
+    val storage: String
+)
