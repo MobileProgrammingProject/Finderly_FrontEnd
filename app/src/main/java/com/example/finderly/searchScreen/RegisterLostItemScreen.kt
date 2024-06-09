@@ -1,5 +1,7 @@
 package com.example.finderly.searchScreen
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,23 +18,55 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.finderly.R
 import com.example.finderly.component.BigRegisterButton
 import com.example.finderly.component.RegisterImage
+import com.example.finderly.component.getUserId
+import com.example.finderly.viewModel.UserViewModel
 
 @Composable
 fun RegisterLostItemScreen(navController: NavHostController) {
     val scrollstate = rememberScrollState()
+    val userViewModel : UserViewModel = viewModel()
+    val context = LocalContext.current
+    var userId = getUserId(context).toString() // userId 저장
+
+    var lostName by remember {
+        mutableStateOf("습득물")
+    }
+    var lostLocation by remember {
+        mutableStateOf("습득 위치")
+    }
+    var lostDate by remember {
+        mutableStateOf("습득 날짜")
+    }
+    var storage by remember {
+        mutableStateOf("보관 장소")
+    }
+    var description by remember {
+        mutableStateOf("상세 정보")
+    }
+    var pictures by remember {
+        mutableStateOf(mutableListOf<String>())
+    }
     Column(
         modifier = Modifier
             .background(Color.White)
@@ -60,15 +94,15 @@ fun RegisterLostItemScreen(navController: NavHostController) {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TextFieldWithLabel("습득물", true)
+            TextFieldWithLabel("습득물", lostName, { lostName = it }, true)
             Spacer(modifier = Modifier.height(15.dp))
-            TextFieldWithLabel("습득 위치", true)
+            TextFieldWithLabel("습득 위치", lostLocation, { lostLocation = it }, true)
             Spacer(modifier = Modifier.height(15.dp))
-            TextFieldWithIcon("습득 날짜", true, R.drawable.calendar)
+            TextFieldWithIcon("습득 날짜", lostDate, { lostDate = it }, true, R.drawable.calendar)
             Spacer(modifier = Modifier.height(15.dp))
-            TextFieldWithLabel("보관 장소", true)
+            TextFieldWithLabel("보관 장소", storage, { storage = it }, true)
             Spacer(modifier = Modifier.height(15.dp))
-            TextFieldWithLabel("상세 정보", false, minLines = 5, maxLines = 10)
+            TextFieldWithLabel("상세 정보", description, { description = it }, false, minLines = 5, maxLines = 10)
             Spacer(modifier = Modifier.height(15.dp))
 
             // 사진 등록
@@ -85,16 +119,32 @@ fun RegisterLostItemScreen(navController: NavHostController) {
 
             // 등록 버튼
             BigRegisterButton("분실물 등록하기", navController){
-                // "Search"
+                userViewModel.initializeState()
+                userViewModel.lostRegister(userId, lostName, lostLocation, lostDate, storage, description, pictures)
             }
             Spacer(modifier = Modifier.height(30.dp))
         }
-
+        LaunchedEffect(userViewModel.success) {
+            if(userViewModel.success == true){
+                Toast.makeText(context, userViewModel.message, Toast.LENGTH_SHORT).show()
+                navController.navigate("Login")
+            }
+            else if(userViewModel.success == false){
+                Toast.makeText(context, userViewModel.message, Toast.LENGTH_SHORT).show()
+                if(userViewModel.message == "회원가입되지 않은 사용자입니다.")
+                    //
+                else if(userViewModel.message == "분실물 등록 실패")
+                    //
+                else
+                    Log.d("Register", "Register Failed")
+            }
+        }
     }
+    //
 }
 
 @Composable
-fun TextFieldWithLabel(text: String, singleLine: Boolean, minLines: Int = 1, maxLines: Int = 1) {
+fun TextFieldWithLabel(text: String, inputText: String, onInputTextChange: (String) -> Unit, singleLine: Boolean, minLines: Int = 1, maxLines: Int = 1) {
     Column {
         Text(
             text = text,
@@ -105,9 +155,9 @@ fun TextFieldWithLabel(text: String, singleLine: Boolean, minLines: Int = 1, max
         )
         Spacer(modifier = Modifier.height(10.dp))
         OutlinedTextField(
-            value = text,
+            value = inputText,
             textStyle = TextStyle(fontSize = 14.sp),
-            onValueChange = {},
+            onValueChange = onInputTextChange,
             modifier = Modifier
                 .fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),
@@ -127,7 +177,7 @@ fun TextFieldWithLabel(text: String, singleLine: Boolean, minLines: Int = 1, max
 
 
 @Composable
-fun TextFieldWithIcon(text: String, singleLine: Boolean, icon: Int) {
+fun TextFieldWithIcon(text: String, inputText: String, onInputTextChange: (String) -> Unit, singleLine: Boolean, icon: Int) {
     Column {
         Text(
             text = text,
@@ -138,9 +188,9 @@ fun TextFieldWithIcon(text: String, singleLine: Boolean, icon: Int) {
         )
         Spacer(modifier = Modifier.height(10.dp))
         OutlinedTextField(
-            value = text,
+            value = inputText,
             textStyle = TextStyle(fontSize = 14.sp),
-            onValueChange = {},
+            onValueChange = onInputTextChange,
             modifier = Modifier
                 .fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),

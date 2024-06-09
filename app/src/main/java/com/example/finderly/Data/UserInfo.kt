@@ -61,3 +61,20 @@ data class Comment(
     val content: String, // 댓글 내용
     val secretCheck: Boolean, // 댓글 익명 여부
 )
+
+//분실물 등록
+data class LostItemRequest(
+    val userId: String,
+    val lostName: String,
+    val lostLocation: String,
+    val lostDate: String,
+    val storage: String,
+    val description: String,
+    val pictures: List<String>
+)
+
+//분실물 등록 응답
+data class LostItemResponse(
+    val message: String,
+    val lostId: String
+)
