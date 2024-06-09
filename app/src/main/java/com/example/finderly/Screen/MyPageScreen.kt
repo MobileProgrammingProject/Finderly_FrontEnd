@@ -21,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -90,6 +91,12 @@ fun MyPageList(
                                 .size(13.dp)
                                 .clickable {
                                     // 해당 게시물 상세 페이지로 이동
+                                    if(postType == 0){
+                                        navController.navigate("LostPost/$postType/${it.postId}")
+                                    }
+                                    else if(postType == 1){
+                                        navController.navigate("FoundPost/$postType/${it.postId}")
+                                    }
                                 }
                         )
                     }
@@ -111,10 +118,9 @@ fun MyPageList(
                         .fillMaxSize()
                         .clickable {
                             // 분실물, 습득물 게시글 페이지로 이동
-                            if(postType ==0){
+                            if (postType == 0) {
                                 navController.navigate("LostPostMore")
-                            }
-                            else{
+                            } else {
                                 navController.navigate("FindPostMore")
                             }
                         },
@@ -145,25 +151,22 @@ fun MyPageScreen(navController: NavHostController) {
     val context = LocalContext.current
     var userId = getUserId(context).toString() // userId 저장
 
-    // 습득물 예시 데이터 리스트
-    val MyFindItems = listOf(
-        MyFindItem("AirPods Pro 2", "건대입구역","자양파출소"),
-        MyFindItem("AirPods Pro 3", "건대입구역","자양파출소"),
-        MyFindItem("AirPods Pro 4", "건대입구역","자양파출소"),
-        MyFindItem("AirPods Pro 5", "건대입구역","자양파출소")
-    )
+    LaunchedEffect(Unit) {
+        userViewModel.userProfile(userId)
+    }
+    val profile = userViewModel.profile
 
-    // 분실물 게시글 예시 데이터 리스트
-    val MyLostPost = listOf(
-        MyPost("에어팟","에어팟 잃어버렸어요"),
-        MyPost("아이폰","아이폰 잃어버렸어요")
-    )
+    val MyFindItems = profile?.founds?.map {
+        MyFindItem(it.lostName, it.lostLocation, it.storage, it.lostId)
+    }
 
-    // 습득물 게시글 예시 데이터 리스트
-    val MyFindPost = listOf(
-        MyPost("에어팟","에어팟 찾았어요"),
-        MyPost("아이폰","아이폰 찾았어요")
-    )
+    val MyLostPost = profile?.lostPosts?.map {
+        MyPost(it.postTitle, it.postContent, it.postId)
+    }
+
+    val MyFindPost = profile?.foundPosts?.map {
+        MyPost(it.postTitle, it.postContent, it.postId)
+    }
 
     Column (
         modifier = Modifier
@@ -200,7 +203,7 @@ fun MyPageScreen(navController: NavHostController) {
             ) {
                 Row {
                     Text(
-                        text = "파인더리",
+                        text = "${userViewModel.profile?.userName}",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = colorResource(id = R.color.text_deepgreen)
@@ -218,7 +221,7 @@ fun MyPageScreen(navController: NavHostController) {
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = " 0",
+                        text = " ${userViewModel.profile?.reports}",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -237,7 +240,7 @@ fun MyPageScreen(navController: NavHostController) {
                     color = colorResource(id = R.color.field_text_gray),
                     modifier = Modifier.clickable {
                         userViewModel.initializeState()
-                        Toast.makeText(context, "$userId 님 로그아웃 성공", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "${userViewModel.profile?.userName} 님 로그아웃 성공", Toast.LENGTH_SHORT).show()
 //                        userViewModel.logout(userId)
                         navController.navigate("Splash")
                     }
@@ -279,11 +282,15 @@ fun MyPageScreen(navController: NavHostController) {
                 Column(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    MyFindItems.take(2).forEach{
+                    MyFindItems?.take(2)?.forEach{
                         Row (
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 15.dp, end = 15.dp, top = 12.dp),
+                                .padding(start = 15.dp, end = 15.dp, top = 12.dp)
+                                .clickable {
+                                    // 해당 게시물 상세 페이지로 이동
+                                    navController.navigate("LostItemInfo/${it.lostId}")
+                                },
                             horizontalArrangement = Arrangement.SpaceBetween
                         ){
                             Text(
@@ -296,9 +303,6 @@ fun MyPageScreen(navController: NavHostController) {
                                 contentDescription = "더보기",
                                 modifier = Modifier
                                     .size(13.dp)
-                                    .clickable {
-                                        // 해당 게시물 상세 페이지로 이동
-                                    }
                             )
                         }
 
@@ -341,8 +345,12 @@ fun MyPageScreen(navController: NavHostController) {
             }
         }
 
-        MyPageList(items = MyLostPost, R.string.my_lost_post, navController,0)
-        MyPageList(items = MyFindPost, R.string.my_found_post, navController,1)
+        if (MyLostPost != null) {
+            MyPageList(items = MyLostPost, R.string.my_lost_post, navController,0)
+        }
+        if (MyFindPost != null) {
+            MyPageList(items = MyFindPost, R.string.my_found_post, navController,1)
+        }
         Spacer(modifier = Modifier.height(80.dp))
     }
 

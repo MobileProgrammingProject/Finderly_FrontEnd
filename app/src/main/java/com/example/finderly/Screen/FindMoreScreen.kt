@@ -17,36 +17,37 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.finderly.Data.MyFindItem
 import com.example.finderly.R
 import com.example.finderly.component.Appbar
+import com.example.finderly.component.getUserId
+import com.example.finderly.viewModel.UserViewModel
 
 @Composable
 fun FindMoreScreen(navController: NavHostController) {
     val scrollstate = rememberScrollState()
+    val userViewModel : UserViewModel = viewModel()
+    val context = LocalContext.current
+    var userId = getUserId(context).toString() // userId 저장
 
-    // 습득물 예시 데이터 리스트
-    val MyFindItems = listOf(
-        MyFindItem("AirPods Pro 2", "건대입구역","자양파출소"),
-        MyFindItem("AirPods Pro 3", "건대입구역","자양파출소"),
-        MyFindItem("AirPods Pro 4", "건대입구역","자양파출소"),
-        MyFindItem("AirPods Pro 5", "건대입구역","자양파출소"),
-        MyFindItem("AirPods Pro 2", "건대입구역","자양파출소"),
-        MyFindItem("AirPods Pro 3", "건대입구역","자양파출소"),
-        MyFindItem("AirPods Pro 4", "건대입구역","자양파출소"),
-        MyFindItem("AirPods Pro 5", "건대입구역","자양파출소"),
-        MyFindItem("AirPods Pro 2", "건대입구역","자양파출소"),
-        MyFindItem("AirPods Pro 3", "건대입구역","자양파출소"),
-        MyFindItem("AirPods Pro 4", "건대입구역","자양파출소"),
-        MyFindItem("AirPods Pro 5", "건대입구역","자양파출소")
-    )
+    LaunchedEffect(Unit) {
+        userViewModel.userProfile(userId)
+    }
+    val profile = userViewModel.profile
+
+    val MyFindItems = profile?.founds?.map {
+        MyFindItem(it.lostName, it.lostLocation, it.storage, it.lostId)
+    }
 
     Column(
         modifier = Modifier
@@ -80,7 +81,7 @@ fun FindMoreScreen(navController: NavHostController) {
                 .padding(15.dp)
                 .verticalScroll(scrollstate)
         ) {
-            MyFindItems.forEach{
+            MyFindItems?.forEach{
                 Column(
                     modifier = Modifier
                         .border(
@@ -89,6 +90,10 @@ fun FindMoreScreen(navController: NavHostController) {
                             shape = RoundedCornerShape(12.dp)
                         )
                         .padding(15.dp)
+                        .clickable {
+                            // 해당 게시물 상세 페이지로 이동
+                            navController.navigate("LostItemInfo/${it.lostId}")
+                        }
                 ) {
                     Row (
                         modifier = Modifier
@@ -105,9 +110,6 @@ fun FindMoreScreen(navController: NavHostController) {
                             contentDescription = "더보기",
                             modifier = Modifier
                                 .size(13.dp)
-                                .clickable {
-                                    // 해당 게시물 상세 페이지로 이동
-                                }
                         )
                     }
 

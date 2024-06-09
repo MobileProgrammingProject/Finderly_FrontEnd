@@ -4,8 +4,10 @@ import android.os.Build
 import androidx.annotation.RequiresExtension
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.finderly.R
 import com.example.finderly.Screen.FindMoreScreen
 import com.example.finderly.Screen.LoginScreen
@@ -45,10 +47,15 @@ fun NavGraph(navController: NavHostController){
             // 분실물 등록
             RegisterLostItemScreen(navController)
         }
-        composable("LostItemInfo") {
+        composable(
+            route = "LostItemInfo/{lostId}",
+            arguments = listOf(navArgument("lostId") { type = NavType.StringType })
+        ) {
             // 분실물 상세 정보
-            LostItemInfoScreen()
+            val lostId = it.arguments?.getString("lostId") ?: return@composable
+            LostItemInfoScreen(lostId)
         }
+
 
         // 지도 페이지
         composable("Location") {
@@ -60,13 +67,24 @@ fun NavGraph(navController: NavHostController){
         composable(route = "PostBoard"){
             MainBoardScreen(navHostController = navController)
         }
-        composable(route = "LostPost") {
+        composable(
+            route = "LostPost/{postCategory}/{postId}",
+            arguments = listOf(navArgument("postCategory"){type = NavType.IntType},
+                navArgument("postId"){type = NavType.StringType})
+        ) {
             // 분실물 게시글 상세 페이지
-            PostScreen(navHostController = navController, R.string.lost_category )
+            val postCategory = it.arguments?.getInt("postCategory")?: return@composable
+            val postId = it.arguments?.getString("postId")?: return@composable
+            PostScreen(navHostController = navController, R.string.lost_category, postCategory,postId)
         }
-        composable(route = "FoundPost") {
+        composable(
+            route = "FoundPost/{postCategory}/{postId}",
+            arguments = listOf(navArgument("postCategory"){type = NavType.IntType},
+                navArgument("postId"){type = NavType.StringType})) {
             // 습득물 게시글 상세 페이지
-            PostScreen(navHostController = navController, R.string.found_category )
+            val postCategory = it.arguments?.getInt("postCategory")?: return@composable
+            val postId = it.arguments?.getString("postId")?: return@composable
+            PostScreen(navHostController = navController, R.string.found_category, postCategory, postId)
         }
         composable("RegisterPost") {
             // 게시글 등록

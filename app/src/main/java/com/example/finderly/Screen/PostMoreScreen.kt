@@ -22,6 +22,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,20 +30,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.finderly.Data.MyPost
 import com.example.finderly.R
 import com.example.finderly.component.Appbar
+import com.example.finderly.component.getUserId
+import com.example.finderly.viewModel.UserViewModel
 
 @Composable
 fun PostList(
     Scrollstate : ScrollState,
-    items : List<MyPost>
+    items : List<MyPost>,
+    navController: NavHostController,
+    postCategory : Int
 ) {
     Column(
         modifier = Modifier
@@ -59,6 +66,15 @@ fun PostList(
                         shape = RoundedCornerShape(12.dp)
                     )
                     .padding(15.dp)
+                    .clickable {
+                        // 해당 게시물 상세 페이지로 이동
+                        if(postCategory == 0){
+                            navController.navigate("LostPost/$postCategory/${it.postId}")
+                        }
+                        else if(postCategory == 1){
+                            navController.navigate("FoundPost/$postCategory/${it.postId}")
+                        }
+                    }
             ) {
                 Row (
                     modifier = Modifier
@@ -75,9 +91,6 @@ fun PostList(
                         contentDescription = "더보기",
                         modifier = Modifier
                             .size(13.dp)
-                            .clickable {
-                                // 해당 게시물 상세 페이지로 이동
-                            }
                     )
                 }
 
@@ -102,18 +115,22 @@ fun PostMoreScreen(navController: NavHostController, postType: Int) { // 0이면
     var FindCheck by remember {
         mutableStateOf(postType == 1)
     }
+    val userViewModel : UserViewModel = viewModel()
+    val context = LocalContext.current
+    var userId = getUserId(context).toString() // userId 저장
 
-    // 분실물 게시글 예시 데이터 리스트
-    val MyLostPost = listOf(
-        MyPost("에어팟","에어팟 잃어버렸어요"),
-        MyPost("아이폰","아이폰 잃어버렸어요")
-    )
+    LaunchedEffect(Unit) {
+        userViewModel.userProfile(userId)
+    }
+    val profile = userViewModel.profile
 
-    // 습득물 게시글 예시 데이터 리스트
-    val MyFindPost = listOf(
-        MyPost("에어팟","에어팟 찾았어요"),
-        MyPost("아이폰","아이폰 찾았어요")
-    )
+    val MyLostPost = profile?.lostPosts?.map {
+        MyPost(it.postTitle, it.postContent, it.postId)
+    }
+
+    val MyFindPost = profile?.foundPosts?.map {
+        MyPost(it.postTitle, it.postContent, it.postId)
+    }
 
     Column(
         modifier = Modifier
@@ -215,10 +232,14 @@ fun PostMoreScreen(navController: NavHostController, postType: Int) { // 0이면
         }
 
         if(LostCheck){
-            PostList(Scrollstate = scrollstate, items = MyLostPost)
+            if (MyLostPost != null) {
+                PostList(Scrollstate = scrollstate, items = MyLostPost, navController,0)
+            }
         }
         else if(FindCheck){
-            PostList(Scrollstate = scrollstate, items = MyFindPost)
+            if (MyFindPost != null) {
+                PostList(Scrollstate = scrollstate, items = MyFindPost, navController,1)
+            }
         }
 
     }

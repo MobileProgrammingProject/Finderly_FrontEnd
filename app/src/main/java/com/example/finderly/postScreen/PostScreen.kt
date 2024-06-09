@@ -1,10 +1,9 @@
 package com.example.finderly.postScreen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -36,18 +36,28 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.finderly.R
-import com.example.finderly.component.CreateImage
 import com.example.finderly.component.PostHeader
 import com.example.finderly.component.ShowImage
+import com.example.finderly.viewModel.UserViewModel
 
 
 @Composable
-fun PostScreen(navHostController: NavHostController, postType:Int){
+fun PostScreen(navHostController: NavHostController, postType:Int, postCategory: Int, postId: String){
+    val userViewModel : UserViewModel = viewModel()
+    Log.d("postCategory","$postCategory")
+    Log.d("postId","$postId")
+
+    LaunchedEffect(Unit) {
+        userViewModel.postitemInfo(postCategory,postId)
+    }
+    val postitemInfo = userViewModel.postiteminfo
+    Log.d("postitemInfo","$postitemInfo")
+
     Box{
         PostHeader(postType)    // 헤더 컴포넌트
         
@@ -57,7 +67,7 @@ fun PostScreen(navHostController: NavHostController, postType:Int){
         }
         // 댓글 수
         var commentsCounter by rememberSaveable {
-            mutableStateOf(0)
+            mutableStateOf(postitemInfo?.comments?.size)
         }
 
         val imgScrollState = rememberScrollState()
@@ -122,7 +132,7 @@ fun PostScreen(navHostController: NavHostController, postType:Int){
 
                 // 타이틀
                 Text(
-                    text = "에어팟",
+                    text = "${postitemInfo?.postTitle}",
                     fontSize = 23.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 10.dp)
@@ -130,7 +140,7 @@ fun PostScreen(navHostController: NavHostController, postType:Int){
 
                 // 내용
                 Text(
-                    text = "건대입구에서\n에어팟 잃어버렸는데..",
+                    text = "${postitemInfo?.postContent}",
                     fontSize = 15.sp
                 )
                 Spacer(modifier = Modifier.padding(20.dp))

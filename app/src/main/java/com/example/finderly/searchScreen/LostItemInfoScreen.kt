@@ -1,5 +1,6 @@
 package com.example.finderly.searchScreen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +22,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,15 +31,24 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finderly.R
+import com.example.finderly.viewModel.UserViewModel
 
 @Composable
-@Preview
-fun LostItemInfoScreen(){
+fun LostItemInfoScreen(lostId : String){
     val scrollstate = rememberScrollState()
+    val userViewModel : UserViewModel = viewModel()
+    Log.d("lostId","$lostId")
+
+    LaunchedEffect(Unit) {
+        userViewModel.lostitemInfo(lostId)
+    }
+    val lostitemInfo = userViewModel.lostiteminfo
+    Log.d("lostitemInfo","$lostitemInfo")
+
     Column(modifier = Modifier
         .fillMaxSize()
         .background(color = colorResource(id = R.color.lightgreen))) {
@@ -71,7 +82,7 @@ fun LostItemInfoScreen(){
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "AirPods Pro 2",
+                    text = "${lostitemInfo?.lostName}",
                     fontSize = 25.sp,
                     lineHeight = 25.sp,
                     fontWeight = FontWeight(600),
@@ -106,7 +117,7 @@ fun LostItemInfoScreen(){
                     )
                     Spacer(modifier = Modifier.width(40.dp))
                     Text(
-                        text = "건대입구",
+                        text = "${lostitemInfo?.lostLocation}",
                         fontSize = 15.sp,
                         color = colorResource(id = R.color.text_gray),
                         fontWeight = FontWeight.SemiBold
@@ -129,7 +140,7 @@ fun LostItemInfoScreen(){
                     )
                     Spacer(modifier = Modifier.width(65.dp))
                     Text(
-                        text = "AirPods Pro 2",
+                        text = "${lostitemInfo?.lostName}",
                         fontSize = 15.sp,
                         color = colorResource(id = R.color.text_gray),
                         fontWeight = FontWeight.SemiBold
@@ -152,7 +163,7 @@ fun LostItemInfoScreen(){
                     )
                     Spacer(modifier = Modifier.width(40.dp))
                     Text(
-                        text = "2024년 5월 25일",
+                        text = "${lostitemInfo?.lostDate}",
                         fontSize = 15.sp,
                         color = colorResource(id = R.color.text_gray),
                         fontWeight = FontWeight.SemiBold
@@ -175,7 +186,7 @@ fun LostItemInfoScreen(){
                     )
                     Spacer(modifier = Modifier.width(40.dp))
                     Text(
-                        text = "자양파출소",
+                        text = "${lostitemInfo?.storage}",
                         fontSize = 15.sp,
                         color = colorResource(id = R.color.text_gray),
                         fontWeight = FontWeight.SemiBold
@@ -197,7 +208,7 @@ fun LostItemInfoScreen(){
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    text = "키링이 달려있는...\n\n",
+                    text = "${lostitemInfo?.description}",
                     fontSize = 15.sp,
                     color = colorResource(id = R.color.text_gray),
                     fontWeight = FontWeight.Thin
