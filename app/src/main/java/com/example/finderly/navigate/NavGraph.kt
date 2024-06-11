@@ -26,7 +26,7 @@ import com.example.finderly.searchScreen.SearchScreen
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @Composable
 fun NavGraph(navController: NavHostController){
-    NavHost(navController = navController, startDestination = "MyPage"){
+    NavHost(navController = navController, startDestination = "LostPost/0/66643e471f0d524e5bbe7496"){
         // 로그인, 회원가입 페이지
         composable(route = "Splash") {
             SplashScreen(navController)
