@@ -1,4 +1,4 @@
-package com.example.finderly.searchScreen
+package com.example.finderly.screen.searchScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

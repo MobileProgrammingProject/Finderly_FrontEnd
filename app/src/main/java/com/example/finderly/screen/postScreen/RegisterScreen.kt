@@ -1,4 +1,4 @@
-package com.example.finderly.postScreen
+package com.example.finderly.screen.postScreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

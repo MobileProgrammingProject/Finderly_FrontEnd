@@ -5,19 +5,19 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.finderly.R
-import com.example.finderly.Screen.FindMoreScreen
-import com.example.finderly.Screen.LoginScreen
-import com.example.finderly.searchScreen.LostItemInfoScreen
-import com.example.finderly.Screen.MyPageScreen
-import com.example.finderly.Screen.PostMoreScreen
-import com.example.finderly.searchScreen.RegisterLostItemScreen
-import com.example.finderly.searchScreen.SearchScreen
-import com.example.finderly.Screen.SignUpScreen
-import com.example.finderly.Screen.SplashScreen
-import com.example.finderly.mapScreen.MapScreenPage
-import com.example.finderly.postScreen.MainBoardScreen
-import com.example.finderly.postScreen.PostScreen
-import com.example.finderly.postScreen.RegisterSreen
+import com.example.finderly.screen.userScreen.FindMoreScreen
+import com.example.finderly.screen.userScreen.LoginScreen
+import com.example.finderly.screen.searchScreen.LostItemInfoScreen
+import com.example.finderly.screen.userScreen.MyPageScreen
+import com.example.finderly.screen.userScreen.PostMoreScreen
+import com.example.finderly.screen.searchScreen.RegisterLostItemScreen
+import com.example.finderly.screen.searchScreen.SearchScreen
+import com.example.finderly.screen.userScreen.SignUpScreen
+import com.example.finderly.screen.userScreen.SplashScreen
+import com.example.finderly.screen.mapScreen.MapScreenPage
+import com.example.finderly.screen.postScreen.MainBoardScreen
+import com.example.finderly.screen.postScreen.PostScreen
+import com.example.finderly.screen.postScreen.RegisterSreen
 
 @Composable
 fun NavGraph(navController: NavHostController){

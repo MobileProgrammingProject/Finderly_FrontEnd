@@ -1,4 +1,4 @@
-package com.example.finderly.userScreen
+package com.example.finderly.screen.userScreen
 
 import android.util.Log
 import android.widget.Toast

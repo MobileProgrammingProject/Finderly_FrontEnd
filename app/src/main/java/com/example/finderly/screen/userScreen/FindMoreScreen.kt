@@ -1,4 +1,4 @@
-package com.example.finderly.userScreen
+package com.example.finderly.screen.userScreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border

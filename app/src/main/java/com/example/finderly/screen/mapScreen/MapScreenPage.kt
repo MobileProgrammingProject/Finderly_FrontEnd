@@ -1,4 +1,4 @@
-package com.example.finderly.mapScreen
+package com.example.finderly.screen.mapScreen
 
 import android.Manifest
 import android.annotation.SuppressLint
