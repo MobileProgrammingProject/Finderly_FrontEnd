@@ -1,4 +1,4 @@
-package com.example.finderly.Screen
+package com.example.finderly.userScreen
 
 import android.os.Build
 import android.util.Log
