@@ -51,7 +51,7 @@ fun MyPageList(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(210.dp)
+            .height(220.dp)
             .padding(10.dp)
     ) {
         Text(
@@ -70,25 +70,13 @@ fun MyPageList(
                 )
         ){
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                items.take(2).forEach{
-                    Row (
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 15.dp, end = 15.dp, top = 12.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ){
-                        Text(
-                            text = "${it.title}",
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_more_green),
-                            contentDescription = "더보기",
+                Column{
+                    items.take(2).forEach{
+                        Column(
                             modifier = Modifier
-                                .size(13.dp)
                                 .clickable {
                                     // 해당 게시물 상세 페이지로 이동
                                     if(postType == 0){
@@ -98,47 +86,71 @@ fun MyPageList(
                                         navController.navigate("FoundPost/$postType/${it.postId}")
                                     }
                                 }
-                        )
-                    }
-
-                    Text(
-                        text = "${it.detail}",
-                        fontSize = 12.sp,
-                        color = colorResource(id = R.color.field_text_gray),
-                        modifier = Modifier.padding(start = 15.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-                Divider(
-                    color = colorResource(id = R.color.field_border_gray),
-                    modifier = Modifier.padding(start = 15.dp, end = 15.dp)
-                )
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable {
-                            // 분실물, 습득물 게시글 페이지로 이동
-                            if (postType == 0) {
-                                navController.navigate("LostPostMore")
-                            } else {
-                                navController.navigate("FindPostMore")
+                        ){
+                            Row (
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 15.dp, end = 15.dp, top = 12.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ){
+                                Text(
+                                    text = "${it.title}",
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_more_green),
+                                    contentDescription = "더보기",
+                                    modifier = Modifier
+                                        .size(13.dp)
+                                )
                             }
-                        },
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "더보기",
-                        fontSize = 11.sp,
-                        color = colorResource(id = R.color.field_text_gray),
-                    )
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_more_black),
-                        contentDescription = "더보기 버튼",
-                        modifier = Modifier.size(13.dp)
-                    )
 
+                            Text(
+                                text = "${it.detail}",
+                                fontSize = 12.sp,
+                                color = colorResource(id = R.color.field_text_gray),
+                                modifier = Modifier.padding(start = 15.dp)
+                            )
+                        }
+                    }
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp)
+                ) {
+                    Divider(
+                        color = colorResource(id = R.color.field_border_gray),
+                        modifier = Modifier.padding(start = 15.dp, end = 15.dp)
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clickable {
+                                // 분실물, 습득물 게시글 페이지로 이동
+                                if (postType == 0) {
+                                    navController.navigate("LostPostMore")
+                                } else {
+                                    navController.navigate("FindPostMore")
+                                }
+                            },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "더보기",
+                            fontSize = 11.sp,
+                            color = colorResource(id = R.color.field_text_gray),
+                        )
+                        Spacer(modifier = Modifier.width(5.dp))
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_more_black),
+                            contentDescription = "더보기 버튼",
+                            modifier = Modifier.size(13.dp)
+                        )
+
+                    }
                 }
             }
         }
@@ -261,7 +273,7 @@ fun MyPageScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(210.dp)
+                .height(230.dp)
                 .padding(10.dp)
         ) {
             Text(
@@ -280,66 +292,74 @@ fun MyPageScreen(navController: NavHostController) {
                     )
             ){
                 Column(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    MyFindItems?.take(2)?.forEach{
-                        Row (
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 15.dp, end = 15.dp, top = 12.dp)
-                                .clickable {
-                                    // 해당 게시물 상세 페이지로 이동
-                                    navController.navigate("LostItemInfo/${it.lostId}")
-                                },
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ){
-                            Text(
-                                text = "${it.title}",
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_more_green),
-                                contentDescription = "더보기",
+                    Column {
+                        MyFindItems?.take(2)?.forEach{
+                            Row (
                                 modifier = Modifier
-                                    .size(13.dp)
+                                    .fillMaxWidth()
+                                    .padding(start = 15.dp, end = 15.dp, top = 12.dp)
+                                    .clickable {
+                                        // 해당 게시물 상세 페이지로 이동
+                                        navController.navigate("LostItemInfo/${it.lostId}")
+                                    },
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ){
+                                Text(
+                                    text = "${it.title}",
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_more_green),
+                                    contentDescription = "더보기",
+                                    modifier = Modifier
+                                        .size(13.dp)
+                                )
+                            }
+
+                            Text(
+                                text = "습득지역 : ${it.location} / 보관장소 : ${it.storagePlace}",
+                                fontSize = 12.sp,
+                                color = colorResource(id = R.color.field_text_gray),
+                                modifier = Modifier.padding(start = 15.dp)
                             )
                         }
-
-                        Text(
-                            text = "습득지역 : ${it.location} / 보관장소 : ${it.storagePlace}",
-                            fontSize = 12.sp,
-                            color = colorResource(id = R.color.field_text_gray),
-                            modifier = Modifier.padding(start = 15.dp)
-                        )
                     }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Divider(
-                        color = colorResource(id = R.color.field_border_gray),
-                        modifier = Modifier.padding(start = 15.dp, end = 15.dp)
-                    )
-                    Row(
+                    Column(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .clickable {
-                                //습득물 페이지로 이동
-                                       navController.navigate("FindMore")
-                            },
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
+                            .fillMaxWidth()
+                            .height(40.dp)
                     ) {
-                        Text(
-                            text = "더보기",
-                            fontSize = 11.sp,
-                            color = colorResource(id = R.color.field_text_gray)
+                        Divider(
+                            color = colorResource(id = R.color.field_border_gray),
+                            modifier = Modifier.padding(start = 15.dp, end = 15.dp)
                         )
-                        Spacer(modifier = Modifier.width(5.dp))
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_more_black),
-                            contentDescription = "더보기 버튼",
-                            modifier = Modifier.size(13.dp)
-                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clickable {
+                                    //습득물 페이지로 이동
+                                    navController.navigate("FindMore")
+                                },
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "더보기",
+                                fontSize = 11.sp,
+                                color = colorResource(id = R.color.field_text_gray)
+                            )
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_more_black),
+                                contentDescription = "더보기 버튼",
+                                modifier = Modifier.size(13.dp)
+                            )
 
+                        }
                     }
                 }
             }
