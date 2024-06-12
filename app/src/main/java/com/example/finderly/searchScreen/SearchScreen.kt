@@ -56,7 +56,7 @@ import com.example.finderly.R
 import com.example.finderly.component.Appbar
 import com.example.finderly.component.RegisterButton
 import com.example.finderly.component.Search
-import com.example.finderly.viewModel.ItemViewModel
+import com.example.finderly.viewModel.LostViewModel
 
 @Composable
 fun LostItemCard(item: LostItemListElement, onClick: () -> Unit) {
@@ -160,9 +160,9 @@ fun FilterMenu(modifier: Modifier) {
 @Composable
 fun SearchScreen(navController: NavHostController) {
 
-    val itemViewModel : ItemViewModel = viewModel()
+    val lostViewModel : LostViewModel = viewModel()
     LaunchedEffect(Unit) {
-        itemViewModel.lostList()
+        lostViewModel.lostList()
     }
     Box(
         modifier = Modifier.background(Color.White)
@@ -243,7 +243,7 @@ fun SearchScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(20.dp))
             val item = LostItem(1, "AirPods Pro", "에어팟 주웠는데", "자양파출소", "건대입구역", "분실")
             LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-                itemsIndexed(itemViewModel.lostItemList){_, item ->
+                itemsIndexed(lostViewModel.lostItemList){ _, item ->
                     LostItemCard(item, {})
                 }
             }

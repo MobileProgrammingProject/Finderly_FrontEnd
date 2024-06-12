@@ -23,7 +23,7 @@ interface APIService {
     ): LostItemResponse
     @GET("/lost")
     suspend fun getLostItemList(
-        // no request parameter
+        // 요청 파라미터 없음
     ): List<LostItemListElement>
 
     @GET("/lost/detail") // 분실물 상세 조회

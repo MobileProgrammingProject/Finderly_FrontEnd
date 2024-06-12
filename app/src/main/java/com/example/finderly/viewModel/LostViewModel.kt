@@ -6,17 +6,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finderly.Data.LostItemInfoResponse
 import com.example.finderly.Data.LostItemListElement
 import com.example.finderly.Data.LostItemRequest
-import com.example.finderly.Data.MyResponse
-import com.example.finderly.Data.PostItemInfoResponse
 import com.example.finderly.api.RetrofitInstance
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.HttpException
 
-public class ItemViewModel: ViewModel() {
+class LostViewModel: ViewModel() {
 
     var success by mutableStateOf<Boolean?>(null)
     var message by mutableStateOf<String?>(null)
@@ -26,6 +23,7 @@ public class ItemViewModel: ViewModel() {
         success = null
         message = null
     }
+
     fun lostRegister(
         userId: String,
         lostName: String,
@@ -87,4 +85,5 @@ public class ItemViewModel: ViewModel() {
             }
         }
     }
+
 }

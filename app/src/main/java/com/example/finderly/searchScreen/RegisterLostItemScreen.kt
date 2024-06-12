@@ -2,7 +2,6 @@ package com.example.finderly.searchScreen
 
 import android.util.Log
 import android.widget.Toast
-import androidx.appcompat.view.menu.MenuView.ItemView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,13 +39,12 @@ import com.example.finderly.R
 import com.example.finderly.component.BigRegisterButton
 import com.example.finderly.component.RegisterImage
 import com.example.finderly.component.getUserId
-import com.example.finderly.viewModel.ItemViewModel
-import com.example.finderly.viewModel.UserViewModel
+import com.example.finderly.viewModel.LostViewModel
 
 @Composable
 fun RegisterLostItemScreen(navController: NavHostController) {
     val scrollstate = rememberScrollState()
-    val itemViewModel : ItemViewModel = viewModel()
+    val lostViewModel : LostViewModel = viewModel()
     val context = LocalContext.current
     var userId = getUserId(context).toString() // userId 저장
 
@@ -121,27 +118,26 @@ fun RegisterLostItemScreen(navController: NavHostController) {
 
             // 등록 버튼
             BigRegisterButton("분실물 등록하기", navController){
-                itemViewModel.initializeState()
-                itemViewModel.lostRegister(userId, lostName, lostLocation, lostDate, storage, description, pictures)
+                lostViewModel.initializeState()
+                lostViewModel.lostRegister(userId, lostName, lostLocation, lostDate, storage, description, pictures)
             }
             Spacer(modifier = Modifier.height(30.dp))
         }
-        LaunchedEffect(itemViewModel.success) {
-            if(itemViewModel.success == true){
-                Toast.makeText(context, itemViewModel.message, Toast.LENGTH_SHORT).show()
+        LaunchedEffect(lostViewModel.success) {
+            if(lostViewModel.success == true){
+                Toast.makeText(context, lostViewModel.message, Toast.LENGTH_SHORT).show()
             }
-            else if(itemViewModel.success == false){
-                Toast.makeText(context, itemViewModel.message, Toast.LENGTH_SHORT).show()
-                if(itemViewModel.message == "회원가입되지 않은 사용자입니다.")
+            else if(lostViewModel.success == false){
+                Toast.makeText(context, lostViewModel.message, Toast.LENGTH_SHORT).show()
+                if(lostViewModel.message == "회원가입되지 않은 사용자입니다.")
                     //
-                else if(itemViewModel.message == "분실물 등록 실패")
+                else if(lostViewModel.message == "분실물 등록 실패")
                     //
                 else
                     Log.d("Register", "Register Failed")
             }
         }
     }
-    //
 }
 
 @Composable
