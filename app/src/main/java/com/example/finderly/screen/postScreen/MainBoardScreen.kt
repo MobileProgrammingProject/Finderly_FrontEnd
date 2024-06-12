@@ -1,6 +1,5 @@
 package com.example.finderly.screen.postScreen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -9,8 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,7 +50,7 @@ fun MainBoardScreen(
         mutableStateOf(false)
     }
 
-    var postCategory:Int = if(lostCheck){
+    val postCategory:Int = if(lostCheck){
         0
     }else{
         1
@@ -62,7 +59,6 @@ fun MainBoardScreen(
     LaunchedEffect(postCategory) {
         postViewModel.setPostList(postCategory)
     }
-    Log.d("[API 연결]", "${postViewModel.getLostPosts().size}")
 
     Column(
         modifier = Modifier
@@ -105,10 +101,10 @@ fun MainBoardScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            var search by rememberSaveable {
+            val search by rememberSaveable {
                 mutableStateOf("")
             }
-            var searchHasFocus by rememberSaveable {
+            val searchHasFocus by rememberSaveable {
                 mutableStateOf(false)
             }
 

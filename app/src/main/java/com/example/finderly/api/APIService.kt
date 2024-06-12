@@ -2,10 +2,13 @@ package com.example.finderly.api
 
 import com.example.finderly.Data.LostItemInfoResponse
 import com.example.finderly.Data.MyResponse
+import com.example.finderly.Data.Post
 import com.example.finderly.Data.PostItemInfoResponse
 import com.example.finderly.Data.PostListItem
+import com.example.finderly.Data.PostRequest
 import com.example.finderly.Data.SignUpRequest
 import com.example.finderly.Data.UserResponse
+import com.example.finderly.Data.registerResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -27,11 +30,22 @@ interface APIService {
         @Query("postId") postId: String
     ): PostItemInfoResponse
 
-    // 게시글 리스트
+    // 게시글 리스트 조회
     @GET("/post")
     suspend fun getPostList(
         @Query("postCategory") postCategory: Int
     ):List<PostListItem>
+    
+    // 게시글 등록하기
+    @POST("/post/register")
+    suspend fun registerPost(@Body postRequest: PostRequest): registerResponse
+
+    // 게시글 상세 조회
+    @GET("/post/detail")
+    suspend fun getPostDetailInfo(
+        @Query("postCategory") postCategory: Int,
+        @Query("postId") postId: String
+    ): Post
 
     // report 신고
 

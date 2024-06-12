@@ -1,5 +1,6 @@
 package com.example.finderly.screen.postScreen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,14 +16,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -43,26 +44,56 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.finderly.Data.PostRequest
 import com.example.finderly.R
 import com.example.finderly.component.BigRegisterButton
 import com.example.finderly.component.PostHeader
 import com.example.finderly.component.RegisterImage
+import com.example.finderly.viewModel.PostViewModel
 
 
 @Composable
 fun RegisterSreen(navHostController: NavHostController) {
-    Box (
+    val postViewModel: PostViewModel = viewModel()
+
+    var title by rememberSaveable {
+        mutableStateOf("")
+    }
+    var titleHasFocus by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var expended by rememberSaveable {
+        mutableStateOf(false)
+    }
+    val focusRequester = FocusRequester()
+    val topPadding = 150.dp
+    val verticalScrollState = rememberScrollState()
+
+    var contentHasFocus by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var content by rememberSaveable {
+        mutableStateOf("")
+    }
+
+    var checked by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var postCategory by rememberSaveable {
+        mutableStateOf(0)
+    }
+
+    Box(
         modifier = Modifier
             .background(Color.White)
             .fillMaxSize()
     ) {
         PostHeader(R.string.register_post)    // 헤더 컴포넌트
-
-        val topPadding = 150.dp
-        val verticalScrollState = rememberScrollState()
 
         Column(
             modifier = Modifier
@@ -75,16 +106,6 @@ fun RegisterSreen(navHostController: NavHostController) {
         ) {
 
             // 제목 입력
-            var title by rememberSaveable {
-                mutableStateOf("")
-            }
-            var titleHasFocus by rememberSaveable {
-                mutableStateOf(false)
-            }
-            var expended by rememberSaveable {
-                mutableStateOf(false)
-            }
-            val focusRequester = FocusRequester()
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -93,8 +114,8 @@ fun RegisterSreen(navHostController: NavHostController) {
                 TextField(
                     value = title,
                     label = {
-                        if (!titleHasFocus)
-                            androidx.compose.material3.Text(
+                        if (!titleHasFocus && title.isEmpty())
+                            Text(
                                 text = "제목",
                                 fontSize = 23.sp,
                                 fontWeight = FontWeight.Bold,
@@ -102,8 +123,6 @@ fun RegisterSreen(navHostController: NavHostController) {
                             )
                     },
                     onValueChange = { title = it },
-//                modifier = Modifier
-//                    .background(color = Color.White)
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = Color.Transparent,
                         focusedContainerColor = Color.Transparent,
@@ -124,7 +143,6 @@ fun RegisterSreen(navHostController: NavHostController) {
                     onClick = { expended = true },
                     shape = RectangleShape,
                     colors = ButtonDefaults.buttonColors(Color.Transparent),
-                    //modifier = Modifier.padding(0.dp),
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.dropdown),
@@ -136,34 +154,28 @@ fun RegisterSreen(navHostController: NavHostController) {
                         onDismissRequest = { expended = false },
                         modifier = Modifier.background(Color.White)
                     ) {
-                        DropdownMenuItem(
-                            onClick = { expended = false },
-                        ) {
-                            Text(
-                                text = "분실물 게시판",
-                                color = Color.Gray,
-                                fontSize = 14.sp
-                            )
-                        }
-                        DropdownMenuItem(onClick = { expended = false }) {
-                            Text(
-                                text = "습득물 게시판",
-                                color = Color.Gray,
-                                fontSize = 14.sp
-                            )
-                        }
+                        DropdownMenuItem(text = { Text(
+                            text = "분실물 게시판",
+                            color = Color.Gray,
+                            fontSize = 14.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxSize()
+                        ) }, onClick = { expended = false
+                            postCategory = 0 })
+                        DropdownMenuItem(text = { Text(
+                            text = "습득물 게시판",
+                            color = Color.Gray,
+                            fontSize = 14.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxSize()
+                        ) }, onClick = { expended = false
+                            postCategory = 1 })
                     }
                 }
             }
 
 
             // 내용 입력
-            var contentHasFocus by rememberSaveable {
-                mutableStateOf(false)
-            }
-            var content by rememberSaveable {
-                mutableStateOf("")
-            }
 
             OutlinedTextField(
                 value = content,
@@ -198,9 +210,6 @@ fun RegisterSreen(navHostController: NavHostController) {
             )
 
             // 익명 체크
-            var checked by rememberSaveable {
-                mutableStateOf(false)
-            }
             Row(
                 modifier = Modifier.padding(0.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -235,17 +244,43 @@ fun RegisterSreen(navHostController: NavHostController) {
             // 사진 등록
             RegisterImage()
 
-            Column (
+            // 게시글 등록 버튼
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(top = 40.dp),
                 verticalArrangement = Arrangement.Bottom
             ) {
-                BigRegisterButton("게시글 등록하기", navHostController){
+                BigRegisterButton("게시글 등록하기", navHostController) {
                     //"PostBoard"
+                    val postRequest = PostRequest(
+                        userId = "userId",
+                        postTitle = title,
+                        postContent = content,
+                        secretCheck = checked,
+                        postCategory = postCategory,
+                        pictures = emptyList()
+                    )
+
+                    postViewModel.registerPost(postRequest) { result ->
+
+                        if (result.message == "Failed") {
+                            // 실패 처리 로직
+                        } else if (result.message == "Error") {
+                            // 에러 처리 로직
+                        } else {
+                            // 성공 처리 로직
+                            Log.d(
+                                "[Register Post]",
+                                "postCategory=$postCategory & postId=${result.postId}"
+                            )
+                            navHostController.navigate("LostPost/$postCategory/${result.postId}") {
+                                popUpTo("RegisterPost") { inclusive = true }
+                            }
+                        }
+                    }
                 }
             }
-
         }
     }
 }

@@ -30,7 +30,7 @@ fun PostHeader(
     subTitl:Int = R.color.white
 ){
     val padding:Dp = 30.dp
-    val height:Dp = 170.dp
+    val height:Dp = 180.dp
     val titleColor:Int = title
     val subTitleColor:Int = subTitl
 

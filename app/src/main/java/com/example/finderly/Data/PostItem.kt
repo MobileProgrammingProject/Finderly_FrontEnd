@@ -6,12 +6,25 @@ data class PostListItem(
     var postId:String
 )
 
-data class Post (
+data class PostRequest (
     var userId:String,
-    var postId:String,
     var postTitle:String,
     var postContent:String,
     var postCategory:Int,
     var secretCheck:Boolean,
-    var pictures:ArrayList<String>
+    var pictures:List<String>
+)
+
+data class registerResponse (
+    var message:String?,
+    var postId:String?
+)
+
+data class Post(
+    val postId: String, // 게시글 아이디
+    val postTitle : String, // 제목
+    val postContent: String, // 게시글 내용
+    val pictures: List<String>, // 사진 url 리스트
+    //val commentsCnt: Int, // 댓글 수
+    val comments: List<Comment> // 댓글 리스트
 )
