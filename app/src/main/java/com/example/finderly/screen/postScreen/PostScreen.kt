@@ -1,18 +1,24 @@
 package com.example.finderly.screen.postScreen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.DropdownMenuItem
@@ -20,8 +26,12 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -36,14 +46,26 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.finderly.R
 import com.example.finderly.component.PostHeader
 import com.example.finderly.component.ShowImage
+import com.example.finderly.viewModel.UserViewModel
 
 
 @Composable
-fun PostScreen(navHostController: NavHostController, postType:Int){
+fun PostScreen(navHostController: NavHostController, postType:Int, postCategory: Int, postId: String){
+    val userViewModel : UserViewModel = viewModel()
+    Log.d("postCategory","$postCategory")
+    Log.d("postId","$postId")
+
+    LaunchedEffect(Unit) {
+        userViewModel.postitemInfo(postCategory,postId)
+    }
+    val postitemInfo = userViewModel.postiteminfo
+    Log.d("postitemInfo","$postitemInfo")
+
     Box{
         PostHeader(postType)    // 헤더 컴포넌트
         
@@ -53,7 +75,11 @@ fun PostScreen(navHostController: NavHostController, postType:Int){
         }
         // 댓글 수
         var commentsCounter by rememberSaveable {
-            mutableStateOf(0)
+            mutableStateOf(postitemInfo?.comments?.size)
+        }
+        // 댓글 입력(등록)
+        var commentContent by rememberSaveable {
+            mutableStateOf("댓글을 등록하세요.")
         }
 
         val imgScrollState = rememberScrollState()
@@ -118,7 +144,7 @@ fun PostScreen(navHostController: NavHostController, postType:Int){
 
                 // 타이틀
                 Text(
-                    text = "에어팟",
+                    text = "${postitemInfo?.postTitle}",
                     fontSize = 23.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 10.dp)
@@ -126,7 +152,7 @@ fun PostScreen(navHostController: NavHostController, postType:Int){
 
                 // 내용
                 Text(
-                    text = "건대입구에서\n에어팟 잃어버렸는데..",
+                    text = "${postitemInfo?.postContent}",
                     fontSize = 15.sp
                 )
                 Spacer(modifier = Modifier.padding(20.dp))
@@ -183,6 +209,53 @@ fun PostScreen(navHostController: NavHostController, postType:Int){
                     CreateComment()
                     CreateComment()
                 }
+                Spacer(modifier = Modifier.height(10.dp))
+                // 댓글 등록 창
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .border(width = 1.dp, color = colorResource(id = R.color.field_border_gray))
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ){
+                    Row{
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Checkbox(
+                                checked = false,
+                                onCheckedChange = { /* 익명 체크 로직 */ }
+                            )
+                            Text(
+                                text = "익명",
+                                fontSize = 10.sp
+                            )
+
+                            Spacer(modifier = Modifier.width(10.dp))
+
+                            BasicTextField(
+                                value = commentContent,
+                                onValueChange = {}
+                            )
+
+
+                        }
+                    }
+
+                    Button(
+                        onClick = { /* 등록 버튼 클릭 로직 */ },
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .width(75.dp),
+                        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.green)),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text("등록",
+                            color = Color.White)
+                    }
+                }
+
             }
         }
     }
@@ -211,6 +284,7 @@ fun CreateComment(content:String = "에어팟 봤는데"){
     }
 }
 
+// 좋아요 업데이트
 @Composable
 fun CreateIcon(imageVector: ImageVector = Icons.Filled.FavoriteBorder, onClick:()->Unit){
     Icon(

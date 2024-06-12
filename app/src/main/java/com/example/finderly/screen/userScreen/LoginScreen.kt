@@ -1,5 +1,6 @@
 package com.example.finderly.screen.userScreen
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -85,6 +86,9 @@ fun LoginScreen(navController: NavHostController) {
     val userViewModel : UserViewModel = viewModel()
     val context = LocalContext.current
 
+    val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -118,7 +122,8 @@ fun LoginScreen(navController: NavHostController) {
 
         Button(
             onClick = {
-                      userViewModel.login(userID,userPassWord)
+                userViewModel.initializeState()
+                userViewModel.login(userID,userPassWord)
             },
             colors = ButtonDefaults.buttonColors(colorResource(id = R.color.gray)),
             shape = RoundedCornerShape(8.dp),
@@ -135,11 +140,13 @@ fun LoginScreen(navController: NavHostController) {
         }
         LaunchedEffect(userViewModel.success) {
             if(userViewModel.success == true){
+                editor.putString("userId", userID)
+                editor.apply()
                 Toast.makeText(context, userViewModel.message,Toast.LENGTH_SHORT).show()
                 navController.navigate("Search")
             }
             else if(userViewModel.success == false){
-                Toast.makeText(context, "로그인 실패",Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, userViewModel.message, Toast.LENGTH_SHORT).show()
                 Log.d("Login", "Login Failed")
             }
         }

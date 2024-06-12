@@ -1,5 +1,6 @@
 package com.example.finderly.screen.userScreen
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,20 +21,25 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.finderly.Data.MyFindItem
 import com.example.finderly.Data.MyPost
 import com.example.finderly.R
 import com.example.finderly.component.Appbar
+import com.example.finderly.component.getUserId
+import com.example.finderly.viewModel.UserViewModel
 
 @Composable
 fun MyPageList(
@@ -45,7 +51,7 @@ fun MyPageList(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(210.dp)
+            .height(220.dp)
             .padding(10.dp)
     ) {
         Text(
@@ -64,70 +70,87 @@ fun MyPageList(
                 )
         ){
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                items.take(2).forEach{
-                    Row (
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 15.dp, end = 15.dp, top = 12.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ){
-                        Text(
-                            text = "${it.title}",
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_more_green),
-                            contentDescription = "더보기",
+                Column{
+                    items.take(2).forEach{
+                        Column(
                             modifier = Modifier
-                                .size(13.dp)
                                 .clickable {
                                     // 해당 게시물 상세 페이지로 이동
+                                    if(postType == 0){
+                                        navController.navigate("LostPost/$postType/${it.postId}")
+                                    }
+                                    else if(postType == 1){
+                                        navController.navigate("FoundPost/$postType/${it.postId}")
+                                    }
                                 }
-                        )
+                        ){
+                            Row (
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 15.dp, end = 15.dp, top = 12.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ){
+                                Text(
+                                    text = "${it.title}",
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_more_green),
+                                    contentDescription = "더보기",
+                                    modifier = Modifier
+                                        .size(13.dp)
+                                )
+                            }
+
+                            Text(
+                                text = "${it.detail}",
+                                fontSize = 12.sp,
+                                color = colorResource(id = R.color.field_text_gray),
+                                modifier = Modifier.padding(start = 15.dp)
+                            )
+                        }
                     }
-
-                    Text(
-                        text = "${it.detail}",
-                        fontSize = 12.sp,
-                        color = colorResource(id = R.color.field_text_gray),
-                        modifier = Modifier.padding(start = 15.dp)
-                    )
                 }
-                Spacer(modifier = Modifier.height(10.dp))
-                Divider(
-                    color = colorResource(id = R.color.field_border_gray),
-                    modifier = Modifier.padding(start = 15.dp, end = 15.dp)
-                )
-                Row(
+                Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .clickable {
-                            // 분실물, 습득물 게시글 페이지로 이동
-                            if(postType ==0){
-                                navController.navigate("LostPostMore")
-                            }
-                            else{
-                                navController.navigate("FindPostMore")
-                            }
-                        },
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
+                        .fillMaxWidth()
+                        .height(40.dp)
                 ) {
-                    Text(
-                        text = "더보기",
-                        fontSize = 11.sp,
-                        color = colorResource(id = R.color.field_text_gray),
+                    Divider(
+                        color = colorResource(id = R.color.field_border_gray),
+                        modifier = Modifier.padding(start = 15.dp, end = 15.dp)
                     )
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_more_black),
-                        contentDescription = "더보기 버튼",
-                        modifier = Modifier.size(13.dp)
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clickable {
+                                // 분실물, 습득물 게시글 페이지로 이동
+                                if (postType == 0) {
+                                    navController.navigate("LostPostMore")
+                                } else {
+                                    navController.navigate("FindPostMore")
+                                }
+                            },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "더보기",
+                            fontSize = 11.sp,
+                            color = colorResource(id = R.color.field_text_gray),
+                        )
+                        Spacer(modifier = Modifier.width(5.dp))
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_more_black),
+                            contentDescription = "더보기 버튼",
+                            modifier = Modifier.size(13.dp)
+                        )
 
+                    }
                 }
             }
         }
@@ -136,26 +159,26 @@ fun MyPageList(
 @Composable
 fun MyPageScreen(navController: NavHostController) {
     val scrollstate = rememberScrollState()
+    val userViewModel : UserViewModel = viewModel()
+    val context = LocalContext.current
+    var userId = getUserId(context).toString() // userId 저장
 
-    // 습득물 예시 데이터 리스트
-    val MyFindItems = listOf(
-        MyFindItem("AirPods Pro 2", "건대입구역","자양파출소"),
-        MyFindItem("AirPods Pro 3", "건대입구역","자양파출소"),
-        MyFindItem("AirPods Pro 4", "건대입구역","자양파출소"),
-        MyFindItem("AirPods Pro 5", "건대입구역","자양파출소")
-    )
+    LaunchedEffect(Unit) {
+        userViewModel.userProfile(userId)
+    }
+    val profile = userViewModel.profile
 
-    // 분실물 게시글 예시 데이터 리스트
-    val MyLostPost = listOf(
-        MyPost("에어팟","에어팟 잃어버렸어요"),
-        MyPost("아이폰","아이폰 잃어버렸어요")
-    )
+    val MyFindItems = profile?.founds?.map {
+        MyFindItem(it.lostName, it.lostLocation, it.storage, it.lostId)
+    }
 
-    // 습득물 게시글 예시 데이터 리스트
-    val MyFindPost = listOf(
-        MyPost("에어팟","에어팟 찾았어요"),
-        MyPost("아이폰","아이폰 찾았어요")
-    )
+    val MyLostPost = profile?.lostPosts?.map {
+        MyPost(it.postTitle, it.postContent, it.postId)
+    }
+
+    val MyFindPost = profile?.foundPosts?.map {
+        MyPost(it.postTitle, it.postContent, it.postId)
+    }
 
     Column (
         modifier = Modifier
@@ -192,7 +215,7 @@ fun MyPageScreen(navController: NavHostController) {
             ) {
                 Row {
                     Text(
-                        text = "파인더리",
+                        text = "${userViewModel.profile?.userName}",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = colorResource(id = R.color.text_deepgreen)
@@ -210,7 +233,7 @@ fun MyPageScreen(navController: NavHostController) {
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = " 0",
+                        text = " ${userViewModel.profile?.reports}",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -227,14 +250,30 @@ fun MyPageScreen(navController: NavHostController) {
                     text = "로그아웃",
                     fontSize = 13.sp,
                     color = colorResource(id = R.color.field_text_gray),
-                    modifier = Modifier.clickable { navController.navigate("Splash") }
+                    modifier = Modifier.clickable {
+                        userViewModel.initializeState()
+                        Toast.makeText(context, "${userViewModel.profile?.userName} 님 로그아웃 성공", Toast.LENGTH_SHORT).show()
+//                        userViewModel.logout(userId)
+                        navController.navigate("Splash")
+                    }
                 )
+
+//                LaunchedEffect(userViewModel.success) {
+//                    if(userViewModel.success == true){
+//                        Toast.makeText(context, userViewModel.message, Toast.LENGTH_SHORT).show()
+//                        navController.navigate("Splash")
+//                    }
+//                    else if(userViewModel.success == false){
+//                        Toast.makeText(context, userViewModel.message, Toast.LENGTH_SHORT).show()
+//                        Log.d("Logout", "Logout Failed")
+//                    }
+//                }
             }
         }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(210.dp)
+                .height(230.dp)
                 .padding(10.dp)
         ) {
             Text(
@@ -253,72 +292,85 @@ fun MyPageScreen(navController: NavHostController) {
                     )
             ){
                 Column(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    MyFindItems.take(2).forEach{
-                        Row (
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 15.dp, end = 15.dp, top = 12.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ){
-                            Text(
-                                text = "${it.title}",
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_more_green),
-                                contentDescription = "더보기",
+                    Column {
+                        MyFindItems?.take(2)?.forEach{
+                            Row (
                                 modifier = Modifier
-                                    .size(13.dp)
+                                    .fillMaxWidth()
+                                    .padding(start = 15.dp, end = 15.dp, top = 12.dp)
                                     .clickable {
                                         // 해당 게시물 상세 페이지로 이동
-                                    }
+                                        navController.navigate("LostItemInfo/${it.lostId}")
+                                    },
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ){
+                                Text(
+                                    text = "${it.title}",
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_more_green),
+                                    contentDescription = "더보기",
+                                    modifier = Modifier
+                                        .size(13.dp)
+                                )
+                            }
+
+                            Text(
+                                text = "습득지역 : ${it.location} / 보관장소 : ${it.storagePlace}",
+                                fontSize = 12.sp,
+                                color = colorResource(id = R.color.field_text_gray),
+                                modifier = Modifier.padding(start = 15.dp)
                             )
                         }
-
-                        Text(
-                            text = "습득지역 : ${it.location} / 보관장소 : ${it.storagePlace}",
-                            fontSize = 12.sp,
-                            color = colorResource(id = R.color.field_text_gray),
-                            modifier = Modifier.padding(start = 15.dp)
-                        )
                     }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Divider(
-                        color = colorResource(id = R.color.field_border_gray),
-                        modifier = Modifier.padding(start = 15.dp, end = 15.dp)
-                    )
-                    Row(
+                    Column(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .clickable {
-                                //습득물 페이지로 이동
-                                       navController.navigate("FindMore")
-                            },
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
+                            .fillMaxWidth()
+                            .height(40.dp)
                     ) {
-                        Text(
-                            text = "더보기",
-                            fontSize = 11.sp,
-                            color = colorResource(id = R.color.field_text_gray)
+                        Divider(
+                            color = colorResource(id = R.color.field_border_gray),
+                            modifier = Modifier.padding(start = 15.dp, end = 15.dp)
                         )
-                        Spacer(modifier = Modifier.width(5.dp))
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_more_black),
-                            contentDescription = "더보기 버튼",
-                            modifier = Modifier.size(13.dp)
-                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clickable {
+                                    //습득물 페이지로 이동
+                                    navController.navigate("FindMore")
+                                },
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "더보기",
+                                fontSize = 11.sp,
+                                color = colorResource(id = R.color.field_text_gray)
+                            )
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_more_black),
+                                contentDescription = "더보기 버튼",
+                                modifier = Modifier.size(13.dp)
+                            )
 
+                        }
                     }
                 }
             }
         }
 
-        MyPageList(items = MyLostPost, R.string.my_lost_post, navController,0)
-        MyPageList(items = MyFindPost, R.string.my_found_post, navController,1)
+        if (MyLostPost != null) {
+            MyPageList(items = MyLostPost, R.string.my_lost_post, navController,0)
+        }
+        if (MyFindPost != null) {
+            MyPageList(items = MyFindPost, R.string.my_found_post, navController,1)
+        }
         Spacer(modifier = Modifier.height(80.dp))
     }
 
