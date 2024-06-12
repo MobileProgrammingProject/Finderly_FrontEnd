@@ -3,6 +3,7 @@ package com.example.finderly.api
 import com.example.finderly.Data.LostItemInfoResponse
 import com.example.finderly.Data.MyResponse
 import com.example.finderly.Data.PostItemInfoResponse
+import com.example.finderly.Data.PostListItem
 import com.example.finderly.Data.SignUpRequest
 import com.example.finderly.Data.UserResponse
 import retrofit2.http.Body
@@ -25,6 +26,12 @@ interface APIService {
         @Query("postCategory") postCategory: Int,
         @Query("postId") postId: String
     ): PostItemInfoResponse
+
+    // 게시글 리스트
+    @GET("/post")
+    suspend fun getPostList(
+        @Query("postCategory") postCategory: Int
+    ):List<PostListItem>
 
     // report 신고
 

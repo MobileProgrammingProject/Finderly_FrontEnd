@@ -26,7 +26,7 @@ import com.example.finderly.screen.postScreen.RegisterSreen
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @Composable
 fun NavGraph(navController: NavHostController){
-    NavHost(navController = navController, startDestination = "LostPost/0/66643e471f0d524e5bbe7496"){
+    NavHost(navController = navController, startDestination = "Splash"){
         // 로그인, 회원가입 페이지
         composable(route = "Splash") {
             SplashScreen(navController)
@@ -75,7 +75,7 @@ fun NavGraph(navController: NavHostController){
             // 분실물 게시글 상세 페이지
             val postCategory = it.arguments?.getInt("postCategory")?: return@composable
             val postId = it.arguments?.getString("postId")?: return@composable
-            PostScreen(navHostController = navController, R.string.lost_category, postCategory,postId)
+            PostScreen( R.string.lost_category, postCategory,postId)
         }
         composable(
             route = "FoundPost/{postCategory}/{postId}",
@@ -84,7 +84,7 @@ fun NavGraph(navController: NavHostController){
             // 습득물 게시글 상세 페이지
             val postCategory = it.arguments?.getInt("postCategory")?: return@composable
             val postId = it.arguments?.getString("postId")?: return@composable
-            PostScreen(navHostController = navController, R.string.found_category, postCategory, postId)
+            PostScreen( R.string.found_category, postCategory, postId)
         }
         composable("RegisterPost") {
             // 게시글 등록

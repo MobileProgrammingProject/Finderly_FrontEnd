@@ -1,5 +1,6 @@
 package com.example.finderly.screen.postScreen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -8,8 +9,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,21 +27,42 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.finderly.R
 import com.example.finderly.component.Appbar
-import com.example.finderly.component.FoundPostList
-import com.example.finderly.component.LostPostList
 import com.example.finderly.component.PostHeader
+import com.example.finderly.component.PostList
 import com.example.finderly.component.RegisterButton
 import com.example.finderly.component.Search
 import com.example.finderly.component.TapMenu
+import com.example.finderly.viewModel.PostViewModel
 
 @Composable
 fun MainBoardScreen(
     navHostController: NavHostController
 ) {
+
     val focusManager = LocalFocusManager.current
+    val postViewModel : PostViewModel = viewModel()
+
+    var lostCheck by rememberSaveable {
+        mutableStateOf(true)
+    }
+    var findCheck by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var postCategory:Int = if(lostCheck){
+        0
+    }else{
+        1
+    }
+
+    LaunchedEffect(postCategory) {
+        postViewModel.setPostList(postCategory)
+    }
+    Log.d("[API 연결]", "${postViewModel.getLostPosts().size}")
 
     Column(
         modifier = Modifier
@@ -68,12 +93,6 @@ fun MainBoardScreen(
         }
 
         // 탭 메뉴
-        var lostCheck by rememberSaveable {
-            mutableStateOf(true)
-        }
-        var findCheck by rememberSaveable {
-            mutableStateOf(false)
-        }
         TapMenu(lostCheck, findCheck, {lostCheck = !lostCheck; findCheck = !findCheck})
 
 
@@ -103,11 +122,8 @@ fun MainBoardScreen(
             Spacer(modifier = Modifier.padding(13.dp))
             
             // 리스트
-            if(lostCheck){
-                LostPostList(navController = navHostController)
-            }else{
-                FoundPostList(navController = navHostController)
-            }
+            PostList( lostCheck = lostCheck, postCategory = postCategory, navController = navHostController)
+
         }
     }
     Appbar(selected = 3, navController = navHostController)
