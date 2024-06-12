@@ -2,11 +2,13 @@ package com.example.finderly.viewModel
 
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finderly.Data.LostItemListElement
+import com.example.finderly.Data.LostItem
 import com.example.finderly.Data.LostItemRequest
 import com.example.finderly.api.RetrofitInstance
 import kotlinx.coroutines.launch
@@ -17,7 +19,7 @@ class LostViewModel: ViewModel() {
 
     var success by mutableStateOf<Boolean?>(null)
     var message by mutableStateOf<String?>(null)
-    var lostItemList = mutableListOf<LostItemListElement>()
+    var lostItemList = mutableStateListOf<LostItem?>()
 
     fun initializeState(){
         success = null

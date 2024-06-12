@@ -51,7 +51,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.finderly.Data.LostItem
-import com.example.finderly.Data.LostItemListElement
 import com.example.finderly.R
 import com.example.finderly.component.Appbar
 import com.example.finderly.component.RegisterButton
@@ -59,7 +58,7 @@ import com.example.finderly.component.Search
 import com.example.finderly.viewModel.LostViewModel
 
 @Composable
-fun LostItemCard(item: LostItemListElement, onClick: () -> Unit) {
+fun LostItemCard(item: LostItem, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .border(
@@ -241,7 +240,6 @@ fun SearchScreen(navController: NavHostController) {
             }
 
             Spacer(modifier = Modifier.height(20.dp))
-            val item = LostItem(1, "AirPods Pro", "에어팟 주웠는데", "자양파출소", "건대입구역", "분실")
             LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp)) {
                 itemsIndexed(lostViewModel.lostItemList){ _, item ->
                     LostItemCard(item, {})
