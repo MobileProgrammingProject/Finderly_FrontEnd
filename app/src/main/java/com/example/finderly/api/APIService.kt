@@ -32,6 +32,11 @@ interface APIService {
         @Query("lostId") lostId: String
     ): LostItemInfoResponse
 
+    @GET("/lost/search")
+    suspend fun getLostItemListSearch(
+        @Query("keyword")   keyword:String
+    ):List<LostItem>
+
     // post 게시글
     @GET("/post/detail") // 게시글 상세 조회
     suspend fun getPostItemInfo(
