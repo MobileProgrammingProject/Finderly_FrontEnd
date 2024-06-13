@@ -9,6 +9,7 @@ import com.example.finderly.Data.PostItemInfoResponse
 import com.example.finderly.Data.SignUpRequest
 import com.example.finderly.Data.UserResponse
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
@@ -32,7 +33,12 @@ interface APIService {
         @Query("lostId") lostId: String
     ): LostItemInfoResponse
 
-    @GET("/lost/search")
+    @DELETE("/lost/delete") // 분실물 삭제
+    suspend fun deleteLostItem(
+        @Query("lostId") lostId: String
+    ): UserResponse
+
+    @GET("/lost/search") // 분실물 검색
     suspend fun getLostItemListSearch(
         @Query("keyword")   keyword:String
     ):List<LostItem>

@@ -18,17 +18,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Email
-import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -41,6 +39,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
@@ -60,7 +59,7 @@ import com.example.finderly.viewModel.LostViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun LostItemCard(item: LostItem, onClick: () -> Unit) {
+fun LostItemCard(item: LostItem, onClick: () -> Unit, deleteClick: ()-> Unit) {
     Card(
         modifier = Modifier
             .border(
@@ -75,23 +74,28 @@ fun LostItemCard(item: LostItem, onClick: () -> Unit) {
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(
+        Row(
             modifier = Modifier
-                .padding(top = 12.dp, start = 15.dp, bottom = 10.dp, end = 15.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .padding(top = 10.dp, start = 15.dp, bottom = 10.dp, end = 5.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = item.lostName,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(Alignment.Start)
-            )
-            Text(
-                text = "습득지역 : ${item.lostLocation} / 보관장소 : ${item.storage}",
-                fontSize = 14.sp
-            )
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = item.lostName,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.align(Alignment.Start)
+                )
+                Text(
+                    text = "습득지역 : ${item.lostLocation} / 보관장소 : ${item.storage}",
+                    fontSize = 14.sp
+                )
+            }
+            DeleteOrReportMenu(modifier = Modifier.offset(x = 0.dp, y = (-20).dp), deleteClick)
         }
+
     }
 }
 
@@ -126,33 +130,98 @@ fun FilterMenu(modifier: Modifier) {
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
+//            DropdownMenuItem(
+//                text = { Text("Option 1") },
+//                onClick = { /* TODO */ },
+//                leadingIcon = {
+//                    Icon(
+//                        Icons.Outlined.Edit,
+//                        contentDescription = null
+//                    )
+//                })
+//            DropdownMenuItem(
+//                text = { Text("Option 2") },
+//                onClick = { /* TODO */ },
+//                leadingIcon = {
+//                    Icon(
+//                        Icons.Outlined.Settings,
+//                        contentDescription = null
+//                    )
+//                })
+//            DropdownMenuItem(
+//                text = { Text("Option 3") },
+//                onClick = { /* TODO */ },
+//                leadingIcon = {
+//                    Icon(
+//                        Icons.Outlined.Email,
+//                        contentDescription = null
+//                    )
+//                })
+        }
+    }
+}
+
+@Composable
+fun DeleteOrReportMenu(modifier : Modifier, deleteClick: () -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    Box(
+        modifier = modifier
+            .width(20.dp)
+            .height(20.dp)
+            .border(
+                width = 1.dp,
+                color = colorResource(id = R.color.green),
+                shape = CircleShape
+            )
+            .background(color = Color.White, shape = CircleShape)
+    ) {
+        IconButton(onClick = { expanded = true }) {
+            Icon(
+                Icons.Default.MoreVert,
+                contentDescription = "MoreVert",
+                tint = Color.Gray,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.background(Color.White)
+        ) {
             DropdownMenuItem(
-                text = { Text("Option 1") },
-                onClick = { /* TODO */ },
-                leadingIcon = {
-                    Icon(
-                        Icons.Outlined.Edit,
-                        contentDescription = null
+                onClick = { deleteClick() },
+                modifier = Modifier
+                    .size(90.dp, 20.dp)
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ){
+                    Text(
+                        text = "삭제하기",
+                        fontSize = 12.sp,
+                        color = Color.Gray,
                     )
-                })
+                }
+            }
             DropdownMenuItem(
-                text = { Text("Option 2") },
-                onClick = { /* TODO */ },
-                leadingIcon = {
-                    Icon(
-                        Icons.Outlined.Settings,
-                        contentDescription = null
+                onClick = { /* 신고 구현 */ },
+                modifier = Modifier
+                    .size(90.dp, 20.dp)
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ){
+                    Text(
+                        text = "신고하기",
+                        fontSize = 12.sp,
+                        color = Color.Gray,
                     )
-                })
-            DropdownMenuItem(
-                text = { Text("Option 3") },
-                onClick = { /* TODO */ },
-                leadingIcon = {
-                    Icon(
-                        Icons.Outlined.Email,
-                        contentDescription = null
-                    )
-                })
+                }
+            }
         }
     }
 }
@@ -230,9 +299,7 @@ fun SearchScreen(navController: NavHostController) {
                 }
                 Search(search = remember { mutableStateOf(search) }, searchHasFocus = remember {
                     mutableStateOf(searchHasFocus)},  onSearchClicked = {
-                    lostViewModel.viewModelScope.launch {
                         lostViewModel.lostSearch(it)
-                    }
                 }
                 )
 
@@ -247,7 +314,9 @@ fun SearchScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(20.dp))
             LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp)) {
                 itemsIndexed(lostViewModel.lostItemList){ _, item ->
-                    LostItemCard(item) {navController.navigate("LostItemInfo/${item.lostId}")}
+                    LostItemCard(item,{navController.navigate("LostItemInfo/${item.lostId}")}, {
+                        lostViewModel.lostDelete(item.lostId)
+                        lostViewModel.lostList()})
                 }
             }
         }
