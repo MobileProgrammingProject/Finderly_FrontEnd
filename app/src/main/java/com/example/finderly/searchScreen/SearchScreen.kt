@@ -93,7 +93,7 @@ fun LostItemCard(item: LostItem, onClick: () -> Unit, deleteClick: ()-> Unit) {
                     fontSize = 14.sp
                 )
             }
-            DeleteOrReportMenu(modifier = Modifier.offset(x = 0.dp, y = (-20).dp), deleteClick)
+            DeleteOrReportMenu(modifier = Modifier.offset(x = 0.dp, y = (-20).dp), deleteClick, {})
         }
 
     }
@@ -162,7 +162,7 @@ fun FilterMenu(modifier: Modifier) {
 }
 
 @Composable
-fun DeleteOrReportMenu(modifier : Modifier, deleteClick: () -> Unit) {
+fun DeleteOrReportMenu(modifier : Modifier, deleteClick: () -> Unit, reportClick : ()-> Unit) {
     var expanded by remember { mutableStateOf(false) }
     Box(
         modifier = modifier
@@ -206,7 +206,7 @@ fun DeleteOrReportMenu(modifier : Modifier, deleteClick: () -> Unit) {
                 }
             }
             DropdownMenuItem(
-                onClick = { /* 신고 구현 */ },
+                onClick = { reportClick() },
                 modifier = Modifier
                     .size(90.dp, 20.dp)
                     .align(Alignment.CenterHorizontally)

@@ -3,6 +3,7 @@ package com.example.finderly.searchScreen
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,12 +36,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finderly.R
+import com.example.finderly.viewModel.LostViewModel
 import com.example.finderly.viewModel.UserViewModel
 
 @Composable
 fun LostItemInfoScreen(lostId : String){
     val scrollstate = rememberScrollState()
     val userViewModel : UserViewModel = viewModel()
+    val lostViewModel : LostViewModel = viewModel()
     Log.d("lostId","$lostId")
 
     LaunchedEffect(Unit) {
@@ -89,11 +92,11 @@ fun LostItemInfoScreen(lostId : String){
                     color = Color(0xFF000000),
                 )
                 Spacer(modifier = Modifier.weight(1f))
-                Icon(
-                    Icons.Default.MoreVert,
-                    contentDescription = "Localized description",
-                    modifier = Modifier.size(30.dp)
-                )
+                DeleteOrReportMenu(modifier = Modifier, deleteClick = {
+                    if (lostitemInfo != null) {
+                        lostViewModel.lostDelete(lostitemInfo.lostId)
+                    }
+                }, reportClick = {})
             }
             Spacer(modifier = Modifier.height(20.dp))
             Divider(
