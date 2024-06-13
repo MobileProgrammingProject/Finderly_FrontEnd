@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.accompanist.permissions)
     implementation(libs.androidx.media3.common)
+    implementation(libs.sdk.v2.user)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
