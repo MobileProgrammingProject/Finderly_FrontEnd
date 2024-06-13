@@ -231,7 +231,7 @@ fun SearchScreen(navController: NavHostController) {
                 Search(search = remember { mutableStateOf(search) }, searchHasFocus = remember {
                     mutableStateOf(searchHasFocus)},  onSearchClicked = {
                     lostViewModel.viewModelScope.launch {
-                        lostViewModel.lostSearch(search)
+                        lostViewModel.lostSearch(it)
                     }
                 }
                 )
@@ -247,7 +247,7 @@ fun SearchScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(20.dp))
             LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp)) {
                 itemsIndexed(lostViewModel.lostItemList){ _, item ->
-                    LostItemCard(item) { navController.navigate("LostItemInfo") }
+                    LostItemCard(item) {navController.navigate("LostItemInfo/${item.lostId}")}
                 }
             }
         }

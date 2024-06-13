@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.sp
 import com.example.finderly.R
 
 @Composable
-fun Search(search:MutableState<String>, searchHasFocus:MutableState<Boolean>, width: Dp = 250.dp, onSearchClicked:()->Unit) {
+fun Search(search:MutableState<String>, searchHasFocus:MutableState<Boolean>, width: Dp = 250.dp, onSearchClicked:(String)->Unit) {
 
     val focusRequester = FocusRequester()
 
@@ -53,7 +53,7 @@ fun Search(search:MutableState<String>, searchHasFocus:MutableState<Boolean>, wi
             painter = painterResource(id = R.drawable.ic_search_gray),
             contentDescription = "search",
             modifier = Modifier.size(20.dp).clickable {
-                onSearchClicked()
+                onSearchClicked(search.value)
             }
         )
         if (!searchHasFocus.value && search.value.isEmpty()) {
