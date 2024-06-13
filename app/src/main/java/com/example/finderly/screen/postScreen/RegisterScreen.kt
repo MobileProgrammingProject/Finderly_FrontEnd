@@ -39,6 +39,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -54,12 +55,15 @@ import com.example.finderly.R
 import com.example.finderly.component.BigRegisterButton
 import com.example.finderly.component.PostHeader
 import com.example.finderly.component.RegisterImage
+import com.example.finderly.component.getUserId
 import com.example.finderly.viewModel.PostViewModel
 
 
 @Composable
 fun RegisterSreen(navHostController: NavHostController) {
     val postViewModel: PostViewModel = viewModel()
+    val context = LocalContext.current
+    val userId = getUserId(context).toString() // userId 저장
 
     var title by rememberSaveable {
         mutableStateOf("")
@@ -254,7 +258,7 @@ fun RegisterSreen(navHostController: NavHostController) {
                 BigRegisterButton("게시글 등록하기", navHostController) {
                     //"PostBoard"
                     val postRequest = PostRequest(
-                        userId = "userId",
+                        userId = userId,
                         postTitle = title,
                         postContent = content,
                         secretCheck = checked,

@@ -80,9 +80,9 @@ fun SignUpScreen(navController: NavHostController) {
                     userPassWord = "0000"
                     Log.d("KakaoID",userID)
                     Log.d("KakaonNickName",nickname)
-                    Toast.makeText(context, "$nickname 님 회원가입 성공", Toast.LENGTH_SHORT).show()
 
                     // 회원가입 함수 호출
+                    userViewModel.initializeState()
                     userViewModel.signup(userID, userPassWord, nickname)
                     navController.navigate("Login")
                 }
@@ -180,9 +180,15 @@ fun SignUpScreen(navController: NavHostController) {
                 .clickable {
                     // 카카오 회원가입 구현
                     if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-                        UserApiClient.instance.loginWithKakaoTalk(context, callback = kakaoLoginCallback)
+                        UserApiClient.instance.loginWithKakaoTalk(
+                            context,
+                            callback = kakaoLoginCallback
+                        )
                     } else {
-                        UserApiClient.instance.loginWithKakaoAccount(context, callback = kakaoLoginCallback)
+                        UserApiClient.instance.loginWithKakaoAccount(
+                            context,
+                            callback = kakaoLoginCallback
+                        )
                     }
                 }
         ){

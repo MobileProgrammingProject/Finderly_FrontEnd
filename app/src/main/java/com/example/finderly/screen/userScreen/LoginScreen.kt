@@ -110,7 +110,6 @@ fun LoginScreen(navController: NavHostController) {
                     userViewModel.login(userID, userPassWord)
                     editor.putString("userId", userID)
                     editor.apply()
-                    navController.navigate("Search")
                 }
             }
         }

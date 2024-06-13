@@ -59,7 +59,6 @@ fun MainBoardScreen(
     LaunchedEffect(postCategory) {
         postViewModel.setPostList(postCategory)
     }
-
     Column(
         modifier = Modifier
             .background(Color.White)
