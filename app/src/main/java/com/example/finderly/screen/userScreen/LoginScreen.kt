@@ -47,6 +47,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.finderly.R
 import com.example.finderly.viewModel.UserViewModel
+import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.user.UserApiClient
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -88,6 +90,30 @@ fun LoginScreen(navController: NavHostController) {
 
     val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
     val editor = sharedPreferences.edit()
+
+    val kakaoLoginCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+        if (error != null) {
+            Toast.makeText(context, "카카오 로그인 실패", Toast.LENGTH_SHORT).show()
+        } else if (token != null) {
+            // 로그인 성공 시 사용자 정보 요청
+            UserApiClient.instance.me { user, error ->
+                if (error != null) {
+                    Toast.makeText(context, "사용자 정보 요청 실패", Toast.LENGTH_SHORT).show()
+                } else if (user != null) {
+                    // 카카오 로그인 성공 시 가져온 ID 토큰을 사용
+                    userID = user.id.toString()
+                    userPassWord = "0000"
+                    Log.d("KakaoID",userID)
+                    Toast.makeText(context, "로그인 성공", Toast.LENGTH_SHORT).show()
+
+                    // 로그인 함수 호출
+                    userViewModel.login(userID, userPassWord)
+                    editor.putString("userId", userID)
+                    editor.apply()
+                }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -171,6 +197,14 @@ fun LoginScreen(navController: NavHostController) {
                     color = colorResource(id = R.color.yellow),
                     shape = CircleShape
                 )
+                .clickable {
+                    // 카카오 로그인 구현
+                    if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
+                        UserApiClient.instance.loginWithKakaoTalk(context, callback = kakaoLoginCallback)
+                    } else {
+                        UserApiClient.instance.loginWithKakaoAccount(context, callback = kakaoLoginCallback)
+                    }
+                }
         ){
             Image(
                 painter = painterResource(id = R.drawable.kakao_logo),
