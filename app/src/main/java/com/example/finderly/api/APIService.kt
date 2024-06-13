@@ -6,10 +6,12 @@ import com.example.finderly.Data.Post
 import com.example.finderly.Data.PostItemInfoResponse
 import com.example.finderly.Data.PostListItem
 import com.example.finderly.Data.PostRequest
+import com.example.finderly.Data.Response
 import com.example.finderly.Data.SignUpRequest
 import com.example.finderly.Data.UserResponse
 import com.example.finderly.Data.registerResponse
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
@@ -46,6 +48,20 @@ interface APIService {
         @Query("postCategory") postCategory: Int,
         @Query("postId") postId: String
     ): Post
+
+    // 게시글 삭제하기
+    @DELETE("/post")
+    suspend fun deletePost(
+        @Query("postCategory") postCategory:Int,
+        @Query("postId") postId:String
+    ): Response
+
+    // 게시글 검색
+    @GET("/post/search")
+    suspend fun searchPostByTitle(
+        @Query("postCategory") postCategory: Int,
+        @Query("keyword") keyword: String
+    ):List<PostListItem>
 
     // report 신고
 

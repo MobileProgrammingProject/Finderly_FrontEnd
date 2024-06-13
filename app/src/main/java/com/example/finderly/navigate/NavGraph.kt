@@ -75,7 +75,7 @@ fun NavGraph(navController: NavHostController){
             // 분실물 게시글 상세 페이지
             val postCategory = it.arguments?.getInt("postCategory")?: return@composable
             val postId = it.arguments?.getString("postId")?: return@composable
-            PostScreen( R.string.lost_category, postCategory,postId)
+            PostScreen( R.string.lost_category, postCategory,postId, navController)
         }
         composable(
             route = "FoundPost/{postCategory}/{postId}",
@@ -84,7 +84,7 @@ fun NavGraph(navController: NavHostController){
             // 습득물 게시글 상세 페이지
             val postCategory = it.arguments?.getInt("postCategory")?: return@composable
             val postId = it.arguments?.getString("postId")?: return@composable
-            PostScreen( R.string.found_category, postCategory, postId)
+            PostScreen( R.string.found_category, postCategory, postId, navController)
         }
         composable("RegisterPost") {
             // 게시글 등록

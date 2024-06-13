@@ -20,6 +20,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -48,6 +49,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.finderly.R
 import com.example.finderly.component.PostHeader
 import com.example.finderly.component.ShowImage
@@ -58,7 +60,8 @@ import com.example.finderly.viewModel.PostViewModel
 fun PostScreen(
     postType: Int,
     postCategory: Int,
-    postId: String
+    postId: String,
+    navHostController: NavHostController
 ) {
     //val userViewModel: UserViewModel = viewModel()
     val postViewModel: PostViewModel = viewModel()
@@ -133,26 +136,38 @@ fun PostScreen(
                         .clip(RoundedCornerShape(8.dp))
                         .background(Color.White)
                 ) {
-                    DropdownMenuItem(text = { Text(
-                        text = "신고하기",
-                        fontSize = 12.sp,
-                        color = Color.Gray,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxSize()
-                    ) },
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = "신고하기",
+                                fontSize = 12.sp,
+                                color = Color.Gray,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        },
                         onClick = { expended = false },
                         modifier = Modifier
                             .size(90.dp, 20.dp)
                             .align(Alignment.CenterHorizontally)
                     )
-                    DropdownMenuItem(text = { Text(
-                        text = "삭제하기",
-                        fontSize = 12.sp,
-                        color = Color.Gray,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxSize()
-                        )},
-                        onClick = { expended = false },
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = "삭제하기",
+                                fontSize = 12.sp,
+                                color = Color.Gray,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        },
+                        onClick = {
+                            expended = false
+                            postViewModel.deletePost(postId = postId, postCategory = postCategory)
+                            navHostController.navigate("PostBoard"){
+                                popUpTo("PostBoard"){inclusive = true}
+                            }
+                        },
                         modifier = Modifier
                             .size(90.dp, 20.dp)
                             .align(Alignment.CenterHorizontally)
@@ -348,26 +363,31 @@ fun CreateComment(content: String = "") {
                         .background(Color.White)
                         .align(Alignment.Center)
                 ) {
-                    DropdownMenuItem(text = { Text(
-                        text = "신고하기",
-                        fontSize = 12.sp,
-                        color = Color.Gray,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxSize()
-                    ) }, onClick = { expended = false },
-                        modifier = Modifier
-                            .size(90.dp, 20.dp)
+                    DropdownMenuItem(text = {
+                        Text(
+                            text = "신고하기",
+                            fontSize = 12.sp,
+                            color = Color.Gray,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxSize()
                         )
-                    DropdownMenuItem(text = { Text(
-                        text = "삭제하기",
-                        fontSize = 12.sp,
-                        color = Color.Gray,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxSize()
-                    ) }, onClick = { expended = false },
+                    }, onClick = { expended = false },
                         modifier = Modifier
                             .size(90.dp, 20.dp)
-                            .align(Alignment.CenterHorizontally))
+                    )
+                    DropdownMenuItem(text = {
+                        Text(
+                            text = "삭제하기",
+                            fontSize = 12.sp,
+                            color = Color.Gray,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }, onClick = { expended = false },
+                        modifier = Modifier
+                            .size(90.dp, 20.dp)
+                            .align(Alignment.CenterHorizontally)
+                    )
                 }
             }
         }
