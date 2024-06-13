@@ -19,7 +19,7 @@ class LostViewModel: ViewModel() {
 
     var success by mutableStateOf<Boolean?>(null)
     var message by mutableStateOf<String?>(null)
-    var lostItemList = mutableStateListOf<LostItem?>()
+    var lostItemList = mutableStateListOf<LostItem>()
 
     fun initializeState(){
         success = null
@@ -71,7 +71,30 @@ class LostViewModel: ViewModel() {
         viewModelScope.launch {
             try {
                 val itemList = RetrofitInstance.api.getLostItemList()
-                lostItemList = itemList.toMutableList()
+                lostItemList.clear()
+                lostItemList.addAll(itemList)
+                success = true
+            } catch (e: HttpException) {
+                val errorBody = e.response()?.errorBody()?.string()
+                val jsonObject = JSONObject(errorBody)
+                val errorMessage = jsonObject.optString("message", "알 수 없는 오류가 발생했습니다.")
+                message = errorMessage
+                success = false
+            } catch (e: Exception) {
+                Log.d("SignUp", e.toString())
+                e.printStackTrace()
+                message = "서버 연결 실패"
+                success = false
+            }
+        }
+    }
+
+    fun lostSearch(search:String){
+        viewModelScope.launch {
+            try {
+                val itemList = RetrofitInstance.api.getLostItemListSearch(search)
+                lostItemList.clear()
+                lostItemList.addAll(itemList)
                 success = true
             } catch (e: HttpException) {
                 val errorBody = e.response()?.errorBody()?.string()

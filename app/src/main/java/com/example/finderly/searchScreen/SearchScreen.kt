@@ -48,6 +48,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.finderly.Data.LostItem
@@ -56,6 +57,7 @@ import com.example.finderly.component.Appbar
 import com.example.finderly.component.RegisterButton
 import com.example.finderly.component.Search
 import com.example.finderly.viewModel.LostViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun LostItemCard(item: LostItem, onClick: () -> Unit) {
@@ -155,7 +157,6 @@ fun FilterMenu(modifier: Modifier) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(navController: NavHostController) {
 
@@ -228,8 +229,12 @@ fun SearchScreen(navController: NavHostController) {
                     mutableStateOf(false)
                 }
                 Search(search = remember { mutableStateOf(search) }, searchHasFocus = remember {
-                    mutableStateOf(searchHasFocus)
-                })
+                    mutableStateOf(searchHasFocus)},  onSearchClicked = {
+                    lostViewModel.viewModelScope.launch {
+                        lostViewModel.lostSearch(search)
+                    }
+                }
+                )
 
                 // 필터 메뉴
                 FilterMenu(
@@ -242,7 +247,7 @@ fun SearchScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(20.dp))
             LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp)) {
                 itemsIndexed(lostViewModel.lostItemList){ _, item ->
-                    LostItemCard(item, {})
+                    LostItemCard(item) { navController.navigate("LostItemInfo") }
                 }
             }
         }
