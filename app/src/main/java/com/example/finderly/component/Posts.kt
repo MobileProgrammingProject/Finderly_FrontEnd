@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Text
@@ -115,19 +117,20 @@ fun PostItem(post: PostListItem,postCategory:Int, navController: NavHostControll
             fontSize = 13.sp,
         )
     }
+    Spacer(modifier = Modifier.padding(8.dp))
 }
 
 @Composable
 fun PostList(postViewModel: PostViewModel = viewModel(),lostCheck:Boolean,postCategory:Int, navController: NavHostController){
     val scrollState = rememberLazyListState()
     val posts = if(lostCheck){
-        postViewModel.getLostPosts()
+        postViewModel.getLostPosts().reversed()
     } else {
-        postViewModel.getFoundPosts()
+        postViewModel.getFoundPosts().reversed()
     }
     LazyColumn (
         state = scrollState,
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+        //verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         items(posts){ post ->
             PostItem(post = post, postCategory = postCategory, navController = navController)
