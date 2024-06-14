@@ -126,6 +126,7 @@ fun RegisterLostItemScreen(navController: NavHostController) {
         LaunchedEffect(lostViewModel.success) {
             if(lostViewModel.success == true){
                 Toast.makeText(context, lostViewModel.message, Toast.LENGTH_SHORT).show()
+                navController.navigate("Search")
             }
             else if(lostViewModel.success == false){
                 Toast.makeText(context, lostViewModel.message, Toast.LENGTH_SHORT).show()
