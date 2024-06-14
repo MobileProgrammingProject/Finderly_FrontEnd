@@ -75,7 +75,6 @@ fun RegisterImage(imgViewModel: ImageViewModel = viewModel()){
         imgViewModel.imageList.forEach {
             CreateImage(image = it.image, containerSize = 150.dp)
         }
-
     }
 
 }

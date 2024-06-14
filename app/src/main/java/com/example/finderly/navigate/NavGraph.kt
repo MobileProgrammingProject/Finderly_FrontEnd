@@ -1,6 +1,7 @@
 package com.example.finderly.Navigate
 
 import android.os.Build
+import android.window.SplashScreen
 import androidx.annotation.RequiresExtension
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController

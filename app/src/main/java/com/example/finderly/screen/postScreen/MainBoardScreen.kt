@@ -113,7 +113,7 @@ fun MainBoardScreen(
                 mutableStateOf(search)
             }, searchHasFocus = remember {
                 mutableStateOf(searchHasFocus)
-            }, width = 280.dp )
+            }, width = 280.dp, onSearchClicked = {})
             Spacer(modifier = Modifier.padding(13.dp))
             
             // 리스트
