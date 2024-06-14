@@ -1,4 +1,4 @@
-package com.example.finderly.searchScreen
+package com.example.finderly.screen.searchScreen
 
 import android.util.Log
 import androidx.compose.foundation.Image

@@ -1,4 +1,4 @@
-package com.example.finderly.postScreen
+package com.example.finderly.screen.postScreen
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -21,15 +21,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -44,47 +44,60 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import com.example.finderly.R
 import com.example.finderly.component.PostHeader
 import com.example.finderly.component.ShowImage
-import com.example.finderly.viewModel.UserViewModel
+import com.example.finderly.viewModel.PostViewModel
 
 
 @Composable
-fun PostScreen(navHostController: NavHostController, postType:Int, postCategory: Int, postId: String){
-    val userViewModel : UserViewModel = viewModel()
-    Log.d("postCategory","$postCategory")
-    Log.d("postId","$postId")
+fun PostScreen(
+    postType: Int,
+    postCategory: Int,
+    postId: String
+) {
+    //val userViewModel: UserViewModel = viewModel()
+    val postViewModel: PostViewModel = viewModel()
+
+    Log.d("postCategory", "$postCategory")
+    Log.d("postId", postId)
 
     LaunchedEffect(Unit) {
-        userViewModel.postitemInfo(postCategory,postId)
+        //userViewModel.postitemInfo(postCategory, postId)
+        postViewModel.getPostDetailInfo(postCategory, postId)
     }
-    val postitemInfo = userViewModel.postiteminfo
-    Log.d("postitemInfo","$postitemInfo")
 
-    Box{
+    //val postitemInfo = userViewModel.postiteminfo
+    var post = postViewModel.post
+    Log.d("Post", "${post.value}")
+
+
+    // 좋아요 수
+    var likeCounter by rememberSaveable {
+        mutableStateOf(0)
+    }
+//    // 댓글 수
+//    var commentsCounter by rememberSaveable {
+//        mutableIntStateOf(post.value.comments.size)
+//    }
+    // 댓글 입력(등록)
+    var commentContent by rememberSaveable {
+        mutableStateOf("댓글을 등록하세요.")
+    }
+
+    LaunchedEffect(postViewModel.post) {
+        post = postViewModel.post
+        //commentsCounter = post.value.comments.size
+    }
+
+    Box {
         PostHeader(postType)    // 헤더 컴포넌트
-        
-        // 좋아요 수
-        var likeCounter by rememberSaveable {
-            mutableStateOf(0)
-        }
-        // 댓글 수
-        var commentsCounter by rememberSaveable {
-            mutableStateOf(postitemInfo?.comments?.size)
-        }
-        // 댓글 입력(등록)
-        var commentContent by rememberSaveable {
-            mutableStateOf("댓글을 등록하세요.")
-        }
 
-        val imgScrollState = rememberScrollState()
-        //val commentsScrollState = rememberScrollState()
-        val topPadding = 150.dp
+        val topPadding = 140.dp
         val contentScrollState = rememberScrollState()
 
         Box(
@@ -92,22 +105,22 @@ fun PostScreen(navHostController: NavHostController, postType:Int, postCategory:
                 .verticalScroll(contentScrollState)
                 .padding(top = topPadding)
                 .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
-                .fillMaxSize()
                 .background(Color.White)
                 .padding(30.dp)
-        ){
+        ) {
 
             var expended by rememberSaveable {
                 mutableStateOf(false)
             }
 
-            Box (
+            Box(
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .align(Alignment.TopEnd)
             ) {
                 Image(painter = painterResource(
-                    id = R.drawable.menu),
+                    id = R.drawable.menu
+                ),
                     contentDescription = "menu",
                     modifier = Modifier
                         .size(24.dp)
@@ -120,31 +133,38 @@ fun PostScreen(navHostController: NavHostController, postType:Int, postCategory:
                         .clip(RoundedCornerShape(8.dp))
                         .background(Color.White)
                 ) {
-                    DropdownMenuItem(
+                    DropdownMenuItem(text = { Text(
+                        text = "신고하기",
+                        fontSize = 12.sp,
+                        color = Color.Gray,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxSize()
+                    ) },
                         onClick = { expended = false },
                         modifier = Modifier
                             .size(90.dp, 20.dp)
                             .align(Alignment.CenterHorizontally)
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ){
-                            androidx.compose.material3.Text(
-                                text = "신고하기",
-                                fontSize = 12.sp,
-                                color = Color.Gray,
-                            )
-                        }
-                    }
+                    )
+                    DropdownMenuItem(text = { Text(
+                        text = "삭제하기",
+                        fontSize = 12.sp,
+                        color = Color.Gray,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxSize()
+                        )},
+                        onClick = { expended = false },
+                        modifier = Modifier
+                            .size(90.dp, 20.dp)
+                            .align(Alignment.CenterHorizontally)
+                    )
                 }
             }
-
-            Column {
-
+            Column(
+                modifier = Modifier.padding(bottom = 80.dp)
+            ) {
                 // 타이틀
                 Text(
-                    text = "${postitemInfo?.postTitle}",
+                    text = post.value.postTitle,
                     fontSize = 23.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 10.dp)
@@ -152,7 +172,7 @@ fun PostScreen(navHostController: NavHostController, postType:Int, postCategory:
 
                 // 내용
                 Text(
-                    text = "${postitemInfo?.postContent}",
+                    text = post.value.postContent,
                     fontSize = 15.sp
                 )
                 Spacer(modifier = Modifier.padding(20.dp))
@@ -161,15 +181,15 @@ fun PostScreen(navHostController: NavHostController, postType:Int, postCategory:
                 ShowImage(containerSize = 180.dp, imageSize = 180.dp, color = Color.Transparent)
 
                 // 좋아요 & 댓글 아이콘
-                Row (
+                Row(
                     modifier = Modifier.padding(top = 20.dp, start = 10.dp)
                 ) {
                     // 좋아요 아이콘
-                    Row (
+                    Row(
                         //modifier = Modifier.align(Alignment.Bottom)
                         verticalAlignment = Alignment.Bottom
                     ) {
-                        CreateIcon(Icons.Filled.FavoriteBorder){ likeCounter++ }
+                        CreateIcon(Icons.Filled.FavoriteBorder) { likeCounter++ }
                         Text(
                             text = "$likeCounter",
                             fontSize = 13.sp,
@@ -178,9 +198,9 @@ fun PostScreen(navHostController: NavHostController, postType:Int, postCategory:
                     }
                     Spacer(modifier = Modifier.padding(5.dp))
                     // 댓글 아이콘
-                    Row (
+                    Row(
                         verticalAlignment = Alignment.Bottom
-                    ){
+                    ) {
                         Image(
                             painter = painterResource(id = R.drawable.comments_black),
                             contentDescription = "Comments Icon",
@@ -189,7 +209,7 @@ fun PostScreen(navHostController: NavHostController, postType:Int, postCategory:
                                 .size(24.dp)
                         )
                         Text(
-                            text = "$commentsCounter",
+                            text = "${post.value.comments.size}",
                             fontSize = 13.sp,
                             color = Color.Black
                         )
@@ -200,28 +220,50 @@ fun PostScreen(navHostController: NavHostController, postType:Int, postCategory:
                     color = Color.LightGray,
                     modifier = Modifier.padding(bottom = 10.dp)
                 )
-                Column (
-                    //modifier = Modifier.verticalScroll(commentsScrollState)
-                ) {
-                    CreateComment()
-                    CreateComment()
-                    CreateComment()
-                    CreateComment()
-                    CreateComment()
+
+                Log.d("PostScreen", "Post Info loaded: ${post.value}")
+                Column {
+                    post.value.comments.forEach {
+                        CreateComment(it.content)
+                    }
                 }
+
+
                 Spacer(modifier = Modifier.height(10.dp))
-                // 댓글 등록 창
+
+            }
+        }
+        // 댓글 등록 창
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .padding(start = 30.dp, end = 30.dp, bottom = 20.dp)
+            ) {
+
                 Row(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .border(width = 1.dp, color = colorResource(id = R.color.field_border_gray))
-                        .fillMaxWidth(),
+                        .border(
+                            width = 1.dp,
+                            color = colorResource(id = R.color.field_border_gray),
+                            RoundedCornerShape(8.dp)
+                        )
+                        .fillMaxWidth()
+                        .background(Color.White),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
-                ){
-                    Row{
+
+                ) {
+                    Row {
                         Row(
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.height(50.dp)
                         ) {
                             Checkbox(
                                 checked = false,
@@ -231,14 +273,13 @@ fun PostScreen(navHostController: NavHostController, postType:Int, postCategory:
                                 text = "익명",
                                 fontSize = 10.sp
                             )
-                            
+
                             Spacer(modifier = Modifier.width(10.dp))
 
                             BasicTextField(
                                 value = commentContent,
-                                onValueChange = {}
+                                onValueChange = {},
                             )
-
 
                         }
                     }
@@ -251,21 +292,24 @@ fun PostScreen(navHostController: NavHostController, postType:Int, postCategory:
                         colors = ButtonDefaults.buttonColors(colorResource(id = R.color.green)),
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text("등록",
-                            color = Color.White)
+                        Text(
+                            "등록",
+                            color = Color.White
+                        )
                     }
                 }
-
             }
         }
     }
 }
 
 
-// 나중에 viewModel로 바꾸기
 @Composable
-fun CreateComment(content:String = "에어팟 봤는데"){
-    Row (
+fun CreateComment(content: String = "") {
+    var expended by rememberSaveable {
+        mutableStateOf(false)
+    }
+    Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .padding(10.dp)
@@ -281,12 +325,58 @@ fun CreateComment(content:String = "에어팟 봤는데"){
         )
         Spacer(modifier = Modifier.padding(10.dp))
         Text(text = content)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            Box {
+                Image(
+                    painter = painterResource(id = R.drawable.menu),
+                    contentDescription = "menu",
+                    modifier = Modifier
+                        .clickable {
+                            expended = true
+                        }
+                        .size(20.dp)
+                )
+                DropdownMenu(
+                    expanded = expended,
+                    onDismissRequest = { expended = false },
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Color.White)
+                        .align(Alignment.Center)
+                ) {
+                    DropdownMenuItem(text = { Text(
+                        text = "신고하기",
+                        fontSize = 12.sp,
+                        color = Color.Gray,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxSize()
+                    ) }, onClick = { expended = false },
+                        modifier = Modifier
+                            .size(90.dp, 20.dp)
+                        )
+                    DropdownMenuItem(text = { Text(
+                        text = "삭제하기",
+                        fontSize = 12.sp,
+                        color = Color.Gray,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxSize()
+                    ) }, onClick = { expended = false },
+                        modifier = Modifier
+                            .size(90.dp, 20.dp)
+                            .align(Alignment.CenterHorizontally))
+                }
+            }
+        }
     }
 }
 
 // 좋아요 업데이트
 @Composable
-fun CreateIcon(imageVector: ImageVector = Icons.Filled.FavoriteBorder, onClick:()->Unit){
+fun CreateIcon(imageVector: ImageVector = Icons.Filled.FavoriteBorder, onClick: () -> Unit) {
     Icon(
         imageVector = imageVector,
         contentDescription = "like",

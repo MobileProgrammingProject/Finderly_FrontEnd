@@ -8,12 +8,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finderly.Data.LostItemInfoResponse
-import com.example.finderly.Data.LostItemRequest
 import com.example.finderly.Data.MyResponse
 import com.example.finderly.Data.PostItemInfoResponse
 import com.example.finderly.Data.SignUpRequest
 import com.example.finderly.api.RetrofitInstance
+import com.example.finderly.Data.LostItemInfoResponse
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
@@ -183,6 +182,7 @@ class UserViewModel : ViewModel() {
             }
         }
     }
+
 //    fun logout(userId: String){
 //        viewModelScope.launch {
 //            try {

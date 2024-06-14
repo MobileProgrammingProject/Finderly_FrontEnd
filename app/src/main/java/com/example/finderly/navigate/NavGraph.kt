@@ -9,24 +9,24 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.finderly.R
-import com.example.finderly.Screen.FindMoreScreen
-import com.example.finderly.Screen.LoginScreen
-import com.example.finderly.Screen.MyPageScreen
-import com.example.finderly.Screen.PostMoreScreen
-import com.example.finderly.Screen.SignUpScreen
-import com.example.finderly.Screen.SplashScreen
-import com.example.finderly.mapScreen.MapScreenPage
-import com.example.finderly.postScreen.MainBoardScreen
-import com.example.finderly.postScreen.PostScreen
-import com.example.finderly.postScreen.RegisterSreen
-import com.example.finderly.searchScreen.LostItemInfoScreen
-import com.example.finderly.searchScreen.RegisterLostItemScreen
-import com.example.finderly.searchScreen.SearchScreen
+import com.example.finderly.screen.mapScreen.MapScreenPage
+import com.example.finderly.screen.postScreen.MainBoardScreen
+import com.example.finderly.screen.postScreen.PostScreen
+import com.example.finderly.screen.postScreen.RegisterSreen
+import com.example.finderly.screen.searchScreen.LostItemInfoScreen
+import com.example.finderly.screen.searchScreen.RegisterLostItemScreen
+import com.example.finderly.screen.searchScreen.SearchScreen
+import com.example.finderly.screen.userScreen.FindMoreScreen
+import com.example.finderly.screen.userScreen.LoginScreen
+import com.example.finderly.screen.userScreen.MyPageScreen
+import com.example.finderly.screen.userScreen.PostMoreScreen
+import com.example.finderly.screen.userScreen.SignUpScreen
+import com.example.finderly.screen.userScreen.SplashScreen
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @Composable
 fun NavGraph(navController: NavHostController){
-    NavHost(navController = navController, startDestination = "Search"){
+    NavHost(navController = navController, startDestination = "Splash"){
         // 로그인, 회원가입 페이지
         composable(route = "Splash") {
             SplashScreen(navController)
@@ -75,7 +75,7 @@ fun NavGraph(navController: NavHostController){
             // 분실물 게시글 상세 페이지
             val postCategory = it.arguments?.getInt("postCategory")?: return@composable
             val postId = it.arguments?.getString("postId")?: return@composable
-            PostScreen(navHostController = navController, R.string.lost_category, postCategory,postId)
+            PostScreen( R.string.lost_category, postCategory,postId)
         }
         composable(
             route = "FoundPost/{postCategory}/{postId}",
@@ -84,7 +84,7 @@ fun NavGraph(navController: NavHostController){
             // 습득물 게시글 상세 페이지
             val postCategory = it.arguments?.getInt("postCategory")?: return@composable
             val postId = it.arguments?.getString("postId")?: return@composable
-            PostScreen(navHostController = navController, R.string.found_category, postCategory, postId)
+            PostScreen( R.string.found_category, postCategory, postId)
         }
         composable("RegisterPost") {
             // 게시글 등록

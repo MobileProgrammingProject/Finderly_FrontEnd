@@ -1,4 +1,4 @@
-package com.example.finderly.Screen
+package com.example.finderly.screen.userScreen
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -161,13 +161,13 @@ fun MyPageScreen(navController: NavHostController) {
     val scrollstate = rememberScrollState()
     val userViewModel : UserViewModel = viewModel()
     val context = LocalContext.current
-    var userId = getUserId(context).toString() // userId 저장
+    val userId = getUserId(context).toString() // userId 저장
 
     LaunchedEffect(Unit) {
         userViewModel.userProfile(userId)
     }
     val profile = userViewModel.profile
-
+    val userName = profile?.userName
     val MyFindItems = profile?.founds?.map {
         MyFindItem(it.lostName, it.lostLocation, it.storage, it.lostId)
     }
@@ -215,7 +215,7 @@ fun MyPageScreen(navController: NavHostController) {
             ) {
                 Row {
                     Text(
-                        text = "${userViewModel.profile?.userName}",
+                        text = "$userName",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = colorResource(id = R.color.text_deepgreen)
@@ -251,8 +251,8 @@ fun MyPageScreen(navController: NavHostController) {
                     fontSize = 13.sp,
                     color = colorResource(id = R.color.field_text_gray),
                     modifier = Modifier.clickable {
+                        Toast.makeText(context, "$userName 님 로그아웃 성공", Toast.LENGTH_SHORT).show()
                         userViewModel.initializeState()
-                        Toast.makeText(context, "${userViewModel.profile?.userName} 님 로그아웃 성공", Toast.LENGTH_SHORT).show()
 //                        userViewModel.logout(userId)
                         navController.navigate("Splash")
                     }

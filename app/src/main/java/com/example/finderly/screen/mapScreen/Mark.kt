@@ -1,4 +1,4 @@
-package com.example.finderly.mapScreen
+package com.example.finderly.screen.mapScreen
 
 import com.google.android.gms.maps.model.LatLng
 

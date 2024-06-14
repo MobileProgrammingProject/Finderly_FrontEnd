@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenuItem
@@ -36,13 +36,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.finderly.Data.PostListItem
 import com.example.finderly.R
-import com.example.finderly.viewModel.FoundPostViewModel
-import com.example.finderly.viewModel.LostPostViewModel
-import com.example.finderly.viewModel.Post
+import com.example.finderly.viewModel.PostViewModel
 
 @Composable
-fun PostItem(post: Post, navController: NavHostController) {
+fun PostItem(post: PostListItem,postCategory:Int, navController: NavHostController) {
     var expended by rememberSaveable {
         mutableStateOf(false)
     }
@@ -53,7 +52,7 @@ fun PostItem(post: Post, navController: NavHostController) {
             .clip(RoundedCornerShape(12.dp))
             .background(Color.White)
             .border(1.dp, colorResource(id = R.color.green), RoundedCornerShape(12.dp))
-            .clickable { navController.navigate("LostPost") }
+            .clickable { navController.navigate("LostPost/$postCategory/${post.postId}") }
             .padding(12.dp)
         ,
         verticalArrangement = Arrangement.spacedBy(2.dp)
@@ -63,7 +62,7 @@ fun PostItem(post: Post, navController: NavHostController) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = post.title,
+                text = post.postTitle,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.ExtraBold
             )
@@ -112,34 +111,26 @@ fun PostItem(post: Post, navController: NavHostController) {
             }
         }
         Text(
-            text = post.content,
+            text = post.postContent,
             fontSize = 13.sp,
         )
     }
 }
 
 @Composable
-fun LostPostList(lostPostViewModel: LostPostViewModel = viewModel(), navController: NavHostController){
+fun PostList(postViewModel: PostViewModel = viewModel(),lostCheck:Boolean,postCategory:Int, navController: NavHostController){
     val scrollState = rememberLazyListState()
-    LazyColumn (
-        state = scrollState,
-        verticalArrangement = Arrangement.spacedBy(20.dp)
-    ) {
-        itemsIndexed(lostPostViewModel.lostPostList){ _, item ->
-            PostItem(post = item, navController)
-        }
+    val posts = if(lostCheck){
+        postViewModel.getLostPosts()
+    } else {
+        postViewModel.getFoundPosts()
     }
-}
-
-@Composable
-fun FoundPostList(foundPostViewModel: FoundPostViewModel = viewModel(), navController: NavHostController){
-    val scrollState = rememberLazyListState()
     LazyColumn (
         state = scrollState,
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        itemsIndexed(foundPostViewModel.foundPostList){ _, item ->
-            PostItem(post = item, navController)
+        items(posts){ post ->
+            PostItem(post = post, postCategory = postCategory, navController = navController)
         }
     }
 }
