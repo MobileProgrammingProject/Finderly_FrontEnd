@@ -1,6 +1,6 @@
-package com.example.finderly.Data;
+package com.example.finderly.Data
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
 
 data class UserResponse(
     val message : String
@@ -60,4 +60,17 @@ data class Comment(
     val userId: String, // 사용자 아이디
     val content: String, // 댓글 내용
     val secretCheck: Boolean, // 댓글 익명 여부
+)
+
+data class CommentResponse(
+    val message: String,
+    val commentId: String
+)
+
+data class CommentRequest(
+    val userId: String,
+    val postId: String,
+    val postCategory: Int,
+    val content: String,
+    val secretCheck: Boolean
 )

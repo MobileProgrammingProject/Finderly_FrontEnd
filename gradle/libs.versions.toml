@@ -30,6 +30,7 @@ playServicesLocation = "21.3.0"
 retrofitVersion = "2.11.0"
 v2User = "2.10.0"
 v2UserVersion = "2.12.1"
+runtimeLivedata = "1.6.8"
 
 
 [libraries]
@@ -69,6 +70,7 @@ retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = 
 converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "converterGson" }
 v2-user = { group = "com.kakao.sdk", name = "v2-user", version.ref = "v2User" }
 sdk-v2-user = { group = "com.kakao.sdk", name = "v2-user", version.ref = "v2UserVersion" }
+androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
