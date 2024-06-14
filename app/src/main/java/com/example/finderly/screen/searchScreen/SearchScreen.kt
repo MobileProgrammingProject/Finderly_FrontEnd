@@ -245,7 +245,7 @@ fun SearchScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(30.dp)
+            .padding(start = 30.dp, top = 30.dp, end = 30.dp, bottom = 85.dp)
     ) {
         //content
         Column(
@@ -313,7 +313,8 @@ fun SearchScreen(navController: NavHostController) {
                 itemsIndexed(lostViewModel.lostItemList){ _, item ->
                     LostItemCard(item,{navController.navigate("LostItemInfo/${item.lostId}")}, {
                         lostViewModel.lostDelete(item.lostId)
-                        lostViewModel.lostList()}
+                        lostViewModel.lostList()
+                    }
                     )
                 }
             }
