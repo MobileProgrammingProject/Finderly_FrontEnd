@@ -59,12 +59,17 @@ fun MainBoardScreen(
     LaunchedEffect(postCategory) {
         postViewModel.setPostList(postCategory)
     }
+    LaunchedEffect(Unit){
+        postViewModel.setPostList(postCategory)
+    }
+
     Column(
         modifier = Modifier
             .background(Color.White)
             .clickable {
                 focusManager.clearFocus()
             }
+
     ) {
         // 헤더 박스
         Box(modifier = Modifier.height(190.dp)) {
@@ -96,7 +101,7 @@ fun MainBoardScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = colorResource(id = R.color.lightgreen))
-                .padding(start = 30.dp, end = 30.dp),
+                .padding(start = 30.dp, end = 30.dp, bottom = 80.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
