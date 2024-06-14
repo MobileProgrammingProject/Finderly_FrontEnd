@@ -28,6 +28,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -57,6 +58,7 @@ import com.example.finderly.component.PostHeader
 import com.example.finderly.component.RegisterImage
 import com.example.finderly.component.getUserId
 import com.example.finderly.viewModel.PostViewModel
+import com.example.finderly.viewModel.UserViewModel
 
 
 @Composable
@@ -75,7 +77,7 @@ fun RegisterSreen(navHostController: NavHostController) {
         mutableStateOf(false)
     }
     val focusRequester = FocusRequester()
-    val topPadding = 150.dp
+    val topPadding = 140.dp
     val verticalScrollState = rememberScrollState()
 
     var contentHasFocus by rememberSaveable {
@@ -89,7 +91,7 @@ fun RegisterSreen(navHostController: NavHostController) {
         mutableStateOf(false)
     }
     var postCategory by rememberSaveable {
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
 
     Box(
@@ -97,7 +99,9 @@ fun RegisterSreen(navHostController: NavHostController) {
             .background(Color.White)
             .fillMaxSize()
     ) {
-        PostHeader(R.string.register_post)    // 헤더 컴포넌트
+
+        // 헤더 컴포넌트
+        PostHeader(if(postCategory==0){R.string.register_lost_post}else R.string.register_found_post)
 
         Column(
             modifier = Modifier
@@ -121,7 +125,7 @@ fun RegisterSreen(navHostController: NavHostController) {
                         if (!titleHasFocus && title.isEmpty())
                             Text(
                                 text = "제목",
-                                fontSize = 23.sp,
+                                fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = colorResource(id = R.color.field_text_gray)
                             )
@@ -138,11 +142,11 @@ fun RegisterSreen(navHostController: NavHostController) {
                         .onFocusChanged { focusState ->
                             titleHasFocus = focusState.isFocused
                         },
-                    textStyle = TextStyle(fontSize = 25.sp),
+                    textStyle = TextStyle(fontSize = 20.sp),
                     singleLine = true
                 )
 
-                // 메뉴 선택하면 어떤 게시판인지 표시
+                // 메뉴 선택하면 어떤 게시판인지 표시하도록 수정
                 Button(
                     onClick = { expended = true },
                     shape = RectangleShape,
@@ -185,7 +189,7 @@ fun RegisterSreen(navHostController: NavHostController) {
                 value = content,
                 label = {
                     if (!contentHasFocus)
-                        androidx.compose.material3.Text(
+                        Text(
                             text = "내용을 입력하세요.",
                             color = colorResource(id = R.color.field_text_gray),
                             fontSize = 15.sp
@@ -232,7 +236,7 @@ fun RegisterSreen(navHostController: NavHostController) {
                         .padding(end = 15.dp, bottom = 20.dp, top = 20.dp, start = 10.dp)
                         .size(13.dp)
                 )
-                androidx.compose.material3.Text(
+                Text(
                     text = "익명",
                     color = Color.Gray,
                     fontSize = 14.sp,

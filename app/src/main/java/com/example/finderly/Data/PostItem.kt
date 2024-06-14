@@ -28,3 +28,7 @@ data class Post(
     //val commentsCnt: Int, // 댓글 수
     val comments: List<Comment> // 댓글 리스트
 )
+
+data class Response(
+    val message: String
+)

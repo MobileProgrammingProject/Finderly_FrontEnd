@@ -18,10 +18,11 @@ import kotlinx.coroutines.launch
 class PostViewModel(application:Application):AndroidViewModel(application = application){
     // 분실물 게시판 리스트
     private var lostPostList = mutableStateListOf<PostListItem>()
-
     // 습득물 게시판 리스트
     private var foundPostList = mutableStateListOf<PostListItem>()
-
+    // 검색 결과
+    var searchedPosts = mutableStateListOf<PostListItem>()
+    // 게시글 상세 정보
     var post = mutableStateOf(
         Post(
             postId = "loading...",
@@ -96,7 +97,35 @@ class PostViewModel(application:Application):AndroidViewModel(application = appl
 
             }catch (e:Exception){
                 // 에러 처리 로직 추가
-                Log.d("Post API Error", "Failed to fetch post details", e)
+                Log.e("Post API Error", "Failed to fetch post details", e)
+            }
+        }
+    }
+
+    // 게시글 삭제
+    fun deletePost(postId:String, postCategory: Int){
+        viewModelScope.launch {
+            try{
+                val response = RetrofitInstance.api.deletePost(postCategory = postCategory,postId = postId)
+                if(response.message=="게시글 삭제 완료"){
+                    // 성공 로직 처리
+                }else{
+                    // 실패 로직 처리
+                }
+            }catch (e:Exception){
+                // 에러 로직 처리
+                Log.e("Delete API Error", "Failed to delete", e)
+            }
+        }
+    }
+
+    // 게시글 검색
+    fun searchPostByTitle(postCategory: Int, keyword:String){
+        viewModelScope.launch {
+            try {
+
+            }catch (e:Exception){
+                Log.e("Search API Error", "Filed to search", e)
             }
         }
     }
