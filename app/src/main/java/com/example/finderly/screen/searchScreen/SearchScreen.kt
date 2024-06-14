@@ -316,7 +316,8 @@ fun SearchScreen(navController: NavHostController) {
                 itemsIndexed(lostViewModel.lostItemList){ _, item ->
                     LostItemCard(item,{navController.navigate("LostItemInfo/${item.lostId}")}, {
                         lostViewModel.lostDelete(item.lostId)
-                        lostViewModel.lostList()})
+                        lostViewModel.lostList()}
+                    )
                 }
             }
         }
