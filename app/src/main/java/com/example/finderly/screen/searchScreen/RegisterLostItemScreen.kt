@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -31,6 +32,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -49,19 +51,19 @@ fun RegisterLostItemScreen(navController: NavHostController) {
     var userId = getUserId(context).toString() // userId 저장
 
     var lostName by remember {
-        mutableStateOf("습득물")
+        mutableStateOf("")
     }
     var lostLocation by remember {
-        mutableStateOf("습득 위치")
+        mutableStateOf("")
     }
     var lostDate by remember {
-        mutableStateOf("습득 날짜")
+        mutableStateOf("")
     }
     var storage by remember {
-        mutableStateOf("보관 장소")
+        mutableStateOf("")
     }
     var description by remember {
-        mutableStateOf("상세 정보")
+        mutableStateOf("")
     }
     var pictures by remember {
         mutableStateOf(mutableListOf<String>())
@@ -93,15 +95,15 @@ fun RegisterLostItemScreen(navController: NavHostController) {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TextFieldWithLabel("습득물", lostName, { lostName = it }, true)
+            TextFieldWithLabel("습득물", lostName, { lostName = it }, true, imeAction = ImeAction.Next)
             Spacer(modifier = Modifier.height(15.dp))
-            TextFieldWithLabel("습득 위치", lostLocation, { lostLocation = it }, true)
+            TextFieldWithLabel("습득 위치", lostLocation, { lostLocation = it }, true, imeAction = ImeAction.Next)
             Spacer(modifier = Modifier.height(15.dp))
-            TextFieldWithIcon("습득 날짜", lostDate, { lostDate = it }, true, R.drawable.calendar)
+            TextFieldWithIcon("습득 날짜", lostDate, { lostDate = it }, true, R.drawable.calendar, imeAction = ImeAction.Next)
             Spacer(modifier = Modifier.height(15.dp))
-            TextFieldWithLabel("보관 장소", storage, { storage = it }, true)
+            TextFieldWithLabel("보관 장소", storage, { storage = it }, true, imeAction = ImeAction.Next)
             Spacer(modifier = Modifier.height(15.dp))
-            TextFieldWithLabel("상세 정보", description, { description = it }, false, minLines = 5, maxLines = 10)
+            TextFieldWithLabel("상세 정보", description, { description = it }, false, minLines = 5, maxLines = 10, imeAction = ImeAction.Done)
             Spacer(modifier = Modifier.height(15.dp))
 
             // 사진 등록
@@ -142,7 +144,7 @@ fun RegisterLostItemScreen(navController: NavHostController) {
 }
 
 @Composable
-fun TextFieldWithLabel(text: String, inputText: String, onInputTextChange: (String) -> Unit, singleLine: Boolean, minLines: Int = 1, maxLines: Int = 1) {
+fun TextFieldWithLabel(text: String, inputText: String, onInputTextChange: (String) -> Unit, singleLine: Boolean, minLines: Int = 1, maxLines: Int = 1, imeAction: ImeAction) {
     Column {
         Text(
             text = text,
@@ -160,22 +162,23 @@ fun TextFieldWithLabel(text: String, inputText: String, onInputTextChange: (Stri
                 .fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = Color.LightGray, //Set the text color Here
-                unfocusedTextColor = Color.LightGray,
-                cursorColor = Color.LightGray,
-                focusedBorderColor = Color.LightGray,
-                unfocusedBorderColor = Color.LightGray,
+                focusedTextColor = Color.DarkGray, //Set the text color Here
+                unfocusedTextColor = Color.DarkGray,
+                cursorColor = Color.DarkGray,
+                focusedBorderColor = Color.Black,
+                unfocusedBorderColor = Color.Black,
             ),
             singleLine = singleLine,
             minLines = minLines,
-            maxLines = maxLines
+            maxLines = maxLines,
+            keyboardOptions = KeyboardOptions(imeAction = imeAction)
         )
     }
 }
 
 
 @Composable
-fun TextFieldWithIcon(text: String, inputText: String, onInputTextChange: (String) -> Unit, singleLine: Boolean, icon: Int) {
+fun TextFieldWithIcon(text: String, inputText: String, onInputTextChange: (String) -> Unit, singleLine: Boolean, icon: Int, imeAction:ImeAction) {
     Column {
         Text(
             text = text,
@@ -193,11 +196,11 @@ fun TextFieldWithIcon(text: String, inputText: String, onInputTextChange: (Strin
                 .fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = Color.LightGray, //Set the text color Here
-                unfocusedTextColor = Color.LightGray,
-                cursorColor = Color.LightGray,
-                focusedBorderColor = Color.LightGray,
-                unfocusedBorderColor = Color.LightGray,
+                focusedTextColor = Color.DarkGray, //Set the text color Here
+                unfocusedTextColor = Color.DarkGray,
+                cursorColor = Color.DarkGray,
+                focusedBorderColor = Color.Black,
+                unfocusedBorderColor = Color.Black,
             ),
             singleLine = singleLine,
             trailingIcon = {
@@ -209,6 +212,7 @@ fun TextFieldWithIcon(text: String, inputText: String, onInputTextChange: (Strin
                     contentDescription = "calendar"
                 )
             },
+            keyboardOptions = KeyboardOptions(imeAction = imeAction)
         )
     }
 
