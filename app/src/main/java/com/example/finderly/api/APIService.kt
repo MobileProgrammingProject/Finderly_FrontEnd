@@ -1,5 +1,7 @@
 package com.example.finderly.api
 
+import com.example.finderly.Data.CommentRequest
+import com.example.finderly.Data.CommentResponse
 import com.example.finderly.Data.LostItem
 import com.example.finderly.Data.LostItemInfoResponse
 import com.example.finderly.Data.LostItemRequest
@@ -21,7 +23,15 @@ import retrofit2.http.Query
 
 interface APIService {
     // comment 댓글
+    @POST("/comment")
+    suspend fun postComment(
+        @Body commentRequest: CommentRequest
+    ): CommentResponse
 
+    @DELETE("/comment")
+    suspend fun deleteComment(
+        @Query("commentId") commentId: String
+    ):CommentResponse // comment 삭제
     // lost 분실물
     @POST("/lost/register") // 분실물 등록
     suspend fun postLostItem(
