@@ -25,7 +25,7 @@ data class Post(
     val postTitle : String, // 제목
     val postContent: String, // 게시글 내용
     val pictures: List<String>, // 사진 url 리스트
-    //val commentsCnt: Int, // 댓글 수
+    val commentsCnt: Int, // 댓글 수
     val comments: List<Comment> // 댓글 리스트
 )
 

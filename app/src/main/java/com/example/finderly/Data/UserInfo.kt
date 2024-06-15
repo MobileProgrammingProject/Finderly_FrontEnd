@@ -61,16 +61,3 @@ data class Comment(
     val content: String, // 댓글 내용
     val secretCheck: Boolean, // 댓글 익명 여부
 )
-
-data class CommentResponse(
-    val message: String,
-    val commentId: String
-)
-
-data class CommentRequest(
-    val userId: String,
-    val postId: String,
-    val postCategory: Int,
-    val content: String,
-    val secretCheck: Boolean
-)

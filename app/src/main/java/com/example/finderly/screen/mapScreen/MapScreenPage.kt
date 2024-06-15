@@ -4,17 +4,13 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.example.finderly.MapScreen
@@ -45,14 +41,12 @@ fun MapScreenPage(navHostController: NavHostController) {
             userLocation = LatLng(location.latitude, location.longitude)
         }
         MapScreen(initialPosition = userLocation, navHostController)
+        Log.d("MapScreenPage", "위치 권한 있음")
     }
     else{
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("위치 권한을 허용해 주세요.")
-        }
         MapScreen(initialPosition = LatLng(37.5665, 126.9780), navHostController)
+        Log.d("MapScreenPage", "위치 권한 없음")
         // 일단은 서울로 위치 띄워줌
-        // 회의 통해서 정하기
     }
 }
 

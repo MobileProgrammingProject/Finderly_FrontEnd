@@ -1,5 +1,6 @@
 package com.example.finderly.screen.postScreen
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,10 +17,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Divider
@@ -36,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -48,16 +50,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.finderly.Data.Comment
 import com.example.finderly.R
 import com.example.finderly.component.PostHeader
 import com.example.finderly.component.ShowImage
 import com.example.finderly.component.getUserId
-import com.example.finderly.viewModel.CommentItem
 import com.example.finderly.viewModel.CommentViewModel
 import com.example.finderly.viewModel.PostViewModel
 
@@ -73,7 +76,6 @@ fun PostScreen(
     val postViewModel: PostViewModel = viewModel()
     val context = LocalContext.current
     val commentViewModel: CommentViewModel = viewModel()
-    val comments by commentViewModel.commentList.observeAsState(mutableListOf())
     val userId = getUserId(context)
 
     Log.d("postCategory", "$postCategory")
@@ -86,17 +88,17 @@ fun PostScreen(
 
     //val postitemInfo = userViewModel.postiteminfo
     var post = postViewModel.post
-    Log.d("Post", "${post.value}")
-
+    val comments by postViewModel.commentlist.observeAsState()
+    Log.d("Post", "${post.value.comments.size}")
 
     // 좋아요 수
     var likeCounter by rememberSaveable {
         mutableStateOf(0)
     }
-//    // 댓글 수
-//    var commentsCounter by rememberSaveable {
-//        mutableIntStateOf(post.value.comments.size)
-//    }
+    // 댓글 수
+    var commentsCounter by rememberSaveable {
+        mutableIntStateOf(post.value.comments.size)
+    }
     // 댓글 입력(등록)
     var commentContent by rememberSaveable {
         mutableStateOf("")
@@ -108,7 +110,7 @@ fun PostScreen(
 
     LaunchedEffect(postViewModel.post) {
         post = postViewModel.post
-        //commentsCounter = post.value.comments.size
+        commentsCounter = post.value.comments.size
     }
 
     Box {
@@ -252,8 +254,8 @@ fun PostScreen(
 
                 Log.d("PostScreen", "Post Info loaded: ${post.value}")
                 Column {
-                    comments.forEach { comment ->
-                        CommentItem(comment, commentViewModel)
+                    comments.orEmpty().forEach { comment ->
+                        CommentItem(comment, commentViewModel, postViewModel, context)
                     }
                 }
 
@@ -306,7 +308,10 @@ fun PostScreen(
                                 value = commentContent,
                                 onValueChange = {commentContent = it},
                                 modifier = Modifier
-                                    .padding(8.dp)
+                                    .padding(8.dp),
+                                keyboardOptions = KeyboardOptions.Default.copy(
+                                    imeAction = ImeAction.Done
+                                )
                             )
 
                         }
@@ -314,7 +319,7 @@ fun PostScreen(
 
                     Button(
                         onClick = {
-                            commentViewModel.addComment(userId.toString(), postId, postCategory, commentContent, secretCheck)
+                            commentViewModel.addComment(userId.toString(), postId, postCategory, commentContent, secretCheck, postViewModel)
                             commentContent = "" // 댓글 등록 후 입력 필드 초기화
                         },
                         modifier = Modifier
@@ -328,6 +333,83 @@ fun PostScreen(
                             color = Color.White
                         )
                     }
+                }
+            }
+        }
+    }
+}
+
+
+@Composable
+fun CommentItem(comment: Comment, commentViewModel: CommentViewModel, postViewModel: PostViewModel,context: Context) {
+    var expanded by rememberSaveable { mutableStateOf(false) }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .padding(10.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .background(colorResource(id = R.color.gray_background))
+            .padding(10.dp)
+            .fillMaxWidth()
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.comments_gray),
+            contentDescription = "Comment Icon",
+            modifier = Modifier.size(24.dp)
+        )
+        Spacer(modifier = Modifier.padding(10.dp))
+        Text(text = comment.content)
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            Box {
+                Image(
+                    painter = painterResource(id = R.drawable.menu),
+                    contentDescription = "menu",
+                    modifier = Modifier
+                        .clickable { expanded = true }
+                        .size(20.dp)
+                )
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Color.White)
+                        .align(Alignment.Center)
+                ) {
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = "신고하기",
+                                fontSize = 12.sp,
+                                color = Color.Gray,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        },
+                        onClick = { expanded = false },
+                        modifier = Modifier.size(90.dp, 20.dp)
+                    )
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = "삭제하기",
+                                fontSize = 12.sp,
+                                color = Color.Gray,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        },
+                        onClick = {
+                            if(comment.userId == getUserId(context)){
+                            commentViewModel.deleteComment(comment.commentId, commentViewModel, postViewModel)}
+                            expanded = false },
+                        modifier = Modifier.size(90.dp, 20.dp)
+                            .align(Alignment.CenterHorizontally)
+                    )
                 }
             }
         }
