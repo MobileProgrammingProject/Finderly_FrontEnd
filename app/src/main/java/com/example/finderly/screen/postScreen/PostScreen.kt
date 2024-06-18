@@ -1,5 +1,6 @@
 package com.example.finderly.screen.postScreen
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Divider
@@ -34,6 +36,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -42,17 +46,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.finderly.Data.Comment
 import com.example.finderly.R
 import com.example.finderly.component.PostHeader
 import com.example.finderly.component.ShowImage
+import com.example.finderly.component.getUserId
+import com.example.finderly.viewModel.CommentViewModel
 import com.example.finderly.viewModel.PostViewModel
 
 
@@ -65,6 +74,9 @@ fun PostScreen(
 ) {
     //val userViewModel: UserViewModel = viewModel()
     val postViewModel: PostViewModel = viewModel()
+    val context = LocalContext.current
+    val commentViewModel: CommentViewModel = viewModel()
+    val userId = getUserId(context)
 
     Log.d("postCategory", "$postCategory")
     Log.d("postId", postId)
@@ -76,25 +88,29 @@ fun PostScreen(
 
     //val postitemInfo = userViewModel.postiteminfo
     var post = postViewModel.post
-    Log.d("Post", "${post.value}")
-
+    val comments by postViewModel.commentlist.observeAsState()
+    Log.d("Post", "${post.value.comments.size}")
 
     // 좋아요 수
     var likeCounter by rememberSaveable {
         mutableStateOf(0)
     }
-//    // 댓글 수
-//    var commentsCounter by rememberSaveable {
-//        mutableIntStateOf(post.value.comments.size)
-//    }
+    // 댓글 수
+    var commentsCounter by rememberSaveable {
+        mutableIntStateOf(post.value.comments.size)
+    }
     // 댓글 입력(등록)
     var commentContent by rememberSaveable {
-        mutableStateOf("댓글을 등록하세요.")
+        mutableStateOf("")
+    }
+
+    var secretCheck by rememberSaveable {
+        mutableStateOf(false)
     }
 
     LaunchedEffect(postViewModel.post) {
         post = postViewModel.post
-        //commentsCounter = post.value.comments.size
+        commentsCounter = post.value.comments.size
     }
 
     Box {
@@ -238,11 +254,10 @@ fun PostScreen(
 
                 Log.d("PostScreen", "Post Info loaded: ${post.value}")
                 Column {
-                    post.value.comments.forEach {
-                        CreateComment(it.content)
+                    comments.orEmpty().forEach { comment ->
+                        CommentItem(comment, commentViewModel, postViewModel, context)
                     }
                 }
-
 
                 Spacer(modifier = Modifier.height(10.dp))
 
@@ -281,26 +296,32 @@ fun PostScreen(
                             modifier = Modifier.height(50.dp)
                         ) {
                             Checkbox(
-                                checked = false,
-                                onCheckedChange = { /* 익명 체크 로직 */ }
+                                checked = secretCheck,
+                                onCheckedChange = { secretCheck=it }
                             )
                             Text(
                                 text = "익명",
                                 fontSize = 10.sp
                             )
-
                             Spacer(modifier = Modifier.width(10.dp))
-
                             BasicTextField(
                                 value = commentContent,
-                                onValueChange = {},
+                                onValueChange = {commentContent = it},
+                                modifier = Modifier
+                                    .padding(8.dp),
+                                keyboardOptions = KeyboardOptions.Default.copy(
+                                    imeAction = ImeAction.Done
+                                )
                             )
 
                         }
                     }
 
                     Button(
-                        onClick = { /* 등록 버튼 클릭 로직 */ },
+                        onClick = {
+                            commentViewModel.addComment(userId.toString(), postId, postCategory, commentContent, secretCheck, postViewModel)
+                            commentContent = "" // 댓글 등록 후 입력 필드 초기화
+                        },
                         modifier = Modifier
                             .padding(8.dp)
                             .width(75.dp),
@@ -320,10 +341,9 @@ fun PostScreen(
 
 
 @Composable
-fun CreateComment(content: String = "") {
-    var expended by rememberSaveable {
-        mutableStateOf(false)
-    }
+fun CommentItem(comment: Comment, commentViewModel: CommentViewModel, postViewModel: PostViewModel,context: Context) {
+    var expanded by rememberSaveable { mutableStateOf(false) }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -339,10 +359,9 @@ fun CreateComment(content: String = "") {
             modifier = Modifier.size(24.dp)
         )
         Spacer(modifier = Modifier.padding(10.dp))
-        Text(text = content)
+        Text(text = comment.content)
         Box(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.CenterEnd
         ) {
             Box {
@@ -350,42 +369,45 @@ fun CreateComment(content: String = "") {
                     painter = painterResource(id = R.drawable.menu),
                     contentDescription = "menu",
                     modifier = Modifier
-                        .clickable {
-                            expended = true
-                        }
+                        .clickable { expanded = true }
                         .size(20.dp)
                 )
                 DropdownMenu(
-                    expanded = expended,
-                    onDismissRequest = { expended = false },
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
                         .background(Color.White)
                         .align(Alignment.Center)
                 ) {
-                    DropdownMenuItem(text = {
-                        Text(
-                            text = "신고하기",
-                            fontSize = 12.sp,
-                            color = Color.Gray,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }, onClick = { expended = false },
-                        modifier = Modifier
-                            .size(90.dp, 20.dp)
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = "신고하기",
+                                fontSize = 12.sp,
+                                color = Color.Gray,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        },
+                        onClick = { expanded = false },
+                        modifier = Modifier.size(90.dp, 20.dp)
                     )
-                    DropdownMenuItem(text = {
-                        Text(
-                            text = "삭제하기",
-                            fontSize = 12.sp,
-                            color = Color.Gray,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }, onClick = { expended = false },
-                        modifier = Modifier
-                            .size(90.dp, 20.dp)
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = "삭제하기",
+                                fontSize = 12.sp,
+                                color = Color.Gray,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        },
+                        onClick = {
+                            if(comment.userId == getUserId(context)){
+                            commentViewModel.deleteComment(comment.commentId, commentViewModel, postViewModel)}
+                            expanded = false },
+                        modifier = Modifier.size(90.dp, 20.dp)
                             .align(Alignment.CenterHorizontally)
                     )
                 }
@@ -393,6 +415,7 @@ fun CreateComment(content: String = "") {
         }
     }
 }
+
 
 // 좋아요 업데이트
 @Composable

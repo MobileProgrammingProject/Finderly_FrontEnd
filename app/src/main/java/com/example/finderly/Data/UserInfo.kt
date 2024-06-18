@@ -1,6 +1,6 @@
-package com.example.finderly.Data;
+package com.example.finderly.Data
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
 
 data class UserResponse(
     val message : String

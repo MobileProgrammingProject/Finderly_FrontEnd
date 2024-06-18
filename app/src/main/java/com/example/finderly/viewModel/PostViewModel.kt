@@ -6,7 +6,10 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.finderly.Data.Comment
 import com.example.finderly.Data.Post
 import com.example.finderly.Data.PostListItem
 import com.example.finderly.Data.PostRequest
@@ -29,13 +32,20 @@ class PostViewModel(application:Application):AndroidViewModel(application = appl
             postTitle = "loading...",
             postContent = "loading...",
             pictures = emptyList(),
-            comments = emptyList()
+            comments = emptyList(),
+            commentsCnt = 0
         )
     )
 
+    private val _comments = MutableLiveData<List<Comment>>()
+    val commentlist: LiveData<List<Comment>> = _comments
+
     init {
         setPostList(0)
+        updateComments()
     }
+
+
 
     // 게시글 리스트
     fun setPostList(postCategory: Int){
@@ -93,6 +103,7 @@ class PostViewModel(application:Application):AndroidViewModel(application = appl
                 val response:Post = RetrofitInstance.api.getPostDetailInfo(postCategory, postId)
                 Log.d("post 응답", "$response")
                 post.value = response
+                updateComments()
                 // 처리 에러 추가
 
             }catch (e:Exception){
@@ -138,4 +149,34 @@ class PostViewModel(application:Application):AndroidViewModel(application = appl
         return foundPostList
     }
 
+    fun updateComments(){
+        _comments.value = post.value.comments
+    }
+
+    // 새로운 댓글 추가
+    fun addCommentToPost(newComment: Comment) {
+        val updatedComments = post.value.comments.toMutableList()
+        updatedComments.add(newComment)
+        post.value = post.value.copy(comments = updatedComments, commentsCnt = updatedComments.size)
+        _comments.value = updatedComments
+    }
+
+    fun deleteCommentToPost(newComment: Comment?, temp: Boolean, commentId: String){
+        if(temp) {
+            val updatedComments = post.value.comments.toMutableList()
+            updatedComments.remove(newComment)
+            post.value = post.value.copy(comments = updatedComments)
+            _comments.value = updatedComments
+        }
+        else {
+            val updatedComments = post.value.comments.toMutableList()
+            val commentToRemove = updatedComments.find { it.commentId == commentId }
+            if (commentToRemove != null) {
+                updatedComments.remove(commentToRemove)
+                post.value = post.value.copy(comments = updatedComments)
+                _comments.value = updatedComments
+            }
+        }
+    }
 }
+

@@ -23,7 +23,6 @@ suspend fun getLatLngFromAddress(context: Context, address: String): LatLng? {
             } else {
                 /*
                 만약에 구글지도에서 위치이름으로 주소 찾지 못하면 이 부분 실행됨
-                현재는 그냥 화면에 띄우지 않는데, 의논 필요
                 */
                 null
             }
@@ -44,7 +43,7 @@ suspend fun loadMarkers(
         val newMarkers = markList.mapNotNull { mark ->
             val latLng = getLatLngFromAddress(context, mark.position)
             if (latLng != null) {
-                MarkerData(name = mark.name, position = latLng, category = mark.category, location = mark.position)
+                MarkerData(name = mark.name, position = latLng, location = mark.position)
             } else {
                 null
             }
