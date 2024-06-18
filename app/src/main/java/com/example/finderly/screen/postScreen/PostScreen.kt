@@ -2,6 +2,7 @@ package com.example.finderly.screen.postScreen
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -406,6 +407,9 @@ fun CommentItem(comment: Comment, commentViewModel: CommentViewModel, postViewMo
                         onClick = {
                             if(comment.userId == getUserId(context)){
                             commentViewModel.deleteComment(comment.commentId, commentViewModel, postViewModel)}
+                            else{
+                                Toast.makeText(context, "본인이 작성한 댓글만 삭제할 수 있습니다.", Toast.LENGTH_SHORT).show()
+                            }
                             expanded = false },
                         modifier = Modifier.size(90.dp, 20.dp)
                             .align(Alignment.CenterHorizontally)
