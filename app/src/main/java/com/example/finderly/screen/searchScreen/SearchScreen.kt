@@ -113,68 +113,6 @@ fun LostItemCard(
     }
 }
 
-//@Composable
-//fun FilterMenu(modifier: Modifier) {
-//    var expanded by remember { mutableStateOf(false) }
-//    Box(
-//        modifier = modifier
-//            .border(
-//                width = 1.dp,
-//                color = colorResource(id = R.color.field_border_gray),
-//                shape = RoundedCornerShape(10.dp)
-//            )
-//            .background(color = Color.White, shape = RoundedCornerShape(10.dp))
-//    ) {
-//        IconButton(onClick = { expanded = true }, modifier = Modifier.width(80.dp)) {
-//            Row(verticalAlignment = Alignment.CenterVertically) {
-//                Text(
-//                    text = " 필터",
-//                    fontSize = 15.sp,
-//                    color = colorResource(id = R.color.text_gray)
-//                )
-//                Icon(
-//                    Icons.Default.KeyboardArrowDown,
-//                    contentDescription = "ArrowDown",
-//                    tint = Color.Gray,
-//                    modifier = Modifier.size(30.dp)
-//                )
-//            }
-//        }
-//        DropdownMenu(
-//            expanded = expanded,
-//            onDismissRequest = { expanded = false }
-//        ) {
-//            DropdownMenuItem(
-//                text = { Text("Option 1") },
-//                onClick = { /* TODO */ },
-//                leadingIcon = {
-//                    Icon(
-//                        Icons.Outlined.Edit,
-//                        contentDescription = null
-//                    )
-//                })
-//            DropdownMenuItem(
-//                text = { Text("Option 2") },
-//                onClick = { /* TODO */ },
-//                leadingIcon = {
-//                    Icon(
-//                        Icons.Outlined.Settings,
-//                        contentDescription = null
-//                    )
-//                })
-//           DropdownMenuItem(
-//                text = { Text("Option 3") },
-//                onClick = { /* TODO */ },
-//                leadingIcon = {
-//                    Icon(
-//                        Icons.Outlined.Email,
-//                        contentDescription = null
-//                    )
-//                })
-//        }
-//    }
-//}
-
 @Composable
 fun DeleteOrReportMenu(
     modifier: Modifier,

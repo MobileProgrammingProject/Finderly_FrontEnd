@@ -103,7 +103,8 @@ fun LostItemInfoScreen(lostId : String){
                 }, reportClick = {
                     lostViewModel.initializeState()
                     lostitemInfo?.let{
-                        reportViewModel.report(2, it.lostId, it.userId)}
+                        reportViewModel.report(2, it.lostId, it.userId)
+                    }
                                  },
                     myItem = myItem)
             }
