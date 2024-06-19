@@ -53,7 +53,7 @@ fun NavGraph(navController: NavHostController){
         ) {
             // 분실물 상세 정보
             val lostId = it.arguments?.getString("lostId") ?: return@composable
-            LostItemInfoScreen(lostId)
+            LostItemInfoScreen(lostId, navController)
         }
 
 

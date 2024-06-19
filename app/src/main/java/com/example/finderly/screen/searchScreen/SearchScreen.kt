@@ -276,6 +276,7 @@ fun SearchScreen(navController: NavHostController) {
                     coroutineScope.launch {
                         lostViewModel.initializeState()
                         lostViewModel.lostSearch(it)
+                        Toast.makeText(context, lostViewModel.message, Toast.LENGTH_SHORT).show()
                 }
                 }
                 )
@@ -291,7 +292,6 @@ fun SearchScreen(navController: NavHostController) {
                             coroutineScope.launch {
                                 lostViewModel.initializeState()
                                 lostViewModel.lostDelete(item.lostId)
-                                lostViewModel.lostList()
                             }
                         },
                         reportClick = {
@@ -302,13 +302,15 @@ fun SearchScreen(navController: NavHostController) {
                         }, myItem)
                 }
             }
-            //분실물 삭제 Toast : deleteClick 호출 시 / 분실물 검색 실패 시
-            LaunchedEffect(lostViewModel.success){
+            LaunchedEffect(lostViewModel.success) {
+                if(lostViewModel.message != null)
                     Toast.makeText(context, lostViewModel.message, Toast.LENGTH_SHORT).show()
+                if(lostViewModel.message == "분실물 삭제 완료")
+                    lostViewModel.lostList()
             }
-            // 신고 Toast : reportClick 호출 시
-            LaunchedEffect(reportViewModel.success){
-                Toast.makeText(context, reportViewModel.message, Toast.LENGTH_SHORT).show()
+            LaunchedEffect(reportViewModel.success) {
+                if(reportViewModel.message != null)
+                    Toast.makeText(context, reportViewModel.message, Toast.LENGTH_SHORT).show()
             }
         }
     }

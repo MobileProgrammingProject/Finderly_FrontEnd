@@ -69,7 +69,7 @@ fun PostItem(post: PostListItem,postCategory:Int, navController: NavHostControll
                 fontWeight = FontWeight.ExtraBold
             )
 
-            Box(//이거 뺐으면 좋겠음
+            Box(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.CenterEnd
             ){
