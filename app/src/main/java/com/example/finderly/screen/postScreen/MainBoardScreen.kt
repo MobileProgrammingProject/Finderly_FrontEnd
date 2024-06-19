@@ -49,6 +49,12 @@ fun MainBoardScreen(
     var findCheck by rememberSaveable {
         mutableStateOf(false)
     }
+    var search by rememberSaveable {
+        mutableStateOf("")
+    }
+    val searchHasFocus by rememberSaveable {
+        mutableStateOf(false)
+    }
 
     val postCategory:Int = if(lostCheck){
         0
@@ -56,10 +62,10 @@ fun MainBoardScreen(
         1
     }
 
-    LaunchedEffect(postCategory) {
+    LaunchedEffect(Unit){
         postViewModel.setPostList(postCategory)
     }
-    LaunchedEffect(Unit){
+    LaunchedEffect(postCategory) {
         postViewModel.setPostList(postCategory)
     }
 
@@ -105,20 +111,20 @@ fun MainBoardScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            val search by rememberSaveable {
-                mutableStateOf("")
-            }
-            val searchHasFocus by rememberSaveable {
-                mutableStateOf(false)
-            }
-
             // 검색 필드
             Spacer(modifier = Modifier.padding(13.dp))
             Search(search = remember {
                 mutableStateOf(search)
             }, searchHasFocus = remember {
                 mutableStateOf(searchHasFocus)
-            }, width = 280.dp, onSearchClicked = {})
+            }, width = 280.dp, onSearchClicked = {
+                if(it != ""){
+                    postViewModel.searchPostByTitle(postCategory, it)
+                }
+                else{
+                    postViewModel.setPostList(postCategory)
+                }
+            })
             Spacer(modifier = Modifier.padding(13.dp))
             
             // 리스트

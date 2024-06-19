@@ -72,7 +72,6 @@ fun PostScreen(
     postId: String,
     navHostController: NavHostController
 ) {
-    //val userViewModel: UserViewModel = viewModel()
     val postViewModel: PostViewModel = viewModel()
     val context = LocalContext.current
     val commentViewModel: CommentViewModel = viewModel()
@@ -82,11 +81,9 @@ fun PostScreen(
     Log.d("postId", postId)
 
     LaunchedEffect(Unit) {
-        //userViewModel.postitemInfo(postCategory, postId)
         postViewModel.getPostDetailInfo(postCategory, postId)
     }
 
-    //val postitemInfo = userViewModel.postiteminfo
     var post = postViewModel.post
     val comments by postViewModel.commentlist.observeAsState()
     Log.d("Post", "${post.value.comments.size}")

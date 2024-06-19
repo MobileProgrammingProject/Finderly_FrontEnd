@@ -23,8 +23,7 @@ class PostViewModel(application:Application):AndroidViewModel(application = appl
     private var lostPostList = mutableStateListOf<PostListItem>()
     // 습득물 게시판 리스트
     private var foundPostList = mutableStateListOf<PostListItem>()
-    // 검색 결과
-    var searchedPosts = mutableStateListOf<PostListItem>()
+
     // 게시글 상세 정보
     var post = mutableStateOf(
         Post(
@@ -134,7 +133,24 @@ class PostViewModel(application:Application):AndroidViewModel(application = appl
     fun searchPostByTitle(postCategory: Int, keyword:String){
         viewModelScope.launch {
             try {
-
+                val response:List<PostListItem> = RetrofitInstance.api.searchPostByTitle(postCategory,keyword)
+                if(response.isEmpty()){
+                    // 응답 에러 로직 처리
+                }else{
+                    if(postCategory==0){
+                        // 분실물 게시판 처리
+                        lostPostList.clear()
+                        lostPostList.addAll(response)
+                    }
+                    else if (postCategory==1){
+                        // 습득물 게시판 처리
+                        foundPostList.clear()
+                        foundPostList.addAll(response)
+                    }
+                    else{
+                        // 예외 처리 추가
+                    }
+                }
             }catch (e:Exception){
                 Log.e("Search API Error", "Filed to search", e)
             }
