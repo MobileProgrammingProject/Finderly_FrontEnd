@@ -56,7 +56,7 @@ import com.example.finderly.component.Search
 import com.example.finderly.viewModel.LostViewModel
 
 @Composable
-fun LostItemCard(item: LostItem, onClick: () -> Unit, deleteClick: ()-> Unit) {
+fun LostItemCard(item: LostItem, onClick: () -> Unit, deleteClick: () -> Unit) {
     Card(
         modifier = Modifier
             .border(
@@ -159,7 +159,7 @@ fun FilterMenu(modifier: Modifier) {
 }
 
 @Composable
-fun DeleteOrReportMenu(modifier : Modifier, deleteClick: () -> Unit, reportClick : ()-> Unit) {
+fun DeleteOrReportMenu(modifier: Modifier, deleteClick: () -> Unit, reportClick: () -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     Box(
         modifier = modifier
@@ -194,7 +194,7 @@ fun DeleteOrReportMenu(modifier : Modifier, deleteClick: () -> Unit, reportClick
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
-                ){
+                ) {
                     Text(
                         text = "삭제하기",
                         fontSize = 12.sp,
@@ -211,7 +211,7 @@ fun DeleteOrReportMenu(modifier : Modifier, deleteClick: () -> Unit, reportClick
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
-                ){
+                ) {
                     Text(
                         text = "신고하기",
                         fontSize = 12.sp,
@@ -226,7 +226,7 @@ fun DeleteOrReportMenu(modifier : Modifier, deleteClick: () -> Unit, reportClick
 @Composable
 fun SearchScreen(navController: NavHostController) {
 
-    val lostViewModel : LostViewModel = viewModel()
+    val lostViewModel: LostViewModel = viewModel()
     LaunchedEffect(Unit) {
         lostViewModel.lostList()
     }
@@ -295,9 +295,16 @@ fun SearchScreen(navController: NavHostController) {
                     mutableStateOf(false)
                 }
                 Search(search = remember { mutableStateOf(search) }, searchHasFocus = remember {
-                    mutableStateOf(searchHasFocus)},  onSearchClicked = {
-                        lostViewModel.lostSearch(it)
-                }
+                    mutableStateOf(searchHasFocus)
+                },
+                    onSearchClicked = {
+                        if (it != "") {
+                            lostViewModel.lostSearch(it)
+                        }
+                        else{
+                            lostViewModel.lostList()
+                        }
+                    }
                 )
 
                 // 필터 메뉴
@@ -310,8 +317,8 @@ fun SearchScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(20.dp))
             LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-                itemsIndexed(lostViewModel.lostItemList){ _, item ->
-                    LostItemCard(item,{navController.navigate("LostItemInfo/${item.lostId}")}, {
+                itemsIndexed(lostViewModel.lostItemList) { _, item ->
+                    LostItemCard(item, { navController.navigate("LostItemInfo/${item.lostId}") }, {
                         lostViewModel.lostDelete(item.lostId)
                         lostViewModel.lostList()
                     }

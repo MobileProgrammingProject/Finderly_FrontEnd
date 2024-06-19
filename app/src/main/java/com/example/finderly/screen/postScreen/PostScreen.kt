@@ -109,6 +109,10 @@ fun PostScreen(
         post = postViewModel.post
         commentsCounter = post.value.comments.size
     }
+    LaunchedEffect(comments) {
+        post = postViewModel.post
+        commentsCounter = post.value.comments.size
+    }
 
     Box {
         PostHeader(postType)    // 헤더 컴포넌트
@@ -250,6 +254,8 @@ fun PostScreen(
                 )
 
                 Log.d("PostScreen", "Post Info loaded: ${post.value}")
+                
+                // 댓글
                 Column {
                     comments.orEmpty().forEach { comment ->
                         CommentItem(comment, commentViewModel, postViewModel, context)
@@ -404,7 +410,8 @@ fun CommentItem(comment: Comment, commentViewModel: CommentViewModel, postViewMo
                             if(comment.userId == getUserId(context)){
                             commentViewModel.deleteComment(comment.commentId, commentViewModel, postViewModel)}
                             expanded = false },
-                        modifier = Modifier.size(90.dp, 20.dp)
+                        modifier = Modifier
+                            .size(90.dp, 20.dp)
                             .align(Alignment.CenterHorizontally)
                     )
                 }
