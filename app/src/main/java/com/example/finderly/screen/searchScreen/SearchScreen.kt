@@ -1,5 +1,6 @@
 package com.example.finderly.screen.searchScreen
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,6 +35,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,6 +45,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,6 +59,7 @@ import com.example.finderly.component.Search
 import com.example.finderly.component.getUserId
 import com.example.finderly.viewModel.LostViewModel
 import com.example.finderly.viewModel.ReportViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun LostItemCard(
@@ -257,8 +261,10 @@ fun SearchScreen(navController: NavHostController) {
     val reportViewModel: ReportViewModel = viewModel()
     val context = LocalContext.current
     val userId = getUserId(context)
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
+        lostViewModel.initializeState()
         lostViewModel.lostList()
     }
 
@@ -285,7 +291,7 @@ fun SearchScreen(navController: NavHostController) {
                 .padding(bottom = 15.dp)
         ) {
             Text(
-                text = "Finderly",
+                text = stringResource(id = R.string.app_name),
                 fontSize = 50.sp,
                 fontWeight = FontWeight.ExtraBold,
                 color = colorResource(id = R.color.green)
@@ -329,32 +335,42 @@ fun SearchScreen(navController: NavHostController) {
                 Search(search = remember { mutableStateOf(search) }, searchHasFocus = remember {
                     mutableStateOf(searchHasFocus)
                 }, onSearchClicked = {
-                    lostViewModel.lostSearch(it)
+                    coroutineScope.launch {
+                        lostViewModel.initializeState()
+                        lostViewModel.lostSearch(it)
+                }
                 }
                 )
-
-                // 필터 메뉴
-//                FilterMenu(
-//                    Modifier
-//                        .offset(20.dp)
-//                        .width(80.dp)
-//                )
             }
 
             Spacer(modifier = Modifier.height(20.dp))
             LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-                itemsIndexed(lostViewModel.lostItemList) { _, item ->
-                    val myItem: Boolean = if (item.userId == userId) true else false
+                itemsIndexed(lostViewModel.lostItemList.reversed()) { _, item ->
+                    val myItem: Boolean = (item.userId == userId)
                     LostItemCard(item = item,
                         onClick = { navController.navigate("LostItemInfo/${item.lostId}") },
                         deleteClick = {
-                            lostViewModel.lostDelete(item.lostId)
-                            lostViewModel.lostList()
+                            coroutineScope.launch {
+                                lostViewModel.initializeState()
+                                lostViewModel.lostDelete(item.lostId)
+                                lostViewModel.lostList()
+                            }
                         },
                         reportClick = {
-                            reportViewModel.report(2, item.lostId, item.userId)
+                            coroutineScope.launch {
+                                reportViewModel.initializeState()
+                                reportViewModel.report(2, item.lostId, item.userId)
+                            }
                         }, myItem)
                 }
+            }
+            //분실물 삭제 Toast : deleteClick 호출 시 / 분실물 검색 실패 시
+            LaunchedEffect(lostViewModel.success){
+                    Toast.makeText(context, lostViewModel.message, Toast.LENGTH_SHORT).show()
+            }
+            // 신고 Toast : reportClick 호출 시
+            LaunchedEffect(reportViewModel.success){
+                Toast.makeText(context, reportViewModel.message, Toast.LENGTH_SHORT).show()
             }
         }
     }

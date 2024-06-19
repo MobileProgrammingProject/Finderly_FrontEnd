@@ -132,12 +132,6 @@ fun RegisterLostItemScreen(navController: NavHostController) {
             }
             else if(lostViewModel.success == false){
                 Toast.makeText(context, lostViewModel.message, Toast.LENGTH_SHORT).show()
-                if(lostViewModel.message == "회원가입되지 않은 사용자입니다.")
-                    //
-                else if(lostViewModel.message == "분실물 등록 실패")
-                    //
-                else
-                    Log.d("Register", "Register Failed")
             }
         }
     }

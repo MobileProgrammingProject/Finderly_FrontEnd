@@ -39,7 +39,7 @@ import com.example.finderly.viewModel.UserViewModel
 
 @Composable
 fun LostItemInfoScreen(lostId : String){
-    val scrollstate = rememberScrollState()
+    val scrollState = rememberScrollState()
     val userViewModel : UserViewModel = viewModel()
     val lostViewModel : LostViewModel = viewModel()
     val reportViewModel: ReportViewModel = viewModel()
@@ -95,8 +95,17 @@ fun LostItemInfoScreen(lostId : String){
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 DeleteOrReportMenu(modifier = Modifier, deleteClick = {
-                    lostitemInfo?.let { lostViewModel.lostDelete(it.lostId) }
-                }, reportClick = {lostitemInfo?.let{reportViewModel.report(2, it.lostId, it.userId)}}, myItem = myItem)
+                    lostViewModel.initializeState()
+                    lostitemInfo?.let {
+                        lostViewModel.initializeState()
+                        lostViewModel.lostDelete(it.lostId)
+                    }
+                }, reportClick = {
+                    lostViewModel.initializeState()
+                    lostitemInfo?.let{
+                        reportViewModel.report(2, it.lostId, it.userId)}
+                                 },
+                    myItem = myItem)
             }
             Spacer(modifier = Modifier.height(20.dp))
             Divider(
@@ -108,7 +117,7 @@ fun LostItemInfoScreen(lostId : String){
             Column (
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(scrollstate)
+                    .verticalScroll(scrollState)
             ){
                 Spacer(modifier = Modifier.height(15.dp))
                 Row {
@@ -241,7 +250,6 @@ fun LostItemInfoScreen(lostId : String){
                                 .fillMaxSize()
                                 .clip(RoundedCornerShape(20.dp)),
                             contentScale = ContentScale.Crop,
-
                             )
                     }
                 }
