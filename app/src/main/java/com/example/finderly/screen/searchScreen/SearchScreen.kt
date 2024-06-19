@@ -22,7 +22,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -41,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -53,10 +53,18 @@ import com.example.finderly.R
 import com.example.finderly.component.Appbar
 import com.example.finderly.component.RegisterButton
 import com.example.finderly.component.Search
+import com.example.finderly.component.getUserId
 import com.example.finderly.viewModel.LostViewModel
+import com.example.finderly.viewModel.ReportViewModel
 
 @Composable
-fun LostItemCard(item: LostItem, onClick: () -> Unit, deleteClick: ()-> Unit) {
+fun LostItemCard(
+    item: LostItem,
+    onClick: () -> Unit,
+    deleteClick: () -> Unit,
+    reportClick: () -> Unit,
+    myItem: Boolean
+) {
     Card(
         modifier = Modifier
             .border(
@@ -90,76 +98,86 @@ fun LostItemCard(item: LostItem, onClick: () -> Unit, deleteClick: ()-> Unit) {
                     fontSize = 14.sp
                 )
             }
-            DeleteOrReportMenu(modifier = Modifier.offset(x = 0.dp, y = (-20).dp), deleteClick, {})
-        }
-
-    }
-}
-
-@Composable
-fun FilterMenu(modifier: Modifier) {
-    var expanded by remember { mutableStateOf(false) }
-    Box(
-        modifier = modifier
-            .border(
-                width = 1.dp,
-                color = colorResource(id = R.color.field_border_gray),
-                shape = RoundedCornerShape(10.dp)
+            DeleteOrReportMenu(
+                modifier = Modifier.offset(x = 0.dp, y = (-20).dp),
+                deleteClick = deleteClick,
+                reportClick = reportClick,
+                myItem = myItem
             )
-            .background(color = Color.White, shape = RoundedCornerShape(10.dp))
-    ) {
-        IconButton(onClick = { expanded = true }, modifier = Modifier.width(80.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = " 필터",
-                    fontSize = 15.sp,
-                    color = colorResource(id = R.color.text_gray)
-                )
-                Icon(
-                    Icons.Default.KeyboardArrowDown,
-                    contentDescription = "ArrowDown",
-                    tint = Color.Gray,
-                    modifier = Modifier.size(30.dp)
-                )
-            }
         }
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-//            DropdownMenuItem(
-//                text = { Text("Option 1") },
-//                onClick = { /* TODO */ },
-//                leadingIcon = {
-//                    Icon(
-//                        Icons.Outlined.Edit,
-//                        contentDescription = null
-//                    )
-//                })
-//            DropdownMenuItem(
-//                text = { Text("Option 2") },
-//                onClick = { /* TODO */ },
-//                leadingIcon = {
-//                    Icon(
-//                        Icons.Outlined.Settings,
-//                        contentDescription = null
-//                    )
-//                })
-//            DropdownMenuItem(
-//                text = { Text("Option 3") },
-//                onClick = { /* TODO */ },
-//                leadingIcon = {
-//                    Icon(
-//                        Icons.Outlined.Email,
-//                        contentDescription = null
-//                    )
-//                })
-        }
+
     }
 }
 
+//@Composable
+//fun FilterMenu(modifier: Modifier) {
+//    var expanded by remember { mutableStateOf(false) }
+//    Box(
+//        modifier = modifier
+//            .border(
+//                width = 1.dp,
+//                color = colorResource(id = R.color.field_border_gray),
+//                shape = RoundedCornerShape(10.dp)
+//            )
+//            .background(color = Color.White, shape = RoundedCornerShape(10.dp))
+//    ) {
+//        IconButton(onClick = { expanded = true }, modifier = Modifier.width(80.dp)) {
+//            Row(verticalAlignment = Alignment.CenterVertically) {
+//                Text(
+//                    text = " 필터",
+//                    fontSize = 15.sp,
+//                    color = colorResource(id = R.color.text_gray)
+//                )
+//                Icon(
+//                    Icons.Default.KeyboardArrowDown,
+//                    contentDescription = "ArrowDown",
+//                    tint = Color.Gray,
+//                    modifier = Modifier.size(30.dp)
+//                )
+//            }
+//        }
+//        DropdownMenu(
+//            expanded = expanded,
+//            onDismissRequest = { expanded = false }
+//        ) {
+////            DropdownMenuItem(
+////                text = { Text("Option 1") },
+////                onClick = { /* TODO */ },
+////                leadingIcon = {
+////                    Icon(
+////                        Icons.Outlined.Edit,
+////                        contentDescription = null
+////                    )
+////                })
+////            DropdownMenuItem(
+////                text = { Text("Option 2") },
+////                onClick = { /* TODO */ },
+////                leadingIcon = {
+////                    Icon(
+////                        Icons.Outlined.Settings,
+////                        contentDescription = null
+////                    )
+////                })
+////            DropdownMenuItem(
+////                text = { Text("Option 3") },
+////                onClick = { /* TODO */ },
+////                leadingIcon = {
+////                    Icon(
+////                        Icons.Outlined.Email,
+////                        contentDescription = null
+////                    )
+////                })
+//        }
+//    }
+//}
+
 @Composable
-fun DeleteOrReportMenu(modifier : Modifier, deleteClick: () -> Unit, reportClick : ()-> Unit) {
+fun DeleteOrReportMenu(
+    modifier: Modifier,
+    deleteClick: () -> Unit,
+    reportClick: () -> Unit,
+    myItem: Boolean
+) {
     var expanded by remember { mutableStateOf(false) }
     Box(
         modifier = modifier
@@ -185,38 +203,47 @@ fun DeleteOrReportMenu(modifier : Modifier, deleteClick: () -> Unit, reportClick
             onDismissRequest = { expanded = false },
             modifier = Modifier.background(Color.White)
         ) {
-            DropdownMenuItem(
-                onClick = { deleteClick() },
-                modifier = Modifier
-                    .size(90.dp, 20.dp)
-                    .align(Alignment.CenterHorizontally)
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ){
-                    Text(
-                        text = "삭제하기",
-                        fontSize = 12.sp,
-                        color = Color.Gray,
-                    )
+            if (myItem) {
+                DropdownMenuItem(
+                    onClick = {
+                        deleteClick()
+                        expanded = false
+                    },
+                    modifier = Modifier
+                        .size(90.dp, 20.dp)
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "삭제하기",
+                            fontSize = 12.sp,
+                            color = Color.Gray,
+                        )
+                    }
                 }
-            }
-            DropdownMenuItem(
-                onClick = { reportClick() },
-                modifier = Modifier
-                    .size(90.dp, 20.dp)
-                    .align(Alignment.CenterHorizontally)
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ){
-                    Text(
-                        text = "신고하기",
-                        fontSize = 12.sp,
-                        color = Color.Gray,
-                    )
+            } else {
+                DropdownMenuItem(
+                    onClick = {
+                        reportClick()
+                        expanded = false
+                    },
+                    modifier = Modifier
+                        .size(90.dp, 20.dp)
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "신고하기",
+                            fontSize = 12.sp,
+                            color = Color.Gray,
+                        )
+                    }
                 }
             }
         }
@@ -226,10 +253,15 @@ fun DeleteOrReportMenu(modifier : Modifier, deleteClick: () -> Unit, reportClick
 @Composable
 fun SearchScreen(navController: NavHostController) {
 
-    val lostViewModel : LostViewModel = viewModel()
+    val lostViewModel: LostViewModel = viewModel()
+    val reportViewModel: ReportViewModel = viewModel()
+    val context = LocalContext.current
+    val userId = getUserId(context)
+
     LaunchedEffect(Unit) {
         lostViewModel.lostList()
     }
+
     Box(
         modifier = Modifier.background(Color.White)
     ) {
@@ -295,27 +327,33 @@ fun SearchScreen(navController: NavHostController) {
                     mutableStateOf(false)
                 }
                 Search(search = remember { mutableStateOf(search) }, searchHasFocus = remember {
-                    mutableStateOf(searchHasFocus)},  onSearchClicked = {
-                        lostViewModel.lostSearch(it)
+                    mutableStateOf(searchHasFocus)
+                }, onSearchClicked = {
+                    lostViewModel.lostSearch(it)
                 }
                 )
 
                 // 필터 메뉴
-                FilterMenu(
-                    Modifier
-                        .offset(20.dp)
-                        .width(80.dp)
-                )
+//                FilterMenu(
+//                    Modifier
+//                        .offset(20.dp)
+//                        .width(80.dp)
+//                )
             }
 
             Spacer(modifier = Modifier.height(20.dp))
             LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-                itemsIndexed(lostViewModel.lostItemList){ _, item ->
-                    LostItemCard(item,{navController.navigate("LostItemInfo/${item.lostId}")}, {
-                        lostViewModel.lostDelete(item.lostId)
-                        lostViewModel.lostList()
-                    }
-                    )
+                itemsIndexed(lostViewModel.lostItemList) { _, item ->
+                    val myItem: Boolean = if (item.userId == userId) true else false
+                    LostItemCard(item = item,
+                        onClick = { navController.navigate("LostItemInfo/${item.lostId}") },
+                        deleteClick = {
+                            lostViewModel.lostDelete(item.lostId)
+                            lostViewModel.lostList()
+                        },
+                        reportClick = {
+                            reportViewModel.report(2, item.lostId, item.userId)
+                        }, myItem)
                 }
             }
         }

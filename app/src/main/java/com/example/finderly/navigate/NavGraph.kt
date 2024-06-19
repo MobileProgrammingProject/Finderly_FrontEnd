@@ -1,7 +1,6 @@
 package com.example.finderly.Navigate
 
 import android.os.Build
-import android.window.SplashScreen
 import androidx.annotation.RequiresExtension
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -13,7 +12,7 @@ import com.example.finderly.R
 import com.example.finderly.screen.mapScreen.MapScreenPage
 import com.example.finderly.screen.postScreen.MainBoardScreen
 import com.example.finderly.screen.postScreen.PostScreen
-import com.example.finderly.screen.postScreen.RegisterSreen
+import com.example.finderly.screen.postScreen.RegisterScreen
 import com.example.finderly.screen.searchScreen.LostItemInfoScreen
 import com.example.finderly.screen.searchScreen.RegisterLostItemScreen
 import com.example.finderly.screen.searchScreen.SearchScreen
@@ -89,7 +88,7 @@ fun NavGraph(navController: NavHostController){
         }
         composable("RegisterPost") {
             // 게시글 등록
-            RegisterSreen(navHostController = navController)
+            RegisterScreen(navHostController = navController)
         }
 
         // 마이 페이지

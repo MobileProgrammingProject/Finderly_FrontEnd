@@ -93,7 +93,7 @@ fun MainBoardScreen(
         }
 
         // 탭 메뉴
-        TapMenu(lostCheck, findCheck, {lostCheck = !lostCheck; findCheck = !findCheck})
+        TapMenu(lostCheck, findCheck) { lostCheck = !lostCheck; findCheck = !findCheck }
 
 
         // 게시글 리스트

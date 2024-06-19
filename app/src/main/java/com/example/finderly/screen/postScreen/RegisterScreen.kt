@@ -62,7 +62,7 @@ import com.example.finderly.viewModel.UserViewModel
 
 
 @Composable
-fun RegisterSreen(navHostController: NavHostController) {
+fun RegisterScreen(navHostController: NavHostController) {
     val postViewModel: PostViewModel = viewModel()
     val context = LocalContext.current
     val userId = getUserId(context).toString() // userId 저장

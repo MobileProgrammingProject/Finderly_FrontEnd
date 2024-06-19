@@ -3,7 +3,8 @@ package com.example.finderly.Data
 data class PostListItem(
     var postTitle:String,
     var postContent:String,
-    var postId:String
+    var postId: String,
+    var userId:String   //0619 DB 수정에 따른 아이디 추가
 )
 
 data class PostRequest (
@@ -26,7 +27,8 @@ data class Post(
     val postContent: String, // 게시글 내용
     val pictures: List<String>, // 사진 url 리스트
     val commentsCnt: Int, // 댓글 수
-    val comments: List<Comment> // 댓글 리스트
+    val comments: List<Comment>, // 댓글 리스트
+    var userId:String   //0619 DB 수정에 따른 아이디 추가
 )
 
 data class Response(

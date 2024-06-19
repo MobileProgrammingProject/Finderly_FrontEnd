@@ -3,7 +3,6 @@ package com.example.finderly.screen.searchScreen
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,16 +10,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -36,7 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finderly.R
+import com.example.finderly.component.getUserId
 import com.example.finderly.viewModel.LostViewModel
+import com.example.finderly.viewModel.ReportViewModel
 import com.example.finderly.viewModel.UserViewModel
 
 @Composable
@@ -44,6 +42,10 @@ fun LostItemInfoScreen(lostId : String){
     val scrollstate = rememberScrollState()
     val userViewModel : UserViewModel = viewModel()
     val lostViewModel : LostViewModel = viewModel()
+    val reportViewModel: ReportViewModel = viewModel()
+    val context = LocalContext.current
+    val userId = getUserId(context)
+    val myItem = if(lostId == userId) true else false
     Log.d("lostId","$lostId")
 
     LaunchedEffect(Unit) {
@@ -93,10 +95,8 @@ fun LostItemInfoScreen(lostId : String){
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 DeleteOrReportMenu(modifier = Modifier, deleteClick = {
-                    if (lostitemInfo != null) {
-                        lostViewModel.lostDelete(lostitemInfo.lostId)
-                    }
-                }, reportClick = {})
+                    lostitemInfo?.let { lostViewModel.lostDelete(it.lostId) }
+                }, reportClick = {lostitemInfo?.let{reportViewModel.report(2, it.lostId, it.userId)}}, myItem = myItem)
             }
             Spacer(modifier = Modifier.height(20.dp))
             Divider(

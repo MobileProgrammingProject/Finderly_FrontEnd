@@ -89,6 +89,7 @@ class LostViewModel: ViewModel() {
             }
         }
     }
+
     fun lostDelete(lostId:String){
         viewModelScope.launch {
             try {
@@ -100,7 +101,7 @@ class LostViewModel: ViewModel() {
                     message = response.message
                     success = false
                 }
-            }catch (e: HttpException) { // HttpException 처리 추가
+            }catch (e: HttpException) {
                 val errorBody = e.response()?.errorBody()?.string()
                 try {
                     val jsonObject = JSONObject(errorBody)
@@ -113,13 +114,14 @@ class LostViewModel: ViewModel() {
                 success = false
             }
             catch (e: Exception) {
-                Log.d("Login", e.toString())
+                Log.d("delete", e.toString())
                 e.printStackTrace()
                 message = "서버 연결 실패"
                 success = false
             }
         }
     }
+
     fun lostSearch(search:String){
         viewModelScope.launch {
             try {
@@ -140,7 +142,7 @@ class LostViewModel: ViewModel() {
                 lostItemList.clear()
                 success = false
             } catch (e: Exception) {
-                Log.d("SignUp", e.toString())
+                Log.d("lostSearch", e.toString())
                 e.printStackTrace()
                 message = "서버 연결 실패"
                 lostItemList.clear()
