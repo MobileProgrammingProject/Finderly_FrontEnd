@@ -127,8 +127,7 @@ class LostViewModel: ViewModel() {
                     val errorMessage = jsonObject.optString("message", "알 수 없는 오류가 발생했습니다.")
                     message = errorMessage
                 } catch (jsonException: JSONException) {
-                    // 오류 메시지가 JSON 형태가 아닌 경우 처리
-                    message = "알 수 없는 오류가 발생했습니다."
+                    message = "등록된 분실물이 없습니다."
                 }
                 lostItemList.clear()
                 success = false

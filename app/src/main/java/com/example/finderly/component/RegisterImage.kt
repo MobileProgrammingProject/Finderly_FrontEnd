@@ -54,7 +54,7 @@ fun CreateImage(image: Int, containerSize:Dp, imageSize:Dp = containerSize, colo
 @Composable
 fun RegisterImage(imgViewModel: ImageViewModel = viewModel()){
     // 사진 등록
-    // 뷰 모epf 말고 다른 걸로 바꿔줘야 함
+    // 뷰 모델 말고 다른 걸로 바꿔줘야 함
     val imgScrollState = rememberScrollState()
 
     Row (

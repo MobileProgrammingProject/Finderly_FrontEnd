@@ -276,7 +276,6 @@ fun SearchScreen(navController: NavHostController) {
                     coroutineScope.launch {
                         lostViewModel.initializeState()
                         lostViewModel.lostSearch(it)
-                        Toast.makeText(context, lostViewModel.message, Toast.LENGTH_SHORT).show()
                 }
                 }
                 )
