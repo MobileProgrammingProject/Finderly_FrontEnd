@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -205,7 +206,6 @@ fun SearchScreen(navController: NavHostController) {
         lostViewModel.initializeState()
         lostViewModel.lostList()
     }
-
     Box(
         modifier = Modifier.background(Color.White)
     ) {

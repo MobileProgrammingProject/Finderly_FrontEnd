@@ -2,6 +2,7 @@ package com.example.finderly.screen.postScreen
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -84,11 +85,9 @@ fun PostScreen(
     Log.d("postId", postId)
 
     LaunchedEffect(Unit) {
-        //userViewModel.postitemInfo(postCategory, postId)
         postViewModel.getPostDetailInfo(postCategory, postId)
     }
 
-    //val postitemInfo = userViewModel.postiteminfo
     var post = postViewModel.post
     val comments by postViewModel.commentlist.observeAsState()
     Log.d("Post", "${post.value.comments.size}")
@@ -116,6 +115,21 @@ fun PostScreen(
     LaunchedEffect(postViewModel.post) {
         post = postViewModel.post
         commentsCounter = post.value.comments.size
+    }
+    LaunchedEffect(comments) {
+        post = postViewModel.post
+        commentsCounter = post.value.comments.size
+    }
+    LaunchedEffect(postViewModel.success) {
+        if(postViewModel.success == true){
+            Toast.makeText(context, postViewModel.message, Toast.LENGTH_SHORT).show()
+            navHostController.navigate("PostBoard") {
+                popUpTo("PostBoard") { inclusive = true }
+            }
+        }
+        else if(postViewModel.success == false){
+            Toast.makeText(context, postViewModel.message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     Box {
@@ -197,9 +211,6 @@ fun PostScreen(
                                     postId = postId,
                                     postCategory = postCategory
                                 )
-                                navHostController.navigate("PostBoard") {
-                                    popUpTo("PostBoard") { inclusive = true }
-                                }
                             },
                             modifier = Modifier
                                 .size(90.dp, 20.dp)
@@ -207,7 +218,6 @@ fun PostScreen(
                         )
                     }
                 }
-
             }
             Column(
                 modifier = Modifier.padding(bottom = 80.dp)
@@ -228,7 +238,7 @@ fun PostScreen(
                 Spacer(modifier = Modifier.padding(20.dp))
 
                 // 사진
-                ShowImage(containerSize = 180.dp, imageSize = 180.dp, color = Color.Transparent)
+                ShowImage(post.value.pictures,containerSize = 180.dp, imageSize = 180.dp, color = Color.Transparent)
 
                 // 좋아요 & 댓글 아이콘
                 Row(
@@ -272,6 +282,8 @@ fun PostScreen(
                 )
 
                 Log.d("PostScreen", "Post Info loaded: ${post.value}")
+
+                // 댓글
                 Column {
                     comments.orEmpty().forEach { comment ->
                         CommentItem(comment, commentViewModel, postViewModel, context)
@@ -426,7 +438,8 @@ fun CommentItem(comment: Comment, commentViewModel: CommentViewModel, postViewMo
                             if(comment.userId == getUserId(context)){
                             commentViewModel.deleteComment(comment.commentId, commentViewModel, postViewModel)}
                             expanded = false },
-                        modifier = Modifier.size(90.dp, 20.dp)
+                        modifier = Modifier
+                            .size(90.dp, 20.dp)
                             .align(Alignment.CenterHorizontally)
                     )
                 }

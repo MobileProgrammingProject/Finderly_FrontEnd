@@ -1,5 +1,6 @@
 package com.example.finderly.screen.postScreen
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,6 +35,8 @@ import com.example.finderly.component.PostList
 import com.example.finderly.component.RegisterButton
 import com.example.finderly.component.Search
 import com.example.finderly.component.TapMenu
+import com.example.finderly.component.getUserId
+import com.example.finderly.viewModel.CommentViewModel
 import com.example.finderly.viewModel.PostViewModel
 
 @Composable
@@ -49,6 +53,12 @@ fun MainBoardScreen(
     var findCheck by rememberSaveable {
         mutableStateOf(false)
     }
+    var search by rememberSaveable {
+        mutableStateOf("")
+    }
+    val searchHasFocus by rememberSaveable {
+        mutableStateOf(false)
+    }
 
     val postCategory:Int = if(lostCheck){
         0
@@ -56,11 +66,22 @@ fun MainBoardScreen(
         1
     }
 
+    val context = LocalContext.current
+    val userId = getUserId(context).toString()
+
+    LaunchedEffect(Unit){
+        postViewModel.setPostList(postCategory)
+    }
     LaunchedEffect(postCategory) {
         postViewModel.setPostList(postCategory)
     }
-    LaunchedEffect(Unit){
-        postViewModel.setPostList(postCategory)
+    LaunchedEffect(postViewModel.success) {
+        if(postViewModel.success == true){
+            Toast.makeText(context, postViewModel.message, Toast.LENGTH_SHORT).show()
+        }
+        else if(postViewModel.success == false){
+            Toast.makeText(context, postViewModel.message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     Column(
@@ -105,20 +126,20 @@ fun MainBoardScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            val search by rememberSaveable {
-                mutableStateOf("")
-            }
-            val searchHasFocus by rememberSaveable {
-                mutableStateOf(false)
-            }
-
             // 검색 필드
             Spacer(modifier = Modifier.padding(13.dp))
             Search(search = remember {
                 mutableStateOf(search)
             }, searchHasFocus = remember {
                 mutableStateOf(searchHasFocus)
-            }, width = 280.dp, onSearchClicked = {})
+            }, width = 280.dp, onSearchClicked = {
+                if(it != ""){
+                    postViewModel.searchPostByTitle(postCategory, it)
+                }
+                else{
+                    postViewModel.setPostList(postCategory)
+                }
+            })
             Spacer(modifier = Modifier.padding(13.dp))
             
             // 리스트

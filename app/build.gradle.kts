@@ -71,7 +71,8 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.androidx.media3.common)
     implementation(libs.sdk.v2.user)
-    implementation(libs.androidx.runtime.livedata) // 오류날 때는 'com.kakao.sdk:v2-user:2.12.0' 또는 다시 sync
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.coil.compose) // 오류날 때는 'com.kakao.sdk:v2-user:2.12.0' 또는 다시 sync
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

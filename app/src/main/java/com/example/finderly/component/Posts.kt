@@ -31,9 +31,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -41,25 +43,31 @@ import androidx.navigation.NavHostController
 import com.example.finderly.Data.PostListItem
 import com.example.finderly.R
 import com.example.finderly.viewModel.PostViewModel
+import com.example.finderly.viewModel.ReportViewModel
 
 @Composable
-fun PostItem(post: PostListItem,postCategory:Int, navController: NavHostController) {
+fun PostItem(post: PostListItem, postCategory: Int, navController: NavHostController) {
     var expended by rememberSaveable {
         mutableStateOf(false)
     }
+    val postViewModel : PostViewModel = viewModel()
+    val reportViewModel:ReportViewModel = viewModel()
+    val context = LocalContext.current
+    val userId = getUserId(context).toString()
+    // 본인 게시물인지 아닌지 체크
+    val myPost = if (userId == post.userId) true else false
 
-    Column (
+    Column(
         modifier = Modifier
             .height(70.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(Color.White)
             .border(1.dp, colorResource(id = R.color.green), RoundedCornerShape(12.dp))
             .clickable { navController.navigate("LostPost/$postCategory/${post.postId}") }
-            .padding(12.dp)
-        ,
+            .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        Row (
+        Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -72,8 +80,8 @@ fun PostItem(post: PostListItem,postCategory:Int, navController: NavHostControll
             Box(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.CenterEnd
-            ){
-                Box(modifier = Modifier){
+            ) {
+                Box(modifier = Modifier) {
                     Image(
                         painter = painterResource(id = R.drawable.menu),
                         contentDescription = "menu",
@@ -91,23 +99,56 @@ fun PostItem(post: PostListItem,postCategory:Int, navController: NavHostControll
                             .clip(RoundedCornerShape(8.dp))
                             .background(Color.White)
                     ) {
-                        DropdownMenuItem(
-                            onClick = { expended = false },
-                            modifier = Modifier
-                                .size(90.dp, 20.dp)
-                                .align(Alignment.CenterHorizontally)
-                        ) {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ){
-                                Text(
-                                    text = "신고하기",
-                                    fontSize = 12.sp,
-                                    color = Color.Gray,
-                                )
-                            }
+                        if (!myPost) {
+                            androidx.compose.material3.DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        text = "신고하기",
+                                        fontSize = 12.sp,
+                                        color = Color.Gray,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.fillMaxSize()
+                                    )
+                                },
+                                onClick = {
+                                    expended = false
+                                    reportViewModel.report(
+                                        category = postCategory,
+                                        id = post.postId,
+                                        userId = userId
+                                    )
+                                },
+                                modifier = Modifier
+                                    .size(90.dp, 20.dp)
+                                    .align(Alignment.CenterHorizontally)
+                            )
+                        }else{
+                            androidx.compose.material3.DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        text = "삭제하기",
+                                        fontSize = 12.sp,
+                                        color = Color.Gray,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.fillMaxSize()
+                                    )
+                                },
+                                onClick = {
+                                    expended = false
+                                    postViewModel.deletePost(
+                                        postId = post.postId,
+                                        postCategory = postCategory
+                                    )
+                                    navController.navigate("PostBoard") {
+                                        popUpTo("PostBoard") { inclusive = true }
+                                    }
+                                },
+                                modifier = Modifier
+                                    .size(90.dp, 20.dp)
+                                    .align(Alignment.CenterHorizontally)
+                            )
                         }
+
                     }
                 }
             }
@@ -121,18 +162,23 @@ fun PostItem(post: PostListItem,postCategory:Int, navController: NavHostControll
 }
 
 @Composable
-fun PostList(postViewModel: PostViewModel = viewModel(),lostCheck:Boolean,postCategory:Int, navController: NavHostController){
+fun PostList(
+    postViewModel: PostViewModel = viewModel(),
+    lostCheck: Boolean,
+    postCategory: Int,
+    navController: NavHostController
+) {
     val scrollState = rememberLazyListState()
-    val posts = if(lostCheck){
+    val posts = if (lostCheck) {
         postViewModel.getLostPosts().reversed()
     } else {
         postViewModel.getFoundPosts().reversed()
     }
-    LazyColumn (
+    LazyColumn(
         state = scrollState,
         //verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        items(posts){ post ->
+        items(posts) { post ->
             PostItem(post = post, postCategory = postCategory, navController = navController)
         }
     }

@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.finderly.R
+import com.example.finderly.component.ShowImage
 import com.example.finderly.component.getUserId
 import com.example.finderly.viewModel.LostViewModel
 import com.example.finderly.viewModel.ReportViewModel
@@ -271,18 +272,21 @@ fun LostItemInfoScreen(lostId: String, navController: NavController) {
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(15.dp)) {
-                    items(10) {
-                        Image(
-                            painter = painterResource(id = R.drawable.lostitemexampleimage),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(RoundedCornerShape(20.dp)),
-                            contentScale = ContentScale.Crop,
-                        )
-                    }
-                }
+//                LazyRow(horizontalArrangement = Arrangement.spacedBy(15.dp)) {
+//                    items(10) {
+//                        Image(
+//                            painter = painterResource(id = R.drawable.lostitemexampleimage),
+//                            contentDescription = null,
+//                            modifier = Modifier
+//                                .fillMaxSize()
+//                                .clip(RoundedCornerShape(20.dp)),
+//                            contentScale = ContentScale.Crop,
+//                        )
+//                    }
+//                }
+                // 사진
+                ShowImage(lostitemInfo!!.pictures,containerSize = 180.dp, imageSize = 180.dp, color = Color.Transparent)
+
             }
         }
     }

@@ -1,8 +1,11 @@
 package com.example.finderly.screen.postScreen
 
+import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,9 +30,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -54,11 +60,11 @@ import androidx.navigation.NavHostController
 import com.example.finderly.Data.PostRequest
 import com.example.finderly.R
 import com.example.finderly.component.BigRegisterButton
+import com.example.finderly.component.CameraCaptureAndImagePicker
+import com.example.finderly.component.CreateImage
 import com.example.finderly.component.PostHeader
-import com.example.finderly.component.RegisterImage
 import com.example.finderly.component.getUserId
 import com.example.finderly.viewModel.PostViewModel
-import com.example.finderly.viewModel.UserViewModel
 
 
 @Composable
@@ -66,6 +72,9 @@ fun RegisterScreen(navHostController: NavHostController) {
     val postViewModel: PostViewModel = viewModel()
     val context = LocalContext.current
     val userId = getUserId(context).toString() // userId 저장
+    var postId by rememberSaveable {
+        mutableStateOf("")
+    }
 
     var title by rememberSaveable {
         mutableStateOf("")
@@ -92,6 +101,27 @@ fun RegisterScreen(navHostController: NavHostController) {
     }
     var postCategory by rememberSaveable {
         mutableIntStateOf(0)
+    }
+
+    // 사진 등록
+    var selectedImageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val imageUriList = remember {
+        mutableStateListOf<Uri?>()
+    }
+    val imgScrollState = rememberScrollState()
+
+    LaunchedEffect(postViewModel.success) {
+        if(postViewModel.success == true){
+            Toast.makeText(context, postViewModel.message, Toast.LENGTH_SHORT).show()
+            navHostController.navigate("LostPost/$postCategory/${postId}") {
+                popUpTo("RegisterPost") { inclusive = true }
+            }
+        }
+        else if(postViewModel.success == false){
+            Toast.makeText(context, postViewModel.message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     Box(
@@ -249,8 +279,22 @@ fun RegisterScreen(navHostController: NavHostController) {
                 modifier = Modifier.padding(start = 5.dp)
             )
 
-            // 사진 등록
-            RegisterImage()
+            Row (
+                modifier = Modifier
+                    .horizontalScroll(imgScrollState)
+                    .padding(top = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                CameraCaptureAndImagePicker{
+                    selectedImageUri = it
+                    imageUriList.add(it)
+                }
+                Log.d("Image uri", "$selectedImageUri")
+
+                imageUriList.forEach{uri->
+                    CreateImage(image = uri, 150.dp)
+                }
+            }
 
             // 게시글 등록 버튼
             Column(
@@ -261,14 +305,25 @@ fun RegisterScreen(navHostController: NavHostController) {
             ) {
                 BigRegisterButton("게시글 등록하기", navHostController) {
                     //"PostBoard"
+                    //val pictures = mutableStateListOf<MultipartBody.Part>()
+                    val pictures = imageUriList.map{uri -> uri.toString()}
+//                    imageUriList.forEach{uri->
+//                        val file = getFileFromUri(context, uri)
+//                        file?.let {
+//                            val requestFile = it.asRequestBody("image/*".toMediaTypeOrNull())
+//                            val body = MultipartBody.Part.createFormData("images", it.name, requestFile)
+//                            pictures.add(body)
+//                        }
+//                    }
                     val postRequest = PostRequest(
                         userId = userId,
                         postTitle = title,
                         postContent = content,
                         secretCheck = checked,
                         postCategory = postCategory,
-                        pictures = emptyList()
+                        pictures = pictures
                     )
+                    Log.d("Image List", "$pictures")
 
                     postViewModel.registerPost(postRequest) { result ->
 
@@ -282,13 +337,12 @@ fun RegisterScreen(navHostController: NavHostController) {
                                 "[Register Post]",
                                 "postCategory=$postCategory & postId=${result.postId}"
                             )
-                            navHostController.navigate("LostPost/$postCategory/${result.postId}") {
-                                popUpTo("RegisterPost") { inclusive = true }
-                            }
+                            postId = result.postId?:""
                         }
                     }
                 }
             }
         }
     }
+
 }
