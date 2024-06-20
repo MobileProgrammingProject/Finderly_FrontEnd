@@ -77,7 +77,7 @@ fun MapScreen(initialPosition: LatLng, navHostController: NavHostController) {
                                 // onClick = {},
                                 state = MarkerState(position = markerData.position), // 마커 클릭 시, 마커를 중심으로 카메라 이동
                                 title = markerData.name,  // 마커 클릭 시, name값 넘겨줘서 보여줌 (물건 이름)
-                                snippet = markerData.location // 마커 클릭 시, category값 넘겨줘서 보여줌 (물건 카테고리)
+                                snippet = markerData.location
                                 // 원하는 정보 추가로 여기에 추가해서 보여줄 수 있음
                             )
                     }
