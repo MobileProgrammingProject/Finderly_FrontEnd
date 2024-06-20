@@ -39,7 +39,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.finderly.R
 import com.example.finderly.component.BigRegisterButton
-import com.example.finderly.component.RegisterImage
 import com.example.finderly.component.getUserId
 import com.example.finderly.viewModel.LostViewModel
 
@@ -115,7 +114,7 @@ fun RegisterLostItemScreen(navController: NavHostController) {
                 modifier = Modifier.align(Alignment.Start)
             )
             // 사진등록하는 부분 추가 예정
-            RegisterImage()
+            //RegisterImage()
             Spacer(modifier = Modifier.height(20.dp))
 
             // 등록 버튼
@@ -132,12 +131,6 @@ fun RegisterLostItemScreen(navController: NavHostController) {
             }
             else if(lostViewModel.success == false){
                 Toast.makeText(context, lostViewModel.message, Toast.LENGTH_SHORT).show()
-                if(lostViewModel.message == "회원가입되지 않은 사용자입니다.")
-                    //
-                else if(lostViewModel.message == "분실물 등록 실패")
-                    //
-                else
-                    Log.d("Register", "Register Failed")
             }
         }
     }

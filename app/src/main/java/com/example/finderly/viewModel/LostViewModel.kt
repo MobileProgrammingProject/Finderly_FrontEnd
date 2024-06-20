@@ -5,7 +5,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finderly.Data.LostItem
@@ -60,7 +59,7 @@ class LostViewModel: ViewModel() {
                 message = errorMessage
                 success = false
             } catch (e: Exception) {
-                Log.d("SignUp", e.toString())
+                Log.d("lostRegister", e.toString())
                 e.printStackTrace()
                 message = "서버 연결 실패"
                 success = false
@@ -76,19 +75,17 @@ class LostViewModel: ViewModel() {
                 lostItemList.addAll(itemList)
                 success = true
             } catch (e: HttpException) {
-                val errorBody = e.response()?.errorBody()?.string()
-                val jsonObject = JSONObject(errorBody)
-                val errorMessage = jsonObject.optString("message", "알 수 없는 오류가 발생했습니다.")
-                message = errorMessage
+                message = "알 수 없는 오류가 발생했습니다."
                 success = false
             } catch (e: Exception) {
-                Log.d("SignUp", e.toString())
+                Log.d("lostList", e.toString())
                 e.printStackTrace()
                 message = "서버 연결 실패"
                 success = false
             }
         }
     }
+
     fun lostDelete(lostId:String){
         viewModelScope.launch {
             try {
@@ -100,26 +97,22 @@ class LostViewModel: ViewModel() {
                     message = response.message
                     success = false
                 }
-            }catch (e: HttpException) { // HttpException 처리 추가
-                val errorBody = e.response()?.errorBody()?.string()
-                try {
+            }catch (e: HttpException) {
+                    val errorBody = e.response()?.errorBody()?.string()
                     val jsonObject = JSONObject(errorBody)
                     val errorMessage = jsonObject.optString("message", "알 수 없는 오류가 발생했습니다.")
                     message = errorMessage
-                } catch (jsonException: JSONException) {
-                    // 오류 메시지가 JSON 형태가 아닌 경우 처리
-                    message = "알 수 없는 오류가 발생했습니다."
-                }
-                success = false
+                    success = false
             }
             catch (e: Exception) {
-                Log.d("Login", e.toString())
+                Log.d("lostDelete", e.toString())
                 e.printStackTrace()
                 message = "서버 연결 실패"
                 success = false
             }
         }
     }
+
     fun lostSearch(search:String){
         viewModelScope.launch {
             try {
@@ -140,7 +133,7 @@ class LostViewModel: ViewModel() {
                 lostItemList.clear()
                 success = false
             } catch (e: Exception) {
-                Log.d("SignUp", e.toString())
+                Log.d("lostSearch", e.toString())
                 e.printStackTrace()
                 message = "서버 연결 실패"
                 lostItemList.clear()
@@ -148,5 +141,4 @@ class LostViewModel: ViewModel() {
             }
         }
     }
-
 }

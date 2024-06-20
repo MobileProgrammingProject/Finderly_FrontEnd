@@ -1,5 +1,6 @@
 package com.example.finderly.screen.searchScreen
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,14 +36,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,10 +57,19 @@ import com.example.finderly.R
 import com.example.finderly.component.Appbar
 import com.example.finderly.component.RegisterButton
 import com.example.finderly.component.Search
+import com.example.finderly.component.getUserId
 import com.example.finderly.viewModel.LostViewModel
+import com.example.finderly.viewModel.ReportViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun LostItemCard(item: LostItem, onClick: () -> Unit, deleteClick: () -> Unit) {
+fun LostItemCard(
+    item: LostItem,
+    onClick: () -> Unit,
+    deleteClick: () -> Unit,
+    reportClick: () -> Unit,
+    myItem: Boolean
+) {
     Card(
         modifier = Modifier
             .border(
@@ -90,76 +103,24 @@ fun LostItemCard(item: LostItem, onClick: () -> Unit, deleteClick: () -> Unit) {
                     fontSize = 14.sp
                 )
             }
-            DeleteOrReportMenu(modifier = Modifier.offset(x = 0.dp, y = (-20).dp), deleteClick, {})
-        }
-
-    }
-}
-
-@Composable
-fun FilterMenu(modifier: Modifier) {
-    var expanded by remember { mutableStateOf(false) }
-    Box(
-        modifier = modifier
-            .border(
-                width = 1.dp,
-                color = colorResource(id = R.color.field_border_gray),
-                shape = RoundedCornerShape(10.dp)
+            DeleteOrReportMenu(
+                modifier = Modifier.offset(x = 0.dp, y = (-20).dp),
+                deleteClick = deleteClick,
+                reportClick = reportClick,
+                myItem = myItem
             )
-            .background(color = Color.White, shape = RoundedCornerShape(10.dp))
-    ) {
-        IconButton(onClick = { expanded = true }, modifier = Modifier.width(80.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = " 필터",
-                    fontSize = 15.sp,
-                    color = colorResource(id = R.color.text_gray)
-                )
-                Icon(
-                    Icons.Default.KeyboardArrowDown,
-                    contentDescription = "ArrowDown",
-                    tint = Color.Gray,
-                    modifier = Modifier.size(30.dp)
-                )
-            }
         }
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-//            DropdownMenuItem(
-//                text = { Text("Option 1") },
-//                onClick = { /* TODO */ },
-//                leadingIcon = {
-//                    Icon(
-//                        Icons.Outlined.Edit,
-//                        contentDescription = null
-//                    )
-//                })
-//            DropdownMenuItem(
-//                text = { Text("Option 2") },
-//                onClick = { /* TODO */ },
-//                leadingIcon = {
-//                    Icon(
-//                        Icons.Outlined.Settings,
-//                        contentDescription = null
-//                    )
-//                })
-//            DropdownMenuItem(
-//                text = { Text("Option 3") },
-//                onClick = { /* TODO */ },
-//                leadingIcon = {
-//                    Icon(
-//                        Icons.Outlined.Email,
-//                        contentDescription = null
-//                    )
-//                })
-        }
+
     }
 }
 
 @Composable
-fun DeleteOrReportMenu(modifier: Modifier, deleteClick: () -> Unit, reportClick: () -> Unit) {
+fun DeleteOrReportMenu(
+    modifier: Modifier,
+    deleteClick: () -> Unit,
+    reportClick: () -> Unit,
+    myItem: Boolean
+) {
     var expanded by remember { mutableStateOf(false) }
     Box(
         modifier = modifier
@@ -185,38 +146,47 @@ fun DeleteOrReportMenu(modifier: Modifier, deleteClick: () -> Unit, reportClick:
             onDismissRequest = { expanded = false },
             modifier = Modifier.background(Color.White)
         ) {
-            DropdownMenuItem(
-                onClick = { deleteClick() },
-                modifier = Modifier
-                    .size(90.dp, 20.dp)
-                    .align(Alignment.CenterHorizontally)
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+            if (myItem) {
+                DropdownMenuItem(
+                    onClick = {
+                        deleteClick()
+                        expanded = false
+                    },
+                    modifier = Modifier
+                        .size(90.dp, 20.dp)
+                        .align(Alignment.CenterHorizontally)
                 ) {
-                    Text(
-                        text = "삭제하기",
-                        fontSize = 12.sp,
-                        color = Color.Gray,
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "삭제하기",
+                            fontSize = 12.sp,
+                            color = Color.Gray,
+                        )
+                    }
                 }
-            }
-            DropdownMenuItem(
-                onClick = { reportClick() },
-                modifier = Modifier
-                    .size(90.dp, 20.dp)
-                    .align(Alignment.CenterHorizontally)
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+            } else {
+                DropdownMenuItem(
+                    onClick = {
+                        reportClick()
+                        expanded = false
+                    },
+                    modifier = Modifier
+                        .size(90.dp, 20.dp)
+                        .align(Alignment.CenterHorizontally)
                 ) {
-                    Text(
-                        text = "신고하기",
-                        fontSize = 12.sp,
-                        color = Color.Gray,
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "신고하기",
+                            fontSize = 12.sp,
+                            color = Color.Gray,
+                        )
+                    }
                 }
             }
         }
@@ -227,7 +197,13 @@ fun DeleteOrReportMenu(modifier: Modifier, deleteClick: () -> Unit, reportClick:
 fun SearchScreen(navController: NavHostController) {
 
     val lostViewModel: LostViewModel = viewModel()
+    val reportViewModel: ReportViewModel = viewModel()
+    val context = LocalContext.current
+    val userId = getUserId(context)
+    val coroutineScope = rememberCoroutineScope()
+
     LaunchedEffect(Unit) {
+        lostViewModel.initializeState()
         lostViewModel.lostList()
     }
     Box(
@@ -253,7 +229,7 @@ fun SearchScreen(navController: NavHostController) {
                 .padding(bottom = 15.dp)
         ) {
             Text(
-                text = "Finderly",
+                text = stringResource(id = R.string.app_name),
                 fontSize = 50.sp,
                 fontWeight = FontWeight.ExtraBold,
                 color = colorResource(id = R.color.green)
@@ -296,34 +272,45 @@ fun SearchScreen(navController: NavHostController) {
                 }
                 Search(search = remember { mutableStateOf(search) }, searchHasFocus = remember {
                     mutableStateOf(searchHasFocus)
-                },
-                    onSearchClicked = {
-                        if (it != "") {
-                            lostViewModel.lostSearch(it)
-                        }
-                        else{
-                            lostViewModel.lostList()
-                        }
-                    }
-                )
-
-                // 필터 메뉴
-                FilterMenu(
-                    Modifier
-                        .offset(20.dp)
-                        .width(80.dp)
+                }, onSearchClicked = {
+                    coroutineScope.launch {
+                        lostViewModel.initializeState()
+                        lostViewModel.lostSearch(it)
+                        Toast.makeText(context, lostViewModel.message, Toast.LENGTH_SHORT).show()
+                }
+                }
                 )
             }
 
             Spacer(modifier = Modifier.height(20.dp))
             LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-                itemsIndexed(lostViewModel.lostItemList) { _, item ->
-                    LostItemCard(item, { navController.navigate("LostItemInfo/${item.lostId}") }, {
-                        lostViewModel.lostDelete(item.lostId)
-                        lostViewModel.lostList()
-                    }
-                    )
+                itemsIndexed(lostViewModel.lostItemList.reversed()) { _, item ->
+                    val myItem: Boolean = (item.userId == userId)
+                    LostItemCard(item = item,
+                        onClick = { navController.navigate("LostItemInfo/${item.lostId}") },
+                        deleteClick = {
+                            coroutineScope.launch {
+                                lostViewModel.initializeState()
+                                lostViewModel.lostDelete(item.lostId)
+                            }
+                        },
+                        reportClick = {
+                            coroutineScope.launch {
+                                reportViewModel.initializeState()
+                                reportViewModel.report(2, item.lostId, item.userId)
+                            }
+                        }, myItem)
                 }
+            }
+            LaunchedEffect(lostViewModel.success) {
+                if(lostViewModel.message != null)
+                    Toast.makeText(context, lostViewModel.message, Toast.LENGTH_SHORT).show()
+                if(lostViewModel.message == "분실물 삭제 완료")
+                    lostViewModel.lostList()
+            }
+            LaunchedEffect(reportViewModel.success) {
+                if(reportViewModel.message != null)
+                    Toast.makeText(context, reportViewModel.message, Toast.LENGTH_SHORT).show()
             }
         }
     }

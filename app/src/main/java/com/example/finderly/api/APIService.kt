@@ -32,6 +32,7 @@ interface APIService {
     suspend fun deleteComment(
         @Query("commentId") commentId: String
     ):CommentResponse // comment 삭제
+
     // lost 분실물
     @POST("/lost/register") // 분실물 등록
     suspend fun postLostItem(
@@ -97,6 +98,12 @@ interface APIService {
     ):List<PostListItem>
 
     // report 신고
+    @GET("/report")
+    suspend fun getReport(
+        @Query("category") category: Int,
+        @Query("id") id: String,
+        @Query("userId") userId: String
+    ): Response
 
     // user 사용자
     @GET("/user/login") // 로그인

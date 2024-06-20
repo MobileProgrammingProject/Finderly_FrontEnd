@@ -32,7 +32,8 @@ class PostViewModel(application:Application):AndroidViewModel(application = appl
             postContent = "loading...",
             pictures = emptyList(),
             comments = emptyList(),
-            commentsCnt = 0
+            commentsCnt = 0,
+            userId = ""
         )
     )
 

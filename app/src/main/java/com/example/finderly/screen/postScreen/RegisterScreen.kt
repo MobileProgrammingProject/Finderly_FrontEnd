@@ -1,8 +1,10 @@
 package com.example.finderly.screen.postScreen
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,7 +31,9 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -54,15 +58,15 @@ import androidx.navigation.NavHostController
 import com.example.finderly.Data.PostRequest
 import com.example.finderly.R
 import com.example.finderly.component.BigRegisterButton
+import com.example.finderly.component.CameraCaptureAndImagePicker
+import com.example.finderly.component.CreateImage
 import com.example.finderly.component.PostHeader
-import com.example.finderly.component.RegisterImage
 import com.example.finderly.component.getUserId
 import com.example.finderly.viewModel.PostViewModel
-import com.example.finderly.viewModel.UserViewModel
 
 
 @Composable
-fun RegisterSreen(navHostController: NavHostController) {
+fun RegisterScreen(navHostController: NavHostController) {
     val postViewModel: PostViewModel = viewModel()
     val context = LocalContext.current
     val userId = getUserId(context).toString() // userId 저장
@@ -93,6 +97,15 @@ fun RegisterSreen(navHostController: NavHostController) {
     var postCategory by rememberSaveable {
         mutableIntStateOf(0)
     }
+
+    // 사진 등록
+    var selectedImageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val imageUriList = remember {
+        mutableStateListOf<Uri?>()
+    }
+    val imgScrollState = rememberScrollState()
 
     Box(
         modifier = Modifier
@@ -248,9 +261,25 @@ fun RegisterSreen(navHostController: NavHostController) {
                 color = Color.Gray,
                 modifier = Modifier.padding(start = 5.dp)
             )
+            //Spacer(modifier = Modifier.padding(10.dp))
 
-            // 사진 등록
-            RegisterImage()
+            Row (
+                modifier = Modifier
+                    .horizontalScroll(imgScrollState)
+                    .padding(top = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                CameraCaptureAndImagePicker{
+                    selectedImageUri = it
+                    imageUriList.add(it)
+                }
+                Log.d("Image uri", "$selectedImageUri")
+
+                imageUriList.forEach{uri->
+                    CreateImage(image = uri, 150.dp)
+                }
+            }
+            //RegisterImage()
 
             // 게시글 등록 버튼
             Column(
@@ -261,14 +290,16 @@ fun RegisterSreen(navHostController: NavHostController) {
             ) {
                 BigRegisterButton("게시글 등록하기", navHostController) {
                     //"PostBoard"
+                    val pictures = imageUriList.map { uri -> uri.toString() }
                     val postRequest = PostRequest(
                         userId = userId,
                         postTitle = title,
                         postContent = content,
                         secretCheck = checked,
                         postCategory = postCategory,
-                        pictures = emptyList()
+                        pictures = pictures
                     )
+                    Log.d("Image List", "$pictures")
 
                     postViewModel.registerPost(postRequest) { result ->
 
