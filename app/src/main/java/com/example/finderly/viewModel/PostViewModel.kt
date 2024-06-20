@@ -103,7 +103,7 @@ class PostViewModel(application:Application):AndroidViewModel(application = appl
                 response.message = "Error"
                 callback(response)
                 success = false
-                message = "서버 에러"
+                message = "등록 실패 (서버 에러)ㅓ"
             }
         }
     }

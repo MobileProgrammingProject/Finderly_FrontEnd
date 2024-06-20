@@ -305,7 +305,16 @@ fun RegisterScreen(navHostController: NavHostController) {
             ) {
                 BigRegisterButton("게시글 등록하기", navHostController) {
                     //"PostBoard"
-                    val pictures = imageUriList.map { uri -> uri.toString() }
+                    //val pictures = mutableStateListOf<MultipartBody.Part>()
+                    val pictures = imageUriList.map{uri -> uri.toString()}
+//                    imageUriList.forEach{uri->
+//                        val file = getFileFromUri(context, uri)
+//                        file?.let {
+//                            val requestFile = it.asRequestBody("image/*".toMediaTypeOrNull())
+//                            val body = MultipartBody.Part.createFormData("images", it.name, requestFile)
+//                            pictures.add(body)
+//                        }
+//                    }
                     val postRequest = PostRequest(
                         userId = userId,
                         postTitle = title,

@@ -1,5 +1,6 @@
 package com.example.finderly.component
 
+import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,13 +13,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,10 +32,40 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.finderly.R
-import com.example.finderly.viewModel.ImageViewModel
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+
+
+@Composable
+fun CreateImageByResource(
+    image: Int,
+    containerSize: Dp,
+    imageSize: Dp = containerSize,
+    color: Color = Color.Gray
+) {
+    Box(
+        modifier = Modifier
+            .size(containerSize)
+            .clip(RoundedCornerShape(20.dp))
+            .border(
+                BorderStroke(1.dp, color),
+                shape = RoundedCornerShape(20.dp)
+            ),
+    ) {
+        Image(
+            painter = painterResource(id = image),
+            contentDescription = "picture",
+            modifier = Modifier
+                .size(imageSize)
+                .align(Alignment.Center),
+            contentScale = ContentScale.Crop
+        )
+
+    }
+}
 
 
 @Composable
@@ -56,7 +84,7 @@ fun CreateImage(
                 shape = RoundedCornerShape(20.dp)
             ),
     ) {
-        if(image==null){
+        if (image == null) {
             Image(
                 painter = painterResource(id = R.drawable.plus_gray),
                 contentDescription = "Register Picture",
@@ -65,8 +93,7 @@ fun CreateImage(
                     .align(Alignment.Center),
                 contentScale = ContentScale.Crop
             )
-        }
-        else{
+        } else {
             Image(
                 painter = rememberAsyncImagePainter(model = image),
                 contentDescription = "picture",
@@ -78,6 +105,7 @@ fun CreateImage(
         }
     }
 }
+
 //
 //@Composable
 //fun RegisterImage(imgViewModel: ImageViewModel = viewModel()) {
@@ -109,7 +137,7 @@ fun CreateImage(
 
 @Composable
 fun ShowImage(
-    imgList:List<String>,
+    imgList: List<String>,
     containerSize: Dp,
     imageSize: Dp = containerSize,
     color: Color = Color.Transparent
@@ -122,17 +150,21 @@ fun ShowImage(
             .padding(top = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        val uriList:List<Uri> = imgList.map { uriString -> Uri.parse(uriString) }
-        uriList.forEach {
-            CreateImage(image = it, containerSize = containerSize, imageSize, color)
-        }
-
+//        val uriList: List<Uri> = imgList.map { uriString -> Uri.parse(uriString) }
+//        uriList.forEach {
+//            CreateImage(image = it, containerSize = containerSize, imageSize, color)
+//        }
+        CreateImageByResource(R.drawable.lostitemexampleimage, containerSize = containerSize, imageSize, color)
+        CreateImageByResource(R.drawable.lostitemexampleimage, containerSize = containerSize, imageSize, color)
+        CreateImageByResource(R.drawable.lostitemexampleimage, containerSize = containerSize, imageSize, color)
+        CreateImageByResource(R.drawable.lostitemexampleimage, containerSize = containerSize, imageSize, color)
+        CreateImageByResource(R.drawable.lostitemexampleimage, containerSize = containerSize, imageSize, color)
     }
 }
 
 @Composable
 fun CameraCaptureAndImagePicker(
-    onImageSelected:(Uri?)->Unit
+    onImageSelected: (Uri?) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -160,7 +192,7 @@ fun CameraCaptureAndImagePicker(
     val galleryLauncher =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.GetContent()
-        ) { uri:Uri? ->
+        ) { uri: Uri? ->
             onImageSelected(uri)
         }
 
@@ -174,7 +206,7 @@ fun CameraCaptureAndImagePicker(
     ) {
         CreateImage(image = null, 150.dp, 80.dp, color = Color.Gray)
     }
-    
+
 //    Column (
 //        Modifier.fillMaxSize(),
 //        horizontalAlignment = Alignment.End
@@ -194,13 +226,13 @@ fun CameraCaptureAndImagePicker(
 
 @Composable
 @Preview
-fun screen(){
+fun screen() {
     var selectedImageUri by remember {
         mutableStateOf<Uri?>(null)
     }
 
     Column {
-        CameraCaptureAndImagePicker{uri->
+        CameraCaptureAndImagePicker { uri ->
             selectedImageUri = uri
         }
 
@@ -208,4 +240,19 @@ fun screen(){
 
         }
     }
+}
+
+fun getFileFromUri(context: Context, uri: Uri?): File? {
+    val file = File(context.cacheDir, uri?.lastPathSegment)
+    try {
+        val inputStream: InputStream? = uri?.let { context.contentResolver.openInputStream(it) }
+        val outputStream = FileOutputStream(file)
+        inputStream?.copyTo(outputStream)
+        inputStream?.close()
+        outputStream.close()
+        return file
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return null
 }

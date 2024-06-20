@@ -1,7 +1,5 @@
 package com.example.finderly.Data
 
-import android.net.Uri
-
 data class PostListItem(
     var postTitle:String,
     var postContent:String,
@@ -9,13 +7,13 @@ data class PostListItem(
     var userId:String   //0619 DB 수정에 따른 아이디 추가
 )
 
-data class PostRequest (
+data class PostRequest(
     var userId:String,
     var postTitle:String,
     var postContent:String,
     var postCategory:Int,
     var secretCheck:Boolean,
-    var pictures:List<String>
+    var pictures: List<String>
 )
 
 data class registerResponse (
