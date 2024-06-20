@@ -304,7 +304,7 @@ fun SearchScreen(navController: NavHostController) {
             LaunchedEffect(lostViewModel.success) {
                 if(lostViewModel.message != null)
                     Toast.makeText(context, lostViewModel.message, Toast.LENGTH_SHORT).show()
-                if(lostViewModel.message == "분실물 삭제 완료")
+                if(lostViewModel.message != null && lostViewModel.message == "분실물 삭제 완료")
                     lostViewModel.lostList()
             }
             LaunchedEffect(reportViewModel.success) {

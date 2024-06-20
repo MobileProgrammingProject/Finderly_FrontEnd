@@ -121,14 +121,7 @@ class LostViewModel: ViewModel() {
                 lostItemList.addAll(itemList)
                 success = true
             } catch (e: HttpException) {
-                val errorBody = e.response()?.errorBody()?.string()
-                try {
-                    val jsonObject = JSONObject(errorBody)
-                    val errorMessage = jsonObject.optString("message", "알 수 없는 오류가 발생했습니다.")
-                    message = errorMessage
-                } catch (jsonException: JSONException) {
-                    message = "등록된 분실물이 없습니다."
-                }
+                message = null
                 lostItemList.clear()
                 success = false
             } catch (e: Exception) {
