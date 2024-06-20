@@ -1,9 +1,13 @@
 package com.example.finderly.screen.searchScreen
 
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,6 +44,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.finderly.R
 import com.example.finderly.component.BigRegisterButton
+import com.example.finderly.component.CameraCaptureAndImagePicker
+import com.example.finderly.component.CreateImage
 import com.example.finderly.component.getUserId
 import com.example.finderly.viewModel.LostViewModel
 
@@ -48,6 +55,14 @@ fun RegisterLostItemScreen(navController: NavHostController) {
     val lostViewModel : LostViewModel = viewModel()
     val context = LocalContext.current
     var userId = getUserId(context).toString() // userId 저장
+    // 사진 등록
+    var selectedImageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val imageUriList = remember {
+        mutableStateListOf<Uri?>()
+    }
+    val imgScrollState = rememberScrollState()
 
     var lostName by remember {
         mutableStateOf("")
@@ -64,9 +79,9 @@ fun RegisterLostItemScreen(navController: NavHostController) {
     var description by remember {
         mutableStateOf("")
     }
-    var pictures by remember {
-        mutableStateOf(mutableListOf<String>())
-    }
+//    var pictures by remember {
+//        mutableStateOf(mutableListOf<String>())
+//    }
     Column(
         modifier = Modifier
             .background(Color.White)
@@ -115,10 +130,29 @@ fun RegisterLostItemScreen(navController: NavHostController) {
             )
             // 사진등록하는 부분 추가 예정
             //RegisterImage()
+            Row (
+                modifier = Modifier
+                    .horizontalScroll(imgScrollState)
+                    .fillMaxWidth()
+                    .padding(top = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.Start)
+            ) {
+                CameraCaptureAndImagePicker{
+                    selectedImageUri = it
+                    imageUriList.add(it)
+                }
+                Log.d("Image uri", "$selectedImageUri")
+
+                imageUriList.forEach{uri->
+                    CreateImage(image = uri, 150.dp)
+                }
+            }
+
             Spacer(modifier = Modifier.height(20.dp))
 
             // 등록 버튼
             BigRegisterButton("분실물 등록하기", navController){
+                val pictures = imageUriList.map { uri -> uri.toString() }
                 lostViewModel.initializeState()
                 lostViewModel.lostRegister(userId, lostName, lostLocation, lostDate, storage, description, pictures)
             }

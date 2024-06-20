@@ -2,6 +2,7 @@ package com.example.finderly.screen.postScreen
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -119,6 +120,17 @@ fun PostScreen(
         post = postViewModel.post
         commentsCounter = post.value.comments.size
     }
+    LaunchedEffect(postViewModel.success) {
+        if(postViewModel.success == true){
+            Toast.makeText(context, postViewModel.message, Toast.LENGTH_SHORT).show()
+            navHostController.navigate("PostBoard") {
+                popUpTo("PostBoard") { inclusive = true }
+            }
+        }
+        else if(postViewModel.success == false){
+            Toast.makeText(context, postViewModel.message, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Box {
         PostHeader(postType)    // 헤더 컴포넌트
@@ -199,9 +211,6 @@ fun PostScreen(
                                     postId = postId,
                                     postCategory = postCategory
                                 )
-                                navHostController.navigate("PostBoard") {
-                                    popUpTo("PostBoard") { inclusive = true }
-                                }
                             },
                             modifier = Modifier
                                 .size(90.dp, 20.dp)

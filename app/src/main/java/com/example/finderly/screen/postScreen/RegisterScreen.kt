@@ -2,6 +2,7 @@ package com.example.finderly.screen.postScreen
 
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -29,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -70,6 +72,9 @@ fun RegisterScreen(navHostController: NavHostController) {
     val postViewModel: PostViewModel = viewModel()
     val context = LocalContext.current
     val userId = getUserId(context).toString() // userId 저장
+    var postId by rememberSaveable {
+        mutableStateOf("")
+    }
 
     var title by rememberSaveable {
         mutableStateOf("")
@@ -106,6 +111,18 @@ fun RegisterScreen(navHostController: NavHostController) {
         mutableStateListOf<Uri?>()
     }
     val imgScrollState = rememberScrollState()
+
+    LaunchedEffect(postViewModel.success) {
+        if(postViewModel.success == true){
+            Toast.makeText(context, postViewModel.message, Toast.LENGTH_SHORT).show()
+            navHostController.navigate("LostPost/$postCategory/${postId}") {
+                popUpTo("RegisterPost") { inclusive = true }
+            }
+        }
+        else if(postViewModel.success == false){
+            Toast.makeText(context, postViewModel.message, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -261,7 +278,6 @@ fun RegisterScreen(navHostController: NavHostController) {
                 color = Color.Gray,
                 modifier = Modifier.padding(start = 5.dp)
             )
-            //Spacer(modifier = Modifier.padding(10.dp))
 
             Row (
                 modifier = Modifier
@@ -279,7 +295,6 @@ fun RegisterScreen(navHostController: NavHostController) {
                     CreateImage(image = uri, 150.dp)
                 }
             }
-            //RegisterImage()
 
             // 게시글 등록 버튼
             Column(
@@ -313,13 +328,12 @@ fun RegisterScreen(navHostController: NavHostController) {
                                 "[Register Post]",
                                 "postCategory=$postCategory & postId=${result.postId}"
                             )
-                            navHostController.navigate("LostPost/$postCategory/${result.postId}") {
-                                popUpTo("RegisterPost") { inclusive = true }
-                            }
+                            postId = result.postId?:""
                         }
                     }
                 }
             }
         }
     }
+
 }

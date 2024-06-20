@@ -2,8 +2,10 @@ package com.example.finderly.viewModel
 
 import android.app.Application
 import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -23,6 +25,8 @@ class PostViewModel(application:Application):AndroidViewModel(application = appl
     private var lostPostList = mutableStateListOf<PostListItem>()
     // 습득물 게시판 리스트
     private var foundPostList = mutableStateListOf<PostListItem>()
+    var success by mutableStateOf<Boolean?>(null)
+    var message by mutableStateOf<String?>(null)
 
     // 게시글 상세 정보
     var post = mutableStateOf(
@@ -43,6 +47,8 @@ class PostViewModel(application:Application):AndroidViewModel(application = appl
     init {
         setPostList(0)
         updateComments()
+        success = null
+        message = null
     }
 
 
@@ -85,13 +91,19 @@ class PostViewModel(application:Application):AndroidViewModel(application = appl
                 // 성공 실패 로직 추가
                 if(response.message == "게시물 등록 완료"){
                     callback(response)
+                    success = true
+                    message = response.message
                 }else{
-                    response.message = "Failed"
+                    response.message = "게시물 등록 실패"
                     callback(response)
+                    success = false
+                    message = "게시물 등록 실패"
                 }
             }catch (e:Exception){
                 response.message = "Error"
                 callback(response)
+                success = false
+                message = "서버 에러"
             }
         }
     }
@@ -118,14 +130,20 @@ class PostViewModel(application:Application):AndroidViewModel(application = appl
         viewModelScope.launch {
             try{
                 val response = RetrofitInstance.api.deletePost(postCategory = postCategory,postId = postId)
-                if(response.message=="게시글 삭제 완료"){
+                if(response.message=="게시물 삭제 성공"){
                     // 성공 로직 처리
+                    success = true
+                    message = response.message
                 }else{
                     // 실패 로직 처리
+                    success = false
+                    message = "게시글 삭제 실패"
                 }
             }catch (e:Exception){
                 // 에러 로직 처리
                 Log.e("Delete API Error", "Failed to delete", e)
+                success = false
+                message = "서버 에러"
             }
         }
     }
